@@ -3,10 +3,10 @@ module.exports = function (grunt) {
   grunt.initConfig({
     shell: {
       jade: {
-        command : "jade -P -O www templates/index.jade"
+        command : "./node_modules/.bin/jade -P -O www templates/index.jade"
       },
       less:{
-        command : "lessc static/less/style.less www/static/css/style.css"
+        command : "./node_modules/.bin/lessc static/less/style.less www/static/css/style.css"
       }
     },
     lint:{
