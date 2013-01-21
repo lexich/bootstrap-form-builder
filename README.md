@@ -2,8 +2,8 @@ Install nodejs >= 0.8
 
 > npm install
 
-> modules/.bin/bower install
+> ./node_modules/.bin/bower install
 
-> modules/.bin/grunt
+> ./node_modules/.bin/grunt
 
-> modules/.bin/grunt connect
+> ./node_modules/.bin/grunt connect
