@@ -1,12 +1,20 @@
 module.exports = function (grunt) {
 
   grunt.initConfig({
-    shell: {
-      jade: {
-        command : "./node_modules/.bin/jade -P -O www templates/index.jade"
-      },
-      less:{
-        command : "./node_modules/.bin/lessc static/less/style.less www/static/css/style.css"
+    less: {
+      development: {        
+        files: {
+          "www/static/css/style.css": "static/less/style.less"
+        }
+      }
+    },
+    jade: {
+      html: {
+        src: ['templates/index.jade'],
+        dest: 'www',
+        options: {        
+          client: false
+        }
       }
     },
     lint:{
@@ -64,7 +72,7 @@ module.exports = function (grunt) {
     },
     watch:{
       jade:{
-        files:"templates/*.jade",
+        files:"templates/index.jade",
         tasks:["shell:jade"]
       },
       coffee:{
@@ -77,12 +85,13 @@ module.exports = function (grunt) {
       }
     }
   });
-  grunt.registerTask('default',"clean copy shell coffee watch");
-  grunt.registerTask('open',"clean copy shell coffee connect");
+  grunt.registerTask('default',"clean copy jade less coffee watch");
+  grunt.registerTask('open',"clean copy jade less coffee connect");
   
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-clean');
   grunt.loadNpmTasks('grunt-connect');
   grunt.loadNpmTasks('grunt-coffee');
-  grunt.loadNpmTasks('grunt-shell');
+  grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-jade');
 };

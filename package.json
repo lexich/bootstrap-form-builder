@@ -14,12 +14,13 @@
     "jade":"*", 
     "less":"~1.3.3ls ",
     "coffee-script": "~1.4.0",
-    "grunt":"*",
-    "grunt-shell":"*",
+    "grunt":"*",    
     "grunt-contrib-copy":"*",
     "grunt-clean":"*",
     "grunt-connect":"*",
-    "grunt-coffee":"*"
+    "grunt-coffee":"*",
+    "grunt-jade":"*",
+    "grunt-contrib-less":"*"
   },
   "readme": "README.md"
 }
