@@ -2,19 +2,24 @@ extends base
 
 mixin work_form
   .work_form
-    ul.work_form__menu(data-drop-accept=".form_builder__item")
-      li One
-      li Two
-      li Three
+    ul.work_form__menu(data-drop-accept="*[data-drag-accept]")
+      li.placeholder Место для элемента
 
 mixin form_builder
   .form_builder
-    ul.form_builder__menu
-      li.form_builder__item(data-drag-accept="")
-        |<div class="input-prepend">
-        | <span class="add-on">@</span>
-        | <input class="span2" id="prependedInput" type="text" placeholder="Username">
-        |</div>
+    ul.form_builder__menu.form-horizontal
+      li.control-group.form-item(data-drag-accept="")
+        i.icon-remove.ui_close(data-js-close)
+        .input-prepend
+          span.add-on @
+          input.span2(id="prependedInput", type="text", placeholder="Username")        
+        
+      li.control-group.form-item(data-drag-accept='')
+        i.icon-remove.ui_close(data-js-close)          
+        label.control-label(for="inputEmail") Email
+        .controls
+          input(type="text", id="inputEmail", placeholder="Email")
+        
 
 
 

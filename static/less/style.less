@@ -1,6 +1,6 @@
 @black: #000;
-@lightgrey:#ccc;
-
+@lightgray:#ccc;
+@white:#fff;
 
 input{
 	min-width: 200px;
@@ -11,11 +11,17 @@ input{
 }
 
 .box(){
-	height: 400px;	
+	min-height: 400px;	
 	width: 95%;
 	border: 1px solid @black;
 	margin: 10px;
 	border-radius: 1em;
+}
+.menu(){	
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 20px 0;	
 }
 
 .work_form{
@@ -23,18 +29,32 @@ input{
 }
 
 .work_form__menu{
-	width: 100%;
-	height: 100%;
+	.menu();	
+	background: @lightgray;
 }
 
 .form_builder{
 	.box();
 }
 .form_builder__menu{
-	list-style-type: none;		
+	.menu();
 }
-.form_builder__menu > li {
-	margin: 10px 30px;
-	padding: 4px;
-	border: 1px solid @lightgrey;
+
+.form-item, .placeholder{
+	list-style-type: none;
+	background: yellow;
+	min-width: 200px;
+	padding: 10px;
+	border-radius: 1em;
+	margin: 5px;
+	cursor: pointer;
+}
+
+.placeholder{
+	background: @white;
+	border: 1px solid @black;	
+}
+.ui_close{
+	display: block;
+	float: right;	
 }

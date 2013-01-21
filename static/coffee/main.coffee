@@ -1,10 +1,13 @@
-DragView = Backbone.View.extend
+
+DragView = Backbone.View.extend  
   initialize:(options)->
     @$el.draggable
       appendTo:"body"
-      helper:"clone"    
+      helper:"clone"
 
 DropView = Backbone.View.extend
+  events:
+    "click *[data-js-close]": "event_close"
   initialize:(options)->
     accept = @$el.data("drop-accept")
     @$el.droppable(
@@ -13,9 +16,12 @@ DropView = Backbone.View.extend
       hoverClass:"drag-hover"      
       drop:(ev,ui)->
         console.log "drop"
-        $("<li>").html(ui.draggable.html()).appendTo(this)
+        $item = $("<li>").addClass("form-item").html(ui.draggable.html())
+        $(this).find(".placeholder").before $item
     )
     @$el.sortable()
+  event_close:(e)->
+    $(e.target).parent().remove()
 
 
 

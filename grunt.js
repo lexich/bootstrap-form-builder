@@ -3,7 +3,7 @@ module.exports = function (grunt) {
   grunt.initConfig({
     shell: {
       jade: {
-        command : "jade -P -O www templates/index.jade"        
+        command : "jade -P -O www templates/index.jade"
       },
       less:{
         command : "lessc static/less/style.less www/static/css/style.css"
@@ -30,15 +30,17 @@ module.exports = function (grunt) {
             'static/js/*.js',
             'components/backbone/backbone.js',
             'components/underscore/underscore.js',
-            'components/jquery/jquery.js'            
+            'components/jquery/jquery.js'
           ],
           'www/static/js/bootstrap/':"components/bootstrap/docs/assets/js/*.js",
+          'www/static/img/':[
+            "components/bootstrap/img/*.png"
+          ],
           'www/static/css/':[
             "static/css/style.css",
             "components/bootstrap/docs/assets/css/bootstrap-responsive.css",
             "components/bootstrap/docs/assets/css/bootstrap.css"
-          ],
-          
+          ],          
           "www/static/js/jquery-ui/":[
             'components/jquery-ui/ui/jquery.ui.core.js',
             'components/jquery-ui/ui/jquery.ui.widget.js',
