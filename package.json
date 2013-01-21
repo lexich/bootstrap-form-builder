@@ -1,0 +1,25 @@
+{
+  "name": "form-builder",
+  "description": "form-builder",
+  "version": "0.0.1",
+  "author": {
+    "name": "lexich"
+  },  
+  "homepage": "crvtu.ru",
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "dependencies": {
+    "bower":"*",
+    "jade":"*", 
+    "less":"~1.3.3ls ",
+    "coffee-script": "~1.4.0",
+    "grunt":"*",
+    "grunt-shell":"*",
+    "grunt-contrib-copy":"*",
+    "grunt-clean":"*",
+    "grunt-connect":"*",
+    "grunt-coffee":"*"
+  },
+  "readme": "README.md"
+}

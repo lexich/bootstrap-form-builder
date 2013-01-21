@@ -1,0 +1,12 @@
+{
+  "name": "form-builder",
+  "version": "0.0.1",
+  
+  "dependencies": {
+    "jquery": "~1.8.0",
+    "bootstrap": "~2.2.0",
+    "backbone":"~0.9.10",
+    "underscore":"~1.4.3",
+    "jquery-ui":"~1.9.2"
+  }
+}

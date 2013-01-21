@@ -1,0 +1,29 @@
+extends base
+
+mixin work_form
+  .work_form
+    ul.work_form__menu(data-drop-accept=".form_builder__item")
+      li One
+      li Two
+      li Three
+
+mixin form_builder
+  .form_builder
+    ul.form_builder__menu
+      li.form_builder__item(data-drag-accept="")
+        |<div class="input-prepend">
+        | <span class="add-on">@</span>
+        | <input class="span2" id="prependedInput" type="text" placeholder="Username">
+        |</div>
+
+
+
+block body
+  .body
+    .row-fluid
+      .span6
+        h3 #{work_form_title}
+        mixin work_form
+      .span6
+        h3 #{form_builder_title}
+        mixin form_builder

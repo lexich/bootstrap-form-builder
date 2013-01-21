@@ -1,0 +1,40 @@
+@black: #000;
+@lightgrey:#ccc;
+
+
+input{
+	min-width: 200px;
+}
+
+.body{
+	margin: auto;
+}
+
+.box(){
+	height: 400px;	
+	width: 95%;
+	border: 1px solid @black;
+	margin: 10px;
+	border-radius: 1em;
+}
+
+.work_form{
+	.box();
+}
+
+.work_form__menu{
+	width: 100%;
+	height: 100%;
+}
+
+.form_builder{
+	.box();
+}
+.form_builder__menu{
+	list-style-type: none;		
+}
+.form_builder__menu > li {
+	margin: 10px 30px;
+	padding: 4px;
+	border: 1px solid @lightgrey;
+}
