@@ -8,6 +8,10 @@ block body
       include components/ui_tools
     .row-fluid
       h3 #{work_form_title}
-      .work_form
+      .ui_workarea
+        script(type="text/template",data-ui-wrapper)
+          .control-group.ui_wrapper(data-drag-accept)
+            span.icon-remove.ui_close(data-js-close)
+            |<%= content %>
         ul.work_form__menu(data-drop-accept="*[data-drag-accept]")
-          li.placeholder Место для элемента
+          li.placeholder Место для элемента1

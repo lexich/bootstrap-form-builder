@@ -5,6 +5,9 @@ ul.nav.nav-tabs
     a(href="#other",data-toggle="tab") Email
 
 .tab-content.ui_tools
+  script(type="text/template",data-ui-wrapper)
+    .control-group.form-item(data-drag-accept)
+      |<%= content %>
   .tab-pane.active(id="input")
     include input
   .tab-pane(id="other")

@@ -1,18 +1,42 @@
-mixin wrap
-  .control-group.form-item(data-drag-accept)
-    i.icon-remove.ui_close(data-js-close)
-    block
+.span3
+  - var jsrender = JSON.stringify({
+  -  label:"Email",
+  -  placeholder:"Email",
+  -  id:"email"
+  - });  
+  script(type="text/template",data-ui-jsrender='#{jsrender}')
+    |<div class="control-group">
+    |  <label class="control-label" for="<%= id %>"><%= label %></label>
+    |  <div class="controls">
+    |    <input type="text" id="<%= id %>" placeholder="<%= placeholder %>">
+    |  </div>    
+    |</div>    
 
-.span2
-  +wrap
-    label.control-label(for="prependedInput") Username
-    .controls
-      .input-prepend
-        span.add-on @
-        input.span2(id="prependedInput", type="text", placeholder="Username")
+.span3
+  - var jsrender = JSON.stringify({
+  -  label:"Password",
+  -  placeholder:"Password",
+  -  id:"password"
+  - });
+  script(type="text/template",data-ui-jsrender='#{jsrender}')
+    |<div class="control-group">
+    | <label class="control-label" for="inputPassword"><%= label %></label>
+    | <div class="controls">
+    |   <input type="password" id="<%= id %>" placeholder="<%= placeholder %>">
+    | </div>
+    |</div>  
 
-.span2
-  +wrap
-    label.control-label(for="inputEmail") Email
-    .controls
-      input(type="text", id="inputEmail", placeholder="Email")
+.span3
+  - var jsrender = JSON.stringify({
+  -  label:"Textarea",
+  -  placeholder:"Textarea",
+  -  id:"textarea"
+  - });
+  script(type="text/template",data-ui-jsrender='#{jsrender}')
+    |<div class="control-group">
+    | <label class="control-label" for="inputPassword"><%= label %></label>
+    | <div class="controls">
+    |   <textarea rows="3" id="<%= id %>" placeholder="<%= placeholder %>"></textarea>
+    | </div>
+    |</div>  
+
