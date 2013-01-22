@@ -20,7 +20,8 @@
     "grunt-connect":"*",
     "grunt-coffee":"*",
     "grunt-jade":"*",
-    "grunt-contrib-less":"*"
+    "grunt-contrib-less":"*",
+    "grunt-shell":"*"
   },
   "readme": "README.md"
 }

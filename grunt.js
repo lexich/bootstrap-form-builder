@@ -17,6 +17,16 @@ module.exports = function (grunt) {
         }
       }
     },
+    shell: {
+      jade: {
+        command : "jade -P -O www templates/index.jade",
+        stdout: true
+      },
+      less:{
+        command : "lessc static/less/style.less www/static/css/style.css",
+        stdout: true
+      }
+    },
     lint:{
       files: [
         "grunt.js"
@@ -71,15 +81,15 @@ module.exports = function (grunt) {
       }
     },
     watch:{
-      jade:{
-        files:"templates/index.jade",
+      jade_shell:{
+        files:["templates/*.jade","templates/*/*.jade"],
         tasks:["shell:jade"]
       },
-      coffee:{
+      coffee_shell:{
         files:"static/coffee/*.coffee",
         tasks:["coffee"]
       },
-      less:{
+      less_shell:{
         files:"static/less/*.less",
         tasks:["shell:less"]
       }
@@ -94,4 +104,5 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-coffee');
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-jade');
+  grunt.loadNpmTasks('grunt-shell');
 };
