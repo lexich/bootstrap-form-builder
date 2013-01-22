@@ -1,0 +1,18 @@
+mixin wrap
+  .control-group.form-item(data-drag-accept)
+    i.icon-remove.ui_close(data-js-close)
+    block
+
+.span2
+  +wrap
+    label.control-label(for="prependedInput") Username
+    .controls
+      .input-prepend
+        span.add-on @
+        input.span2(id="prependedInput", type="text", placeholder="Username")
+
+.span2
+  +wrap
+    label.control-label(for="inputEmail") Email
+    .controls
+      input(type="text", id="inputEmail", placeholder="Email")

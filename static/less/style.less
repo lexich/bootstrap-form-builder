@@ -11,7 +11,7 @@ input{
 }
 
 .box(){
-	min-height: 400px;	
+	min-height: 200px;
 	width: 95%;
 	border: 1px solid @black;
 	margin: 10px;
@@ -33,13 +33,6 @@ input{
 	background: @lightgray;
 }
 
-.form_builder{
-	.box();
-}
-.form_builder__menu{
-	.menu();
-}
-
 .form-item, .placeholder{
 	list-style-type: none;
 	background: yellow;
@@ -50,6 +43,7 @@ input{
 	cursor: pointer;
 }
 
+
 .placeholder{
 	background: @white;
 	border: 1px solid @black;	
@@ -57,4 +51,10 @@ input{
 .ui_close{
 	display: block;
 	float: right;	
+}
+
+.ui_tools{
+	.ui_close{
+		display: none;
+	}
 }
