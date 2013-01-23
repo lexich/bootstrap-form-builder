@@ -30,4 +30,5 @@ block body
       |</form>
     script(type='text/template',id="areaTemplateItem")
       .tool-item
-        span.tool-item__img(class='tool-item__img-<%= type %>', alt='<%= type %>') <%= type %>
+        |<span class="tool-item__img tool-item__img-<%= type %>" alt='<%= type %>'/>
+        | <%= type %>        

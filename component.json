@@ -7,6 +7,7 @@
     "bootstrap": "~2.2.0",
     "backbone":"~0.9.10",
     "underscore":"~1.4.3",
-    "jquery-ui":"~1.9.2"
+    "jquery-ui":"~1.9.2",
+    "font-awesome":"*"
   }
 }

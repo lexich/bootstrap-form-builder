@@ -2,7 +2,7 @@ DATA_VIEW = "$view"
 DATA_TYPE = "comonent-type"
 
 
-FormItem = Backbone.View.extend
+FormItemView = Backbone.View.extend
   PARAM_DATA:"form-item-data"
   events:
     "click *[data-js-close]" : "event_close"
@@ -16,19 +16,16 @@ FormItem = Backbone.View.extend
   initialize:(options)->    
     @service = options.service
     @type = options.type    
-    @$el.data DATA_VIEW, this
-    @updateData options.data
+    @$el.data DATA_VIEW, this    
     @template = _.template @service.getTemplate(@type)
     @render()
   
   render:->
-    data = @getData()
+    data = @model.attributes
     content = @template data
     html = @service.renderFormItemTemplate content
     @$el.html html
 
-  getData:->
-    @$el.data @PARAM_DATA
 
   updateData:(data)->
     @$el.data @PARAM_DATA, data
@@ -38,7 +35,7 @@ FormItem = Backbone.View.extend
     @$el.remove()
 
   event_options:(e)->    
-    popoverContent = @service.renderPopoverTemplate @getData()
+    popoverContent = @service.renderPopoverTemplate @model.attrubutes
     $(e.target).data
       title: "Configuration"
       content: popoverContent
@@ -49,7 +46,7 @@ FormItem = Backbone.View.extend
     data = {}
     _.each $(".popover input",@$el), (item)->
       data[$(item).attr("name")] = $(item).val()
-    @updateData(data)   
+    model.set data    
     @popover?.popover("hide")
     @render()
 
@@ -57,42 +54,69 @@ FormItem = Backbone.View.extend
     @popover?.popover("hide")
 
 
+DropAreaModel = Backbone.Model.extend
+  defaults:
+    label:""
+    placeholder:""
+    type:""
+
+  validate:(attrs)->
+    console.log(attrs)
+
+
+DropAreaCollection = Backbone.Collection.extend
+  url : "/forms.json"
+  model : DropAreaModel
+  updateAll: ->        
+    options =
+      success: (model, resp, xhr)=>
+        @reset(model)      
+    Backbone.sync 'create', this, options
 
 DropAreaView = Backbone.View.extend
   events:{}    
 
-  initialize:(options)-> 
-    @service = options.service    
+  initialize:->         
     @events = _.extend @events,      
       "click *[data-js-submit-form]": "event_submitForm"
 
     @$el.droppable
-      accept: options.accept
+      accept: @options.accept
       activeClass:""
       hoverClass:""      
       drop: _.bind(@handle_droppable_drop,this)    
-    @$el.sortable()
+    @$el.sortable()    
+
+  render:->
+    @$el.html()
+    _.each @collection.models, (model)=>
+      @createItem model
+
 
   handle_droppable_drop:(ev,ui)->  
     unless ui.draggable is ui.helper
       type = ui.draggable.data(DATA_TYPE)
-      $item = $("<li>")
-        .addClass("form-item")
-        .append(ui.helper)
+      
+      data = @options.service .getTemplateData(type)      
+      model = @collection.create data
+      @createItem model
+      
 
-      @$el.find(".placeholder").before $item 
-      formItem = new FormItem
-        el: $item            
-        type: type      
-        service: @service
-        data: @service.getTemplateData(type)
+  createItem:(model)->
+    $item = $("<li>")
+        .addClass("form-item")        
+    @$el.find(".placeholder").before $item
+    formItem = new FormItemView
+      el: $item
+      model: model
+      type: model.get("type")
+      service: @options.service
 
-      $item.data DATA_VIEW, formItem
+    $item.data DATA_VIEW, formItem
 
-    
 
-  event_submitForm:(e)->    
-    @collection.sync()  
+  event_submitForm:(e)->
+    @collection.updateAll()
 
 
 ToolItemView = Backbone.View.extend  
@@ -135,6 +159,7 @@ Service::=
   initialize:(options)->
     @toolData = @getToolData(options.dataToolBinder)    
     toolPanelItem = @createToolPanel(@toolData)
+    
     @dropArea = @createDropArea $("*[data-drop-accept]")
 
   getData:(type)-> @toolData[type]
@@ -142,9 +167,15 @@ Service::=
   getTemplate:(type)-> @getData(type)?.template
 
   createDropArea:($el)->
-    new DropAreaView
+    collection = new DropAreaCollection
+    item = new DropAreaView
       el: $el
       service: this
+      collection: collection
+    collection.on "reset", =>
+      item.render()
+    collection.fetch()
+    item
 
   createToolPanel:(toolData)->        
     _.map toolData, (v,k)=>
