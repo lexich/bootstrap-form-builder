@@ -2,11 +2,32 @@ extends base
 
 
 block body
-  .body
+  .body.container
     .row-fluid
       h3 #{form_builder_title}
       include components/ui_tools
     .row-fluid
       .span8
         h3 #{work_form_title}
-        include components/ui_workarea        
+        include components/ui_workarea    
+    script(type="text/template",id="formItemTemplate")
+      .control-group.ui_wrapper(data-drag-accept)
+        span.icon-remove.ui_icons(data-js-close)
+        span.icon-edit.ui_icons(data-js-options)
+        |<%= content %>
+    script(type='text/template',id="popoverTemplate")
+      |<form>
+      |<% _.each(data, function(v,k){ %>
+      |<div class="control-group">
+      |  <label class="control-label" for="_id__<%= k %>"><%= k %></label>
+      |  <div class="controls">
+      |    <input id="_id__<%= k %>" type="text" name="<%= k %>" value="<%= v %>" />
+      |  </div>
+      |</div>
+      |<% }); %>
+      |<a href="javascript:void(0);" class="btn" data-js-popover-ok >OK</button>
+      |<a href="javascript:void(0);" class="btn" data-js-popover-cancel>Close</button>
+      |</form>
+    script(type='text/template',id="areaTemplateItem")
+      .tool-item
+        span.tool-item__img(class='tool-item__img-<%= type %>', alt='<%= type %>') <%= type %>

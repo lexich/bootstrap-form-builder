@@ -10,50 +10,63 @@ input{
 	margin: auto;
 }
 
-.box(){
-	min-height: 200px;
-	width: 95%;
-	border: 1px solid @black;
-	margin: 10px;
-	border-radius: 1em;
-}
-.menu(){	
-	width: 100%;
-	height: 100%;
-	margin: 0;
-	padding: 20px 0;	
-}
-
 .ui_workarea{
-	.box();
+	min-height: 200px;
+	width: 95%;	
+	margin: 10px;	
 }
 
 
-.form-item, .placeholder{
-	list-style-type: none;
-	background: yellow;
+.form-item{
+	list-style-type: none;	
 	min-width: 200px;
 	padding: 10px;
 	border-radius: 1em;
 	margin: 5px;
 	cursor: pointer;
+	border: 1px solid @lightgray;	
 }
 
 
 .placeholder{
+	list-style-type: none;	
 	background: @white;
-	border: 1px solid @black;	
+	border: 1px solid @lightgray;
+	min-height: 100px;
+	padding: 10px;
+	margin: 5px;
+	cursor: pointer;
 }
 .ui_icons{
 	display: block;
 	float: right;	
 }
 .ui_icons:hover{
-	border: 1px solid @lightgray;
+	border: 1px solid @lightgray;	
 }
 
 .ui_tools{
 	.ui_close{
 		display: none;
 	}
+}
+
+.tool-item{
+	height: 32px;
+	width: 32px;
+	border: 1px solid @lightgray;
+	border-radius: 1em;
+}
+.tool-item__img{
+	height: 32px;
+	width: 32px;
+}
+.tool-item__img-input:before{
+	content: "input";
+}
+.tool-item__img-password:before{
+	content: "password";
+}
+.tool-item__img-textarea:before{
+	content: "textarea";
 }

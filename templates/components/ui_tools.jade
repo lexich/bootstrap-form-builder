@@ -4,10 +4,7 @@ ul.nav.nav-tabs
   li
     a(href="#other",data-toggle="tab") Email
 
-.tab-content.ui_tools
-  script(type="text/template",data-ui-wrapper)
-    .control-group.form-item(data-drag-accept)
-      |<%= content %>
+.tab-content.ui_tools  
   .tab-pane.active(id="input")
     include input
   .tab-pane(id="other")

@@ -1,14 +1,14 @@
 .span3
   - var jsrender = JSON.stringify({
-  -  label:"Email",
-  -  placeholder:"Email",
-  -  id:"email"
+  -  label:"Input",
+  -  placeholder:"Input",
+  -  type:"email"
   - });  
-  script(type="text/template",data-ui-jsrender='#{jsrender}')
+  script(type="text/template",data-ui-jsrender='#{jsrender}',data-ui-jsrender-type="input", data-ui-jsrender-img="http://networkelement.ru/images/stories/info-icon.jpg")
     |<div class="control-group">
-    |  <label class="control-label" for="<%= id %>"><%= label %></label>
+    |  <label class="control-label" for="<%= type %>"><%= label %></label>
     |  <div class="controls">
-    |    <input type="text" id="<%= id %>" placeholder="<%= placeholder %>">
+    |    <input type="text" id="<%= type %>" placeholder="<%= placeholder %>">
     |  </div>    
     |</div>    
 
@@ -16,13 +16,13 @@
   - var jsrender = JSON.stringify({
   -  label:"Password",
   -  placeholder:"Password",
-  -  id:"password"
+  -  type:"password",
   - });
-  script(type="text/template",data-ui-jsrender='#{jsrender}')
+  script(type="text/template",data-ui-jsrender='#{jsrender}',data-ui-jsrender-type="password", data-ui-jsrender-img="http://networkelement.ru/images/stories/info-icon.jpg")
     |<div class="control-group">
-    | <label class="control-label" for="inputPassword"><%= label %></label>
+    | <label class="control-label" for="<%= type %>"><%= label %></label>
     | <div class="controls">
-    |   <input type="password" id="<%= id %>" placeholder="<%= placeholder %>">
+    |   <input type="password" id="<%= type %>" placeholder="<%= placeholder %>">
     | </div>
     |</div>  
 
@@ -30,13 +30,13 @@
   - var jsrender = JSON.stringify({
   -  label:"Textarea",
   -  placeholder:"Textarea",
-  -  id:"textarea"
+  -  type:"textarea"
   - });
-  script(type="text/template",data-ui-jsrender='#{jsrender}')
+  script(type="text/template",data-ui-jsrender='#{jsrender}', data-ui-jsrender-type="textarea", data-ui-jsrender-img="http://networkelement.ru/images/stories/info-icon.jpg")
     |<div class="control-group">
-    | <label class="control-label" for="inputPassword"><%= label %></label>
+    | <label class="control-label" for="<%= type %>"><%= label %></label>
     | <div class="controls">
-    |   <textarea rows="3" id="<%= id %>" placeholder="<%= placeholder %>"></textarea>
+    |   <textarea rows="3" id="<%= type %>" placeholder="<%= placeholder %>"></textarea>
     | </div>
     |</div>  
 
