@@ -10,8 +10,8 @@ module.exports = function (grunt) {
     },
     jade: {
       html: {
-        src: ['templates/index.jade'],
-        dest: 'www',
+        src: ["templates/index.jade"],
+        dest: "www",
         options: {        
           client: false
         }
@@ -34,8 +34,8 @@ module.exports = function (grunt) {
     },
     coffee: {
       app: {
-        src: ['static/coffee/*.coffee'],
-        dest: 'www/static/js',
+        src: ["static/coffee/*.coffee"],
+        dest: "www/static/js",
         options: {
             bare: true
         }
@@ -43,30 +43,37 @@ module.exports = function (grunt) {
     },
     copy: {      
       dist : {
+        flatten: true,
         files: {          
-          'www/static/js/':[
-            'static/js/*.js',
-            'components/backbone/backbone.js',
-            'components/underscore/underscore.js',
-            'components/jquery/jquery.js'
+          "www/static/js/":
+          [
+            "static/js/*.js",
+            "components/backbone/backbone.js",
+            "components/underscore/underscore.js",
+            "components/jquery/jquery.js"
           ],
-          'www/static/js/bootstrap/':"components/bootstrap/docs/assets/js/*.js",
-          'www/static/img/':[
-            "components/bootstrap/img/*.png"
-          ],
-          'www/static/css/':[
-            "static/css/style.css",
+          "www/static/js/bootstrap/":"components/bootstrap/docs/assets/js/*.js",          
+          "www/static/img/": "components/bootstrap/img/*.png",
+          "www/static/css/bootstrap/":
+          [
             "components/bootstrap/docs/assets/css/bootstrap-responsive.css",
             "components/bootstrap/docs/assets/css/bootstrap.css"
-          ],          
-          "www/static/js/jquery-ui/":[
-            'components/jquery-ui/ui/jquery.ui.core.js',
-            'components/jquery-ui/ui/jquery.ui.widget.js',
-            'components/jquery-ui/ui/jquery.ui.mouse.js',
-            'components/jquery-ui/ui/jquery.ui.resizable.js',
-            'components/jquery-ui/ui/jquery.ui.draggable.js',
-            'components/jquery-ui/ui/jquery.ui.droppable.js',
-            'components/jquery-ui/ui/jquery.ui.sortable.js'
+          ],
+          "www/static/font-awesome/font/":"components/font-awesome/font/**",
+          "www/static/font-awesome/css/":
+          [
+            "components/font-awesome/css/font-awesome.min.css",
+            "components/font-awesome/css/font-awesome-ie7.min.css"
+          ],
+          "www/static/js/jquery-ui/":
+          [
+            "components/jquery-ui/ui/jquery.ui.core.js",
+            "components/jquery-ui/ui/jquery.ui.widget.js",
+            "components/jquery-ui/ui/jquery.ui.mouse.js",
+            "components/jquery-ui/ui/jquery.ui.resizable.js",
+            "components/jquery-ui/ui/jquery.ui.draggable.js",
+            "components/jquery-ui/ui/jquery.ui.droppable.js",
+            "components/jquery-ui/ui/jquery.ui.sortable.js"
           ]
         }
       }
@@ -77,7 +84,7 @@ module.exports = function (grunt) {
     connect: {
       server: {
         port: 8080,
-        base: './www'
+        base: "./www"
       }
     },
     watch:{
@@ -95,14 +102,37 @@ module.exports = function (grunt) {
       }
     }
   });
-  grunt.registerTask('default',"clean copy jade less coffee watch");
-  grunt.registerTask('open',"clean copy jade less coffee connect");
+  grunt.registerMultiTask("connect","Run a simple static connect server till you shut it down",function(){
+    var connect = require('connect');
+    var path = require('path');
+    this.async();
+    var express = require('express');
+    var port = this.data.port || 1337;
+    var base = this.data.base || __dirname;
+    var app = express();
+    app.use(express.bodyParser());
+    app.use(express.static(base));
+    app.get("/forms.json",function(req,res){
+      console.log(req);
+      res.send([
+        {label:"Test",placeholder:"Test",type:"input"},
+        {label:"Password",placeholder:"Password",type:"password"}
+      ]);
+    });
+    app.post("/forms.json",function(req, res){      
+      res.send(req.body);
+    });
+    app.listen(port);
+
+  });
+  grunt.registerTask("default","clean copy jade less coffee watch");
+  grunt.registerTask("open","clean copy jade less coffee connect");
   
-  grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-clean');
-  grunt.loadNpmTasks('grunt-connect');
-  grunt.loadNpmTasks('grunt-coffee');
-  grunt.loadNpmTasks('grunt-contrib-less');
-  grunt.loadNpmTasks('grunt-jade');
-  grunt.loadNpmTasks('grunt-shell');
+  grunt.loadNpmTasks("grunt-contrib-copy");
+  grunt.loadNpmTasks("grunt-clean");
+  //grunt.loadNpmTasks("grunt-connect");
+  grunt.loadNpmTasks("grunt-coffee");
+  grunt.loadNpmTasks("grunt-contrib-less");
+  grunt.loadNpmTasks("grunt-jade");
+  grunt.loadNpmTasks("grunt-shell");
 };
