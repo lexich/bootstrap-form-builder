@@ -73,19 +73,23 @@ DropAreaView = Backbone.View.extend
       drop: _.bind(@handle_droppable_drop,this)    
     @$el.sortable()
 
-  handle_droppable_drop:(ev,ui)->
-    type = ui.draggable.data(DATA_TYPE)
-    $item = $("<li>")
-      .addClass("form-item")        
+  handle_droppable_drop:(ev,ui)->  
+    unless ui.draggable is ui.helper
+      type = ui.draggable.data(DATA_TYPE)
+      $item = $("<li>")
+        .addClass("form-item")
+        .append(ui.helper)
 
-    @$el.find(".placeholder").before $item 
-    $item.data DATA_VIEW, new FormItem
-      el: $item            
-      type: type      
-      service: @service
-      data: @service.getTemplateData(type)
+      @$el.find(".placeholder").before $item 
+      formItem = new FormItem
+        el: $item            
+        type: type      
+        service: @service
+        data: @service.getTemplateData(type)
 
-    ui.helper.remove()
+      $item.data DATA_VIEW, formItem
+
+    
 
   event_submitForm:(e)->    
     @collection.sync()  
