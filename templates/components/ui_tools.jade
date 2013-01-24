@@ -2,10 +2,11 @@ ul.nav.nav-tabs
   li.active
     a(href="#input",data-toggle="tab") Input  
   li
-    a(href="#other",data-toggle="tab") Email
+    a(href="#other",data-toggle="tab") Other
+
 
 .tab-content.ui_tools  
   .tab-pane.active(id="input")
-    include input
+    include constructor/input
   .tab-pane(id="other")
-    p Test 1
+    include constructor/other

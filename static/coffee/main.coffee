@@ -174,20 +174,24 @@ Service::=
   toolData:{}
   modalTemplates:{}
   ###
+  --OPTIONS--
   @param dataToolBinder
+  @param dataPostfixDropAccept - data-* postfix for search drop area
+  @param dataPostfixModalType - data-* postfix for search modal-items templates
+  @param modal - 
   ###
   initialize:(options)->
-    @toolData = @getToolData(options.dataToolBinder)
-    toolPanelItem = @createToolPanel(@toolData)
+    @options = options
+    @toolData = @getToolData @options.dataToolBinder
+    toolPanelItem = @createToolPanel @toolData
     @modal = options.modal 
-    @dropArea = @createDropArea $("*[data-drop-accept]")
-    @modalTemplates = @getModalTemplates "modal-type"
+    @dropArea = @createDropArea @options.dataPostfixDropAccept
+    @modalTemplates = @getModalTemplates @options.dataPostfixModalType
 
-  
 
-  getModalTemplates:(data_attr)->
-    _.reduce $("*[data-#{data_attr}]"),((memo,item)->
-      type = $(item).data(data_attr)
+  getModalTemplates:(dataModalType)->
+    _.reduce $("*[data-#{dataModalType}]"),((memo,item)->
+      type = $(item).data(dataModalType)
       if type? and type != ""
         memo[type] = $(item).html()
       memo
@@ -216,7 +220,8 @@ Service::=
     
   getTemplate:(type)-> @getData(type)?.template
 
-  createDropArea:($el)->
+  createDropArea:(dropAccept)->
+    $el = $("[data-#{dropAccept}]:first")
     collection = new DropAreaCollection
     item = new DropAreaView
       el: $el
@@ -276,6 +281,7 @@ Service::=
 
 
 ModalView = Backbone.View.extend
+  DEFAULT_MODAL_BODY:".modal-body"
   events:
     "click *[data-js-close]":"event_close"
     "click *[data-js-save]":"event_save"
@@ -283,7 +289,8 @@ ModalView = Backbone.View.extend
   initialize:->
     @$el.hide()
     @$el.html @options.html
-    @$el.appendTo $("body")    
+    @$el.appendTo $("body")
+    @options.classModalBody = @options.classModalBody || @DEFAULT_MODAL_BODY
     
 
   show:(options)->
@@ -302,7 +309,7 @@ ModalView = Backbone.View.extend
       top:0
       left:0      
       position: "absolute"     
-    @callback_preRender @$el, $(".modal-body", @$el)
+    @callback_preRender @$el, $(@options.classModalBody, @$el)
     
   callback_preRender: ($el, $body)->
   callback_postSave: ($el, $body)->
@@ -312,7 +319,7 @@ ModalView = Backbone.View.extend
 
   event_save:->    
     @hide()
-    @callback_postSave @$el, $(".modal-body", @$el)
+    @callback_postSave @$el, $(@options.classModalBody, @$el)
 
 
 $(document).ready ->
@@ -321,6 +328,8 @@ $(document).ready ->
   service = new Service
     dataToolBinder: "ui-jsrender"
     areaTemplateItem: ""
+    dataPostfixDropAccept:"drop-accept"
+    dataPostfixModalType:"modal-type"
     modal: modal
     
   $("#modal").click ->    
