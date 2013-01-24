@@ -3,7 +3,6 @@ DATA_TYPE = "comonent-type"
 
 
 FormItemView = Backbone.View.extend
-  PARAM_DATA:"form-item-data"
   events:
     "click *[data-js-close]" : "event_close"
     "click *[data-js-options]" : "event_options"
@@ -11,31 +10,23 @@ FormItemView = Backbone.View.extend
     "click *[data-js-popover-cancel]": "event_cancelPopover"
   ###
   @param service
-  @param type    
+  @param type
   ###
-  initialize:(options)->    
-    @service = options.service
-    @type = options.type    
-    @$el.data DATA_VIEW, this    
-    @template = _.template @service.getTemplate(@type)
+  initialize:->
+    templateHtml = @options.service.getTemplate(@options.type)
+    @template = _.template templateHtml
     @render()
   
   render:->
-    data = @model.attributes
-    content = @template data
-    html = @service.renderFormItemTemplate content
+    content = @template @model.attributes
+    html = @options.service.renderFormItemTemplate content
     @$el.html html
-
-
-  updateData:(data)->
-    @$el.data @PARAM_DATA, data
-
 
   event_close:(e)->
     @$el.remove()
 
-  event_options:(e)->    
-    popoverContent = @service.renderPopoverTemplate @model.attrubutes
+  event_options:(e)->
+    popoverContent = @options.service.renderPopoverTemplate @model.attrubutes
     $(e.target).data
       title: "Configuration"
       content: popoverContent
@@ -61,7 +52,12 @@ DropAreaModel = Backbone.Model.extend
     type:""
 
   validate:(attrs)->
-    console.log(attrs)
+    if attrs.label? and attrs.label != ""
+      return "label mustn't be not null"
+    if attrs.placeholder? and attrs.placeholder != ""
+      return "placeholder mustn't be not null"
+    if attrs.type? and attrs.type != ""
+      return "type mustn't be not null"
 
 
 DropAreaCollection = Backbone.Collection.extend
@@ -72,6 +68,7 @@ DropAreaCollection = Backbone.Collection.extend
       success: (model, resp, xhr)=>
         @reset(model)      
     Backbone.sync 'create', this, options
+
 
 DropAreaView = Backbone.View.extend
   events:{}    
@@ -123,10 +120,7 @@ ToolItemView = Backbone.View.extend
   ###
   @param data    -  function which return {Object} for underscore template  
   ###
-  initialize: (options)->
-    @service = options.service
-    @type = options.type 
-    @template = options.template   
+  initialize:->      
     @$el.draggable
       appendTo:"body"
       clone:true
@@ -135,14 +129,14 @@ ToolItemView = Backbone.View.extend
 
   handle_draggable_helper:(event)->
     $el = $(event.target)    
-    templateHtml = @service.getTemplate @type
-    data = @service.getTemplateData(@type)
+    templateHtml = @options.service.getTemplate @options.type
+    data = @options.service.getTemplateData(@options.type)
     _.template templateHtml, data
 
   render:-> 
-    data = @service.getData(@type)    
-    @$el.html @template
-    @$el.data DATA_TYPE, @type
+    data = @options.service.getData(@options.type)    
+    @$el.html @options.template
+    @$el.data DATA_TYPE, @options.type
     data.$el.before @$el
 
 
