@@ -112,15 +112,12 @@ module.exports = function (grunt) {
     var app = express();
     app.use(express.bodyParser());
     app.use(express.static(base));
-    app.get("/forms.json",function(req,res){
-      console.log(req);
-      res.send([
-        {label:"Test",placeholder:"Test",type:"input"},
-        {label:"Password",placeholder:"Password",type:"password"}
-      ]);
+    var data = [];
+    app.get("/forms.json",function(req,res){            
+      res.send(data);
     });
     app.post("/forms.json",function(req, res){      
-      //res.send(req.body);
+      data = req.body;
     });
     app.listen(port);
 
