@@ -102,8 +102,7 @@ module.exports = function (grunt) {
       }
     }
   });
-  grunt.registerMultiTask("connect","Run a simple static connect server till you shut it down",function(){
-    var connect = require('connect');
+  grunt.registerMultiTask("connect","Run a simple static connect server till you shut it down",function(){    
     var path = require('path');
     this.async();
     var express = require('express');
