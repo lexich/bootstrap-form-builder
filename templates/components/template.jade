@@ -50,6 +50,6 @@ script(type='text/template',data-modal-type="select")
   |<label for="__id_<%= name %>"><%= name %></label>
   |<select id="__id_<%= name %>" name="<%= name %>" value="<%= value %>">
   | <% _.each(data,function(item){ %>
-  |   <option value="<%= item %>"><%= item %></option>
+  |   <option value="<%= item %>" <% if(value==item){ %>selected="selected"<% } %>  ><%= item %></option>
   | <%});%>
   |</select>

@@ -89,7 +89,7 @@ module.exports = function (grunt) {
     },
     watch:{
       jade_shell:{
-        files:["templates/*.jade","templates/*/*.jade"],
+        files:["templates/*.jade","templates/*/*.jade","templates/*/*/*.jade"],
         tasks:["jade"]
       },
       coffee_shell:{

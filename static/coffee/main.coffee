@@ -93,7 +93,8 @@ DropAreaView = Backbone.View.extend
       activeClass:""
       hoverClass:""
       drop: _.bind(@handle_droppable_drop,this)
-    @$el.sortable()
+    @$el.sortable
+      axis: "y"      
 
   render:->
     @$el.html()
@@ -112,17 +113,18 @@ DropAreaView = Backbone.View.extend
 
       $items = @$el.children()
       pos = ev.clientY
-      for i in [0..$items.length-1]
-        $it = $ $items[i]
-        top = $it.position().top
-        height = $it.height()
-        if top <= pos and pos <= top + height
-          if top + height/2 > pos
-            $it.before $item
-          else
-            $it.after $item
-          return
-
+      len = $items.length-1
+      if len > 0
+        for i in [0..len]
+          $it = $ $items[i]
+          top = $it.position().top
+          height = $it.height()
+          if top <= pos and pos <= top + height
+            if top + height/2 > pos
+              $it.before $item
+            else
+              $it.after $item
+            return
       $item.appendTo @$el
 
   createItem:(model)->
@@ -226,7 +228,8 @@ Service::=
     item = new DropAreaView
       el: $el
       service: this
-      collection: collection
+      collection: collection      
+
     collection.on "reset", =>
       item.render()
     collection.fetch()
@@ -302,7 +305,7 @@ ModalView = Backbone.View.extend
   hide:->     
     @$el.hide()
 
-  render:->    
+  render:->
     @$el.css
       width: $(window).width()
       height: $(window).height()
