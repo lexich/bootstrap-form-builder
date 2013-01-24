@@ -23,7 +23,8 @@ FormItemView = Backbone.View.extend
     @$el.html html
 
   event_close:(e)->
-    @$el.remove()
+    @model.destroy()
+    @remove()
 
   event_options:(e)->
     popoverContent = @options.service.renderPopoverTemplate @model.attrubutes
@@ -113,8 +114,6 @@ DropAreaView = Backbone.View.extend
           return
 
       $item.appendTo @$el
-
-      
 
   createItem:(model)->
     $item = $("<li>")
