@@ -21,7 +21,9 @@
     "grunt-coffee":"*",
     "grunt-jade":"*",
     "grunt-contrib-less":"*",
-    "grunt-shell":"*"
+    "grunt-shell":"*",
+    "connect":"*",
+    "express":"*"
   },
   "readme": "README.md"
 }
