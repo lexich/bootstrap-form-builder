@@ -2,7 +2,7 @@
   - var jsrender = JSON.stringify({
   -  label:"Input",
   -  placeholder:"Input",
-  -  type:"input"
+  -  type:{ value:"input", type:"select"}
   - });  
   script(type="text/template",data-ui-jsrender='#{jsrender}',data-ui-jsrender-type="input", data-ui-jsrender-img="http://networkelement.ru/images/stories/info-icon.jpg")
     |<div class="control-group">
@@ -16,7 +16,7 @@
   - var jsrender = JSON.stringify({
   -  label:"Password",
   -  placeholder:"Password",
-  -  type:"password",
+  -  type:{ value:"password", type:"select" }
   - });
   script(type="text/template",data-ui-jsrender='#{jsrender}',data-ui-jsrender-type="password", data-ui-jsrender-img="http://networkelement.ru/images/stories/info-icon.jpg")
     |<div class="control-group">
@@ -30,7 +30,7 @@
   - var jsrender = JSON.stringify({
   -  label:"Textarea",
   -  placeholder:"Textarea",
-  -  type:"textarea"
+  -  type:{ value:"textarea",type:"select"}
   - });
   script(type="text/template",data-ui-jsrender='#{jsrender}', data-ui-jsrender-type="textarea", data-ui-jsrender-img="http://networkelement.ru/images/stories/info-icon.jpg")
     |<div class="control-group">

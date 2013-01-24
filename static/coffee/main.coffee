@@ -5,9 +5,7 @@ DATA_TYPE = "comonent-type"
 FormItemView = Backbone.View.extend
   events:
     "click *[data-js-close]" : "event_close"
-    "click *[data-js-options]" : "event_options"
-    "click *[data-js-popover-ok]": "event_okPopover"
-    "click *[data-js-popover-cancel]": "event_cancelPopover"
+    "click *[data-js-options]" : "event_options"    
   ###
   @param service
   @param type
@@ -26,23 +24,36 @@ FormItemView = Backbone.View.extend
     @model.destroy()
     @remove()
 
-  event_options:(e)->
-    popoverContent = @options.service.renderPopoverTemplate @model.attributes
-    $(e.target).data
-      title: "Configuration"
-      content: popoverContent
-      html:true
-    @popover = $(e.target).popover("show")
+  event_options:(e)->    
+    @options.service.showModal
+      preRender: _.bind(@handle_preRender, this)
+      postSave: _.bind(@handle_postSave, this)
+
+  handle_preRender:($el, $body)->
+    type = @model.get("type")
+    meta = @options.service.getTemplateMetaData(type)
+    data = @model.attributes
+    service = @options.service
+    content = _.map data, (v,k)->
+      itemType = meta[k] or ""
+      service.renderModalItemTemplate itemType,
+        name: k
+        value: v
+        data: service.getItemFormTypes()
+
+    $body.html content.join("")
   
+  handle_postSave:($el,$body)->
+    data = @options.service.parceModalItemData $body
+    @model.set data
+
+
   event_okPopover:(e)->
     data = _.reduce $(".popover input",@$el), ((memo,item)->
       memo[$(item).attr("name")] = $(item).val() and memo
     ),{}
     @model.set data
-    @popover?.popover("hide")
-
-  event_cancelPopover:(e)->
-    @popover?.popover("hide")
+    @popover?.popover("hide")  
 
 
 DropAreaModel = Backbone.Model.extend
@@ -63,10 +74,10 @@ DropAreaModel = Backbone.Model.extend
 DropAreaCollection = Backbone.Collection.extend
   url : "/forms.json"
   model : DropAreaModel
-  updateAll: ->        
+  updateAll: ->
     options =
       success: (model, resp, xhr)=>
-        @reset(model)      
+        @reset(model)
     Backbone.sync 'create', this, options
 
 
@@ -155,33 +166,53 @@ ToolItemView = Backbone.View.extend
 
 Service=->
   @initialize.apply this, arguments
+  this
 
 
 Service::=
   constructor:Service
   toolData:{}
-
+  modalTemplates:{}
   ###
   @param dataToolBinder
   ###
   initialize:(options)->
     @toolData = @getToolData(options.dataToolBinder)
     toolPanelItem = @createToolPanel(@toolData)
-    
+    @modal = options.modal 
     @dropArea = @createDropArea $("*[data-drop-accept]")
+    @modalTemplates = @getModalTemplates "modal-type"
+
+  
+
+  getModalTemplates:(data_attr)->
+    _.reduce $("*[data-#{data_attr}]"),((memo,item)->
+      type = $(item).data(data_attr)
+      if type? and type != ""
+        memo[type] = $(item).html()
+      memo
+    ),{}
+
+  renderModalItemTemplate:(type,data)->
+    if type is null or type is ""
+      type = "input"
+    templateHtml = @modalTemplates[type]
+    if templateHtml is null or templateHtml == ""
+      templateHtml = @modalTemplates["input"]
+    _.template templateHtml, data
+
+  showModal:(options)-> 
+    @modal.show options
 
   getData:(type)-> @toolData[type]
+
+  getItemFormTypes:-> _.keys @toolData
+
   getTemplateMetaData:(type)->
-    @getData(type)?.data
+    @getData(type)?.meta
+
   getTemplateData:(type)->
-    _.reduce @getTemplateMetaData(type),
-      ((memo,v,k)->
-        if _.isString(v) 
-          memo[k] = v
-        else if _.isObject(v)
-          memo[k] = v.value
-        memo
-      ),{}
+    @getData(type)?.data
     
   getTemplate:(type)-> @getData(type)?.template
 
@@ -203,6 +234,15 @@ Service::=
         service:this
         template:@renderAreaItem(v)
 
+  parceModalItemData:($body)->
+    pattern = "input[name], select[name]"
+    _.reduce $body.find(pattern),((memo,item)->
+      name = $(item).attr("name")
+      if name? and name != ""
+        memo[name] = $(item).val()
+      memo
+    ),{}  
+
   renderAreaItem:(data)->
     htmlTemplate = $("#areaTemplateItem").html()
     _.template htmlTemplate, data
@@ -211,9 +251,19 @@ Service::=
     _.reduce $("*[data-#{toolBinder}]"),((memo, el)=>
       $el = $(el)
       type = $el.data(toolBinder+"-type")
+      [data, meta] = [{},{}]
+      _.each $el.data(toolBinder),(v,k)->
+        if _.isString(v)
+          data[k] = v
+          meta[k] = ""
+        else if _.isObject(v)
+          data[k] = v.value or ""
+          meta[k] = v.type or ""
+
       memo[type] =
         type: type
-        data : $el.data(toolBinder)
+        data : data
+        meta : meta
         img : $el.data(toolBinder+"-img")
         template : $el.html()
         $el: $el
@@ -222,15 +272,68 @@ Service::=
 
   renderFormItemTemplate:(html)->
     templateHtml = $("#formItemTemplate").html() or "<%= content %>"
-    _.template templateHtml, content:html
+    _.template templateHtml, content:html  
 
-  renderPopoverTemplate:(data)->
-    templateHtml = $("#popoverTemplate").html()
-    _.template templateHtml, data:data
 
+ModalView = Backbone.View.extend
+  HTML: """
+      <div class="modal">
+        <div class="modal-header">
+          <button type="button" data-js-close class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h3>Modal header</h3>
+        </div>
+        <div class="modal-body"></div>
+        <div class="modal-footer">
+          <a href="#" data-js-close class="btn">Close</a>
+          <a href="#" data-js-save class="btn btn-primary">Save changes</a>
+        </div>
+      </div>    
+    """  
+  events:
+    "click *[data-js-close]":"event_close"
+    "click *[data-js-save]":"event_save"
+
+  initialize:->
+    @$el.hide()
+    @$el.html @HTML    
+    @$el.appendTo $("body")    
+    
+
+  show:(options)->
+    @callback_preRender = ($el, $body)=> options?.preRender $el, $body
+    @callback_postSave = ($el, $body)=> options?.postSave $el, $body
+    @render()
+    @$el.show()
+
+  hide:->     
+    @$el.hide()
+
+  render:->    
+    @$el.css
+      width: $(window).width()
+      height: $(window).height()
+      top:0
+      left:0      
+      position: "absolute"     
+    @callback_preRender @$el, $(".modal-body", @$el)
+    
+  callback_preRender: ($el, $body)->
+  callback_postSave: ($el, $body)->
+
+  event_close:-> 
+    @hide()
+
+  event_save:->    
+    @hide()
+    @callback_postSave @$el, $(".modal-body", @$el)
 
 
 $(document).ready ->
   service = new Service
     dataToolBinder: "ui-jsrender"
     areaTemplateItem: ""
+    modal: new ModalView
+     
+  $("#modal").click ->    
+    service.showModal ($el,$body)->
+      $body.append $("p").text("Hello world")
