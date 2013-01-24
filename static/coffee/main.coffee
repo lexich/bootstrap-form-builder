@@ -81,36 +81,52 @@ DropAreaView = Backbone.View.extend
       accept: @options.accept
       activeClass:""
       hoverClass:""      
-      drop: _.bind(@handle_droppable_drop,this)    
+      drop: _.bind(@handle_droppable_drop,this)
     @$el.sortable()    
 
   render:->
     @$el.html()
     _.each @collection.models, (model)=>
-      @createItem model
+      $item = @createItem model
+      @$el.find(".placeholder").before $item
 
 
-  handle_droppable_drop:(ev,ui)->  
+  handle_droppable_drop:(ev,ui)->
     unless ui.draggable is ui.helper
       type = ui.draggable.data(DATA_TYPE)
       
-      data = @options.service .getTemplateData(type)      
+      data = @options.service .getTemplateData(type)
       model = @collection.create data
-      @createItem model
+      $item = @createItem model
+
+      $items = @$el.children()
+      pos = ev.clientY      
+      for i in [0..$items.length-1]
+        $it = $ $items[i]
+        top = $it.position().top
+        height = $it.height()
+        if top <= pos and pos <= top + height
+          if top + height/2 > pos          
+            $it.before $item
+          else
+            $it.after $item
+          return
+
+      $item.appendTo @$el
+
       
 
   createItem:(model)->
     $item = $("<li>")
-        .addClass("form-item")        
-    @$el.find(".placeholder").before $item
+        .addClass("form-item")
+    
     formItem = new FormItemView
       el: $item
       model: model
       type: model.get("type")
       service: @options.service
-
     $item.data DATA_VIEW, formItem
-
+    $item    
 
   event_submitForm:(e)->
     @collection.updateAll()
@@ -145,6 +161,7 @@ Service=->
 
 
 Service::=  
+  constructor:Service
   toolData:{}
 
   ###
@@ -157,7 +174,18 @@ Service::=
     @dropArea = @createDropArea $("*[data-drop-accept]")
 
   getData:(type)-> @toolData[type]
-  getTemplateData:(type)-> @getData(type)?.data
+  getTemplateMetaData:(type)-> 
+    @getData(type)?.data
+  getTemplateData:(type)->
+    _.reduce @getTemplateMetaData(type),
+      ((memo,v,k)->
+        if _.isString(v) 
+          memo[k] = v
+        else if _.isObject(v)
+          memo[k] = v.value
+        memo
+      ),{}
+    
   getTemplate:(type)-> @getData(type)?.template
 
   createDropArea:($el)->
@@ -180,9 +208,7 @@ Service::=
 
   renderAreaItem:(data)->    
     htmlTemplate = $("#areaTemplateItem").html()    
-    _.template htmlTemplate, data
-    
-    
+    _.template htmlTemplate, data        
 
   getToolData:(toolBinder)->
     result = {}
