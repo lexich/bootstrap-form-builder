@@ -276,26 +276,13 @@ Service::=
 
 
 ModalView = Backbone.View.extend
-  HTML: """
-      <div class="modal">
-        <div class="modal-header">
-          <button type="button" data-js-close class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h3>Modal header</h3>
-        </div>
-        <div class="modal-body"></div>
-        <div class="modal-footer">
-          <a href="#" data-js-close class="btn">Close</a>
-          <a href="#" data-js-save class="btn btn-primary">Save changes</a>
-        </div>
-      </div>    
-    """  
   events:
     "click *[data-js-close]":"event_close"
     "click *[data-js-save]":"event_save"
 
   initialize:->
     @$el.hide()
-    @$el.html @HTML    
+    @$el.html @options.html
     @$el.appendTo $("body")    
     
 
@@ -329,11 +316,13 @@ ModalView = Backbone.View.extend
 
 
 $(document).ready ->
+  modal = new ModalView
+    html:$("#modalTemplate").html()
   service = new Service
     dataToolBinder: "ui-jsrender"
     areaTemplateItem: ""
-    modal: new ModalView
-     
+    modal: modal
+    
   $("#modal").click ->    
     service.showModal ($el,$body)->
       $body.append $("p").text("Hello world")
