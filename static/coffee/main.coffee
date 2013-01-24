@@ -61,6 +61,7 @@ DropAreaModel = Backbone.Model.extend
     label:""
     placeholder:""
     type:""
+    name:""
 
   validate:(attrs)->
     if attrs.label? and attrs.label != ""
@@ -100,7 +101,7 @@ DropAreaView = Backbone.View.extend
     @$el.html()
     _.each @collection.models, (model)=>
       $item = @createItem model
-      @$el.find(".placeholder").before $item
+      $item.appendTo @$el
 
 
   handle_droppable_drop:(ev,ui)->
