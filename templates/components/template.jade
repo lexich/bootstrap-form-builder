@@ -1,0 +1,55 @@
+script(type="text/template",id="formItemTemplate")
+  .control-group.ui_wrapper(data-drag-accept)
+    table.form-item__tools
+      tbody
+        tr
+          td
+            span.icon-cogs.ui_icons(data-js-options)
+          td
+            span.icon-remove.ui_icons(data-js-close)
+          
+    |<%= content %>
+
+script(type='text/template',id="popoverTemplate")
+  |<form>
+  |<% _.each(data, function(v,k){ %>
+  |<div class="control-group">
+  |  <label class="control-label" for="_id__<%= k %>"><%= k %></label>
+  |  <div class="controls">
+  |    <input id="_id__<%= k %>" type="text" name="<%= k %>" value="<%= v %>" />
+  |  </div>
+  |</div>
+  |<% }); %>
+  |<a href="javascript:void(0);" class="btn" data-js-popover-ok >OK</button>
+  |<a href="javascript:void(0);" class="btn" data-js-popover-cancel>Close</button>
+  |</form>
+
+script(type='text/template',id="areaTemplateItem")
+  .tool-item
+    |<span class="tool-item__img tool-item__img-<%= type %>" alt='<%= type %>'/>
+    | <%= type %>
+
+script(type='text/template',id="modalTemplate")
+  |<div class="modal">
+  |  <div class="modal-header">
+  |    <button type="button" data-js-close class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+  |    <h3>Settings</h3>
+  |  </div>
+  |  <div class="modal-body"></div>
+  |  <div class="modal-footer">
+  |    <a href="#" data-js-close class="btn">Close</a>
+  |    <a href="#" data-js-save class="btn btn-primary">Save changes</a>
+  |  </div>
+  |</div> 
+
+script(type='text/template',data-modal-type="input")
+  |<label for="__id_<%= name %>"><%= name %></label>
+  |<input id="__id_<%= name %>" type="text" name="<%= name %>" value="<%= value %>">
+
+script(type='text/template',data-modal-type="select")
+  |<label for="__id_<%= name %>"><%= name %></label>
+  |<select id="__id_<%= name %>" name="<%= name %>" value="<%= value %>">
+  | <% _.each(data,function(item){ %>
+  |   <option value="<%= item %>"><%= item %></option>
+  | <%});%>
+  |</select>

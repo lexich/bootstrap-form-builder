@@ -3,69 +3,79 @@
 @white:#fff;
 
 input{
-	min-width: 200px;
+  min-width: 200px;
 }
 
 .body{
-	margin: auto;
+  margin: auto;
 }
 
 .ui_workarea{
-	min-height: 200px;
-	width: 95%;	
-	margin: 10px;	
+  min-height: 200px;
+  width: 95%; 
+  margin: 10px; 
 }
 
 
 .form-item{
-	list-style-type: none;	
-	min-width: 200px;
-	padding: 10px;
-	border-radius: 1em;
-	margin: 5px;
-	cursor: pointer;
-	border: 1px solid @lightgray;	
+  list-style-type: none;
+  min-width: 200px;
+  padding: 10px;
+  border-radius: 1em;
+  margin: 5px;
+  cursor: pointer;
+  border: 1px solid @lightgray;
 }
 
+.form-item__tools{
+  float: right;
+}
+table.form-item__tools{
+  tr>td{
+    width: 28px;
+    height: 26px;
+  }
+}
 
 .placeholder{
-	list-style-type: none;	
-	background: @white;
-	border: 1px solid @lightgray;
-	min-height: 100px;
-	padding: 10px;
-	margin: 5px;
-	cursor: pointer;
+  list-style-type: none;
+  background: @white;
+  border: 1px solid @lightgray;
+  min-height: 100px;
+  padding: 10px;
+  margin: 5px;
+  cursor: pointer;
 }
-.ui_icons{
-	display: block;
-	float: right;	
+
+.ui_icons{    
+  font-size: 1.3em;  
+  &:hover{
+    font-size: 1.6em;    
+  }
 }
-.ui_icons:hover{
-	border: 1px solid @lightgray;	
-}
+
 
 .ui_tools{
-	.ui_close{
-		display: none;
-	}
+  .ui_close{
+    display: none;
+  }
 }
 
-.tool-item{	
-	border: 1px solid @lightgray;
-	border-radius: 1em;
+.tool-item{ 
+  border: 1px solid @lightgray;
+  border-radius: 1em;
 }
 .tool-item__img{
-	line-height: 32px;
-	height: 32px;
-	font-size: 14px;	
+  line-height: 32px;
+  height: 32px;
+  font-size: 14px;  
 }
 .tool-item__img-input:before{
-	content: "\f05a";
+  content: "\f05a";
 }
 .tool-item__img-password:before{
-	content: "\f05b";
+  content: "\f05b";
 }
 .tool-item__img-textarea:before{
-	content: "\f05c";
+  content: "\f05c";
 }
