@@ -13,21 +13,21 @@ FormItemView = Backbone.View.extend
   @param type
   ###
   initialize:->
-    templateHtml = @options.service.getTemplate(@options.type)
-    @template = _.template templateHtml
+    @model.on "change", => @render()
     @render()
   
   render:->
-    content = @template @model.attributes
+    templateHtml = @options.service.getTemplate @model.get("type")
+    content = _.template templateHtml, @model.attributes
     html = @options.service.renderFormItemTemplate content
     @$el.html html
 
-  event_close:(e)->
+  event_close:->
     @model.destroy()
     @remove()
 
   event_options:(e)->
-    popoverContent = @options.service.renderPopoverTemplate @model.attrubutes
+    popoverContent = @options.service.renderPopoverTemplate @model.attributes
     $(e.target).data
       title: "Configuration"
       content: popoverContent
@@ -35,12 +35,11 @@ FormItemView = Backbone.View.extend
     @popover = $(e.target).popover("show")
   
   event_okPopover:(e)->
-    data = {}
-    _.each $(".popover input",@$el), (item)->
-      data[$(item).attr("name")] = $(item).val()
-    model.set data    
+    data = _.reduce $(".popover input",@$el), ((memo,item)->
+      memo[$(item).attr("name")] = $(item).val() and memo
+    ),{}
+    @model.set data
     @popover?.popover("hide")
-    @render()
 
   event_cancelPopover:(e)->
     @popover?.popover("hide")
@@ -72,18 +71,18 @@ DropAreaCollection = Backbone.Collection.extend
 
 
 DropAreaView = Backbone.View.extend
-  events:{}    
+  events:{}
 
-  initialize:->         
-    @events = _.extend @events,      
+  initialize:->
+    @events = _.extend @events,
       "click *[data-js-submit-form]": "event_submitForm"
 
     @$el.droppable
       accept: @options.accept
       activeClass:""
-      hoverClass:""      
+      hoverClass:""
       drop: _.bind(@handle_droppable_drop,this)
-    @$el.sortable()    
+    @$el.sortable()
 
   render:->
     @$el.html()
@@ -101,13 +100,13 @@ DropAreaView = Backbone.View.extend
       $item = @createItem model
 
       $items = @$el.children()
-      pos = ev.clientY      
+      pos = ev.clientY
       for i in [0..$items.length-1]
         $it = $ $items[i]
         top = $it.position().top
         height = $it.height()
         if top <= pos and pos <= top + height
-          if top + height/2 > pos          
+          if top + height/2 > pos
             $it.before $item
           else
             $it.after $item
@@ -122,20 +121,19 @@ DropAreaView = Backbone.View.extend
     formItem = new FormItemView
       el: $item
       model: model
-      type: model.get("type")
       service: @options.service
     $item.data DATA_VIEW, formItem
-    $item    
+    $item
 
   event_submitForm:(e)->
     @collection.updateAll()
 
 
-ToolItemView = Backbone.View.extend  
+ToolItemView = Backbone.View.extend
   ###
   @param data    -  function which return {Object} for underscore template  
   ###
-  initialize:->      
+  initialize:->
     @$el.draggable
       appendTo:"body"
       clone:true
@@ -143,13 +141,13 @@ ToolItemView = Backbone.View.extend
     @render()
 
   handle_draggable_helper:(event)->
-    $el = $(event.target)    
+    $el = $(event.target)
     templateHtml = @options.service.getTemplate @options.type
     data = @options.service.getTemplateData(@options.type)
     _.template templateHtml, data
 
   render:-> 
-    data = @options.service.getData(@options.type)    
+    data = @options.service.getData(@options.type)
     @$el.html @options.template
     @$el.data DATA_TYPE, @options.type
     data.$el.before @$el
@@ -159,21 +157,21 @@ Service=->
   @initialize.apply this, arguments
 
 
-Service::=  
+Service::=
   constructor:Service
   toolData:{}
 
   ###
-  @param dataToolBinder    
+  @param dataToolBinder
   ###
   initialize:(options)->
-    @toolData = @getToolData(options.dataToolBinder)    
+    @toolData = @getToolData(options.dataToolBinder)
     toolPanelItem = @createToolPanel(@toolData)
     
     @dropArea = @createDropArea $("*[data-drop-accept]")
 
   getData:(type)-> @toolData[type]
-  getTemplateMetaData:(type)-> 
+  getTemplateMetaData:(type)->
     @getData(type)?.data
   getTemplateData:(type)->
     _.reduce @getTemplateMetaData(type),
@@ -198,29 +196,29 @@ Service::=
     collection.fetch()
     item
 
-  createToolPanel:(toolData)->        
+  createToolPanel:(toolData)->
     _.map toolData, (v,k)=>
       new ToolItemView
         type: k
         service:this
         template:@renderAreaItem(v)
 
-  renderAreaItem:(data)->    
-    htmlTemplate = $("#areaTemplateItem").html()    
-    _.template htmlTemplate, data        
+  renderAreaItem:(data)->
+    htmlTemplate = $("#areaTemplateItem").html()
+    _.template htmlTemplate, data
 
   getToolData:(toolBinder)->
-    result = {}
-    _.each $("*[data-#{toolBinder}]"),(el)=>
+    _.reduce $("*[data-#{toolBinder}]"),((memo, el)=>
       $el = $(el)
       type = $el.data(toolBinder+"-type")
-      result[type] =
+      memo[type] =
         type: type
-        data : $el.data(toolBinder)      
+        data : $el.data(toolBinder)
         img : $el.data(toolBinder+"-img")
         template : $el.html()
         $el: $el
-    result
+      memo
+    ),{}
 
   renderFormItemTemplate:(html)->
     templateHtml = $("#formItemTemplate").html() or "<%= content %>"
@@ -232,7 +230,7 @@ Service::=
 
 
 
-$(document).ready ->  
+$(document).ready ->
   service = new Service
     dataToolBinder: "ui-jsrender"
-    areaTemplateItem: "" 
+    areaTemplateItem: ""
