@@ -1,8 +1,32 @@
 DATA_VIEW = "$view"
 DATA_TYPE = "component-type"
 
+FormView = Backbone.View.extend
+  events:
+    "click *[data-js-submit-form]": "event_submitForm"
+
+  dropAreas:[]
+
+  initialize:->
+    $items = @$el.find "[data-#{@options.dataDropAccept}]"
+    @dropAreas = _.map $items, @_createDropArea, this
+    @collection.on "reset", =>
+      _.each @dropAreas, (area)->
+        area.render()
+
+  event_submitForm:(e)->
+    @collection.updateAll()
+
+  _createDropArea:(item)->
+    new DropAreaView
+      el: item
+      service: @options.service
+      collection: @collection
+      accept:($el)->
+        $el.hasClass "ui-draggable"
 
 FormItemView = Backbone.View.extend
+  className:"ui-draggable"
   events:
     "click *[data-js-close]" : "event_close"
     "click *[data-js-options]" : "event_options"
@@ -11,8 +35,9 @@ FormItemView = Backbone.View.extend
   @param type
   ###
   initialize:->
-      @model.on "change", => @render()
-      @render()
+    @$el.data DATA_VIEW, this
+    @model.on "change", => @render()
+    @render()
   
   render:->
     templateHtml = @options.service.getTemplate @model.get("type")
@@ -40,7 +65,6 @@ FormItemView = Backbone.View.extend
         name: k
         value: v
         data: service.getItemFormTypes()
-
     $body.html content.join("")
   
   handle_postSave:($el,$body)->
@@ -55,7 +79,9 @@ FormItemView = Backbone.View.extend
     @model.set data
     @popover?.popover("hide")
 
-
+###
+DropArea
+###
 DropAreaModel = Backbone.Model.extend
   defaults:
     label:""
@@ -94,31 +120,22 @@ DropAreaView = Backbone.View.extend
       axis: "y"      
 
   render:->
-    @$el.html()
+    @$el.html("")
     _.each @collection.models, (model)=>
-      $item = @createItem model
-      $item.appendTo @$el
+      view = new FormItemView
+        model: model
+        service: @options.service
+      view.$el.appendTo @$el
 
   handle_droppable_drop:(ev,ui)->
-    type = ui.draggable.data(DATA_TYPE)
-    data = @options.service.getTemplateData(type)
-    model = @collection.create data
-    $item = @createItem model
-    ui.draggable.before $item
-    ui.draggable.removeClass("ui-draggable")
-    ui.draggable.remove()
-
-  createItem:(model)->
-    $item = $("<li>")
-        .addClass("form-item")
-    
-    formItem = new FormItemView
-      el: $item
-      model: model
-      service: @options.service
-    $item.data DATA_VIEW, formItem
-    $item
-
+    view = ui.draggable.data DATA_VIEW
+    unless view
+      type = ui.draggable.data(DATA_TYPE)
+      data = @options.service.getTemplateData(type)
+      view = new FormItemView
+        el: ui.draggable
+        model: @collection.create(data)
+        service: @options.service    
 
 
 ToolItemView = Backbone.View.extend
@@ -145,31 +162,6 @@ ToolItemView = Backbone.View.extend
     @$el.html @options.template
     @$el.attr "data-#{DATA_TYPE}", @options.type
     data.$el.before @$el
-
-
-FormView = Backbone.View.extend
-  events:
-    "click *[data-js-submit-form]": "event_submitForm"
-
-  dropAreas:[]
-
-  initialize:->
-    $items = @$el.find "[data-#{@options.dataDropAccept}]"
-    @dropAreas = _.map $items, @_createDropArea, this
-    @collection.on "reset", =>
-      _.each @dropAreas, (area)->
-        area.render()
-
-  event_submitForm:(e)->
-    @collection.updateAll()
-
-  _createDropArea:(item)->
-    new DropAreaView
-      el: item
-      service: @options.service
-      collection: @collection
-      accept:($el)->
-        $el.hasClass "ui-draggable"
 
 
 Service=->
