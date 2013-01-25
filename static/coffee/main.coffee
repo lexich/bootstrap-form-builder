@@ -208,9 +208,11 @@ DropAreaView = Backbone.View.extend
     unless view
       type = ui.draggable.data(DATA_TYPE)
       data = @options.service.getTemplateData(type)
+      model = new DropAreaModel(data)
+      @collection.push model
       view = new FormItemView
         el: ui.draggable
-        model: @collection.create(data)
+        model: model
         service: @options.service
     setTimeout (=>@reindex()), 0
 
