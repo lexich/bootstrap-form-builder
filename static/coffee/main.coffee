@@ -24,7 +24,7 @@ FormItemView = Backbone.View.extend
     @model.destroy()
     @remove()
 
-  event_options:(e)->    
+  event_options:(e)->
     @options.service.showModal
       preRender: _.bind(@handle_preRender, this)
       postSave: _.bind(@handle_postSave, this)
@@ -53,7 +53,7 @@ FormItemView = Backbone.View.extend
       memo[$(item).attr("name")] = $(item).val() and memo
     ),{}
     @model.set data
-    @popover?.popover("hide")  
+    @popover?.popover("hide")
 
 
 DropAreaModel = Backbone.Model.extend
@@ -86,12 +86,7 @@ DropAreaCollection = Backbone.Collection.extend
 
 
 DropAreaView = Backbone.View.extend
-  events:{}
-
   initialize:->
-    @events = _.extend @events,
-      "click *[data-js-submit-form]": "event_submitForm"
-
     @$el.droppable
       accept: @options.accept
       drop: _.bind(@handle_droppable_drop,this)
@@ -104,15 +99,14 @@ DropAreaView = Backbone.View.extend
       $item = @createItem model
       $item.appendTo @$el
 
-
   handle_droppable_drop:(ev,ui)->
     type = ui.draggable.data(DATA_TYPE)
-    data = @options.service .getTemplateData(type)
+    data = @options.service.getTemplateData(type)
     model = @collection.create data
     $item = @createItem model
-    ui.draggable.html("")
-    $item.appendTo ui.draggable
-    $item.unwrap()
+    ui.draggable.before $item
+    ui.draggable.removeClass("ui-draggable")
+    ui.draggable.remove()
 
   createItem:(model)->
     $item = $("<li>")
@@ -125,8 +119,6 @@ DropAreaView = Backbone.View.extend
     $item.data DATA_VIEW, formItem
     $item
 
-  event_submitForm:(e)->
-    @collection.updateAll()
 
 
 ToolItemView = Backbone.View.extend
@@ -154,6 +146,32 @@ ToolItemView = Backbone.View.extend
     @$el.attr "data-#{DATA_TYPE}", @options.type
     data.$el.before @$el
 
+
+FormView = Backbone.View.extend
+  events:
+    "click *[data-js-submit-form]": "event_submitForm"
+
+  dropAreas:[]
+
+  initialize:->
+    $items = @$el.find "[data-#{@options.dataDropAccept}]"
+    @dropAreas = _.map $items, @_createDropArea, this
+    @collection.on "reset", =>
+      _.each @dropAreas, (area)->
+        area.render()
+
+  event_submitForm:(e)->
+    @collection.updateAll()
+
+  _createDropArea:(item)->
+    new DropAreaView
+      el: item
+      service: @options.service
+      collection: @collection
+      accept:($el)->
+        $el.hasClass "ui-draggable"
+
+
 Service=->
   @initialize.apply this, arguments
   this
@@ -174,10 +192,18 @@ Service::=
     @options = options
     @toolData = @getToolData @options.dataToolBinder
     toolPanelItem = @createToolPanel @toolData
-    @modal = options.modal 
-    @dropArea = @createDropArea @options.dataPostfixDropAccept
-    @modalTemplates = @getModalTemplates @options.dataPostfixModalType
+    @modal = options.modal
 
+    collection = new DropAreaCollection
+
+    formView = new FormView
+      el: $("form")
+      collection: collection
+      service: this
+      dataDropAccept: @options.dataPostfixDropAccept
+
+    @modalTemplates = @getModalTemplates @options.dataPostfixModalType
+    collection.fetch()
 
   getModalTemplates:(dataModalType)->
     _.reduce $("*[data-#{dataModalType}]"),((memo,item)->
@@ -210,21 +236,6 @@ Service::=
     @getData(type)?.data
     
   getTemplate:(type)-> @getData(type)?.template
-
-  createDropArea:(dropAccept)->
-    $el = $("[data-#{dropAccept}]:first")
-    collection = new DropAreaCollection
-    item = new DropAreaView
-      el: $el
-      service: this
-      collection: collection
-      accept:($el)->
-        $el.hasClass "ui-draggable"
-
-    collection.on "reset", =>
-      item.render()
-    collection.fetch()
-    item
 
   createToolPanel:(toolData)->
     _.map toolData, (v,k)=>
@@ -301,7 +312,7 @@ ModalView = Backbone.View.extend
       width: $(window).width()
       height: $(window).height()
       top:0
-      left:0      
+      left:0
       position: "absolute"
     @callback_preRender @$el, $(@options.classModalBody, @$el)
     
