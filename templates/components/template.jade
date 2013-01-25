@@ -52,3 +52,6 @@ script(type='text/template',data-modal-type="select")
   |   <option value="<%= item %>" <% if(value==item){ %>selected="selected"<% } %>  ><%= item %></option>
   | <%});%>
   |</select>
+
+script(type='text/template',data-modal-type="hidden")
+  |<input id="__id_<%= name %>" type="hidden" name="<%= name %>" value="<%= value %>">
