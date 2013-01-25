@@ -1,6 +1,9 @@
 DATA_VIEW = "$view"
 DATA_TYPE = "component-type"
 
+toInt = (v)-> if v is "" then 0 else parseInt v
+isPositiveInt = (v)-> /^\d+$/.test v
+
 FormView = Backbone.View.extend
   events:
     "click *[data-js-submit-form]": "event_submitForm"
@@ -12,12 +15,26 @@ FormView = Backbone.View.extend
     @collection.on "reset", _.bind(@_resetCollection,this)
 
   _resetCollection:->
-    rows = _.groupBy @collection.models, (model)->
-      model.get("row")
-    _.each rows,(models,row)=>
-      row = parseInt row
-      area = @getOrAddDropArea(row)
-      area.render()
+    ###
+    index models in row
+    ###
+    _.chain(@collection.models)
+      .groupBy(
+        (model)->
+          model.get("row")
+      ).map(
+        (models,row)=>
+          _.chain(models)
+            .sortBy((model)-> model.get("position"))
+            .reduce ((prev,model)->
+              model.set {position:prev+1},{silent:true}
+              prev + 1
+            ),-1
+          row = toInt row
+          area = @getOrAddDropArea(row)
+          area.render()
+          area
+      )
 
   getOrAddDropArea:(row)->
     unless row? then row = _.size(@dropAreas)
@@ -40,7 +57,6 @@ FormView = Backbone.View.extend
 
 
 FormItemView = Backbone.View.extend
-  className:"ui-draggable"
   events:
     "click *[data-js-close]" : "event_close"
     "click *[data-js-options]" : "event_options"
@@ -59,8 +75,11 @@ FormItemView = Backbone.View.extend
     html = @options.service.renderFormItemTemplate content
     @$el.html html
 
-  event_close:->
+  remove:->
     @model.destroy()
+    Backbone.View.prototype.remove.apply this, arguments
+
+  event_close:->
     @remove()
 
   event_options:(e)->
@@ -100,10 +119,25 @@ DropAreaModel = Backbone.Model.extend
   defaults:
     label:""
     placeholder:""
-    type:""
+    type:"input"
     name:""
     position:0
     row:0
+
+  parse:(attrs, options)->
+    intParams = _.reduce @defaults, (
+      (memo,v,k)->
+        if isPositiveInt(v) then memo.push k
+        memo
+    ),[]
+    result = _.reduce attrs, ((memo, v,k)->
+      if k in intParams
+        memo[k] = toInt(v)
+      else
+        memo[k] = v
+      memo
+    ),{}
+    result
 
   validate:(attrs)->
     if attrs.label is null or attrs.label is ""
@@ -121,8 +155,7 @@ DropAreaModel = Backbone.Model.extend
 DropAreaCollection = Backbone.Collection.extend
   url : "/forms.json"
   model : DropAreaModel
-  parse: (response)-> response
-  validate: (attrs)->
+  parse:(attrs,options)->
     attrs
   comparator:(model)->
     model.get("row") * 1000 + model.get("position")
@@ -143,7 +176,7 @@ DropAreaView = Backbone.View.extend
       accept: @options.accept
       drop: _.bind(@handle_droppable_drop,this)
     @$el.sortable
-      axis: "y"      
+      axis: "y"
 
   render:->
     _.each @formItemViews,(view)->
@@ -160,15 +193,15 @@ DropAreaView = Backbone.View.extend
     item
 
   reindex:->
-    pos = 0
+    position = 0
     _.each $(".ui-draggable",@$el), (el)=>
       view = $(el).data DATA_VIEW
       model = view?.model
       model?.set
-        position: pos++
+        position: position++
         row:@row
     @formItemViews = _.sortBy @formItemViews,(view)->
-      view?.model?.get("pos")
+      view?.model?.get("position")
 
   handle_droppable_drop:(ev,ui)->
     view = ui.draggable.data DATA_VIEW
@@ -254,7 +287,7 @@ Service::=
     if type is null or type is ""
       type = "input"
     templateHtml = @modalTemplates[type]
-    if templateHtml is null or templateHtml == ""
+    if not templateHtml or templateHtml == ""
       templateHtml = @modalTemplates["input"]
     _.template templateHtml, data
 
@@ -341,7 +374,7 @@ ModalView = Backbone.View.extend
     @render()
     @$el.show()
 
-  hide:->     
+  hide:->
     @$el.hide()
 
   render:->
