@@ -1,18 +1,18 @@
 DATA_VIEW = "$view"
-DATA_TYPE = "comonent-type"
+DATA_TYPE = "component-type"
 
 
 FormItemView = Backbone.View.extend
   events:
     "click *[data-js-close]" : "event_close"
-    "click *[data-js-options]" : "event_options"    
+    "click *[data-js-options]" : "event_options"
   ###
   @param service
   @param type
   ###
   initialize:->
-    @model.on "change", => @render()
-    @render()
+      @model.on "change", => @render()
+      @render()
   
   render:->
     templateHtml = @options.service.getTemplate @model.get("type")
@@ -64,17 +64,20 @@ DropAreaModel = Backbone.Model.extend
     name:""
 
   validate:(attrs)->
-    if attrs.label? and attrs.label != ""
+    if attrs.label is null or attrs.label is ""
       return "label mustn't be not null"
-    if attrs.placeholder? and attrs.placeholder != ""
+    if attrs.placeholder is null or attrs.placeholder is ""
       return "placeholder mustn't be not null"
-    if attrs.type? and attrs.type != ""
+    if attrs.type is null or attrs.type is ""
       return "type mustn't be not null"
 
 
 DropAreaCollection = Backbone.Collection.extend
   url : "/forms.json"
   model : DropAreaModel
+  parse: (response)-> response
+  validate: (attrs)->
+    attrs
   updateAll: ->
     options =
       success: (model, resp, xhr)=>
@@ -91,8 +94,6 @@ DropAreaView = Backbone.View.extend
 
     @$el.droppable
       accept: @options.accept
-      activeClass:""
-      hoverClass:""
       drop: _.bind(@handle_droppable_drop,this)
     @$el.sortable
       axis: "y"      
@@ -105,28 +106,13 @@ DropAreaView = Backbone.View.extend
 
 
   handle_droppable_drop:(ev,ui)->
-    unless ui.draggable is ui.helper
-      type = ui.draggable.data(DATA_TYPE)
-      
-      data = @options.service .getTemplateData(type)
-      model = @collection.create data
-      $item = @createItem model
-
-      $items = @$el.children()
-      pos = ev.clientY
-      len = $items.length-1
-      if len > 0
-        for i in [0..len]
-          $it = $ $items[i]
-          top = $it.position().top
-          height = $it.height()
-          if top <= pos and pos <= top + height
-            if top + height/2 > pos
-              $it.before $item
-            else
-              $it.after $item
-            return
-      $item.appendTo @$el
+    type = ui.draggable.data(DATA_TYPE)
+    data = @options.service .getTemplateData(type)
+    model = @collection.create data
+    $item = @createItem model
+    ui.draggable.html("")
+    $item.appendTo ui.draggable
+    ui.draggable.removeClass "ui-draggable"
 
   createItem:(model)->
     $item = $("<li>")
@@ -151,7 +137,9 @@ ToolItemView = Backbone.View.extend
     @$el.draggable
       appendTo:"body"
       clone:true
+      connectToSortable:"[data-drop-accept]"
       helper:_.bind( @handle_draggable_helper, this)
+
     @render()
 
   handle_draggable_helper:(event)->
@@ -163,9 +151,8 @@ ToolItemView = Backbone.View.extend
   render:-> 
     data = @options.service.getData(@options.type)
     @$el.html @options.template
-    @$el.data DATA_TYPE, @options.type
+    @$el.attr "data-#{DATA_TYPE}", @options.type
     data.$el.before @$el
-
 
 Service=->
   @initialize.apply this, arguments
@@ -213,7 +200,8 @@ Service::=
 
   getData:(type)-> @toolData[type]
 
-  getItemFormTypes:-> _.keys @toolData
+  getItemFormTypes:->
+    _.keys @toolData
 
   getTemplateMetaData:(type)->
     @getData(type)?.meta
@@ -229,7 +217,9 @@ Service::=
     item = new DropAreaView
       el: $el
       service: this
-      collection: collection      
+      collection: collection
+      accept:($el)->
+        $el.hasClass "ui-draggable"
 
     collection.on "reset", =>
       item.render()
@@ -312,16 +302,16 @@ ModalView = Backbone.View.extend
       height: $(window).height()
       top:0
       left:0      
-      position: "absolute"     
+      position: "absolute"
     @callback_preRender @$el, $(@options.classModalBody, @$el)
     
   callback_preRender: ($el, $body)->
   callback_postSave: ($el, $body)->
 
-  event_close:-> 
+  event_close:->
     @hide()
 
-  event_save:->    
+  event_save:->
     @hide()
     @callback_postSave @$el, $(@options.classModalBody, @$el)
 
@@ -336,6 +326,6 @@ $(document).ready ->
     dataPostfixModalType:"modal-type"
     modal: modal
     
-  $("#modal").click ->    
+  $("#modal").click ->
     service.showModal ($el,$body)->
       $body.append $("p").text("Hello world")
