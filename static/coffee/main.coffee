@@ -88,6 +88,8 @@ DropAreaModel = Backbone.Model.extend
     placeholder:""
     type:""
     name:""
+    position:-1
+    row:0
 
   validate:(attrs)->
     if attrs.label is null or attrs.label is ""
@@ -96,6 +98,10 @@ DropAreaModel = Backbone.Model.extend
       return "placeholder mustn't be not null"
     if attrs.type is null or attrs.type is ""
       return "type mustn't be not null"
+    if attrs.position is null or attrs.position < 0
+      return "position must be >= 0"
+    if attrs.row is null or attrs.row < 0
+      return "row must be >= 0"
 
 
 DropAreaCollection = Backbone.Collection.extend
@@ -104,6 +110,8 @@ DropAreaCollection = Backbone.Collection.extend
   parse: (response)-> response
   validate: (attrs)->
     attrs
+  comparator:(model)->
+    model.get("row") * 1000 + model.get("position")
   updateAll: ->
     options =
       success: (model, resp, xhr)=>
@@ -127,6 +135,14 @@ DropAreaView = Backbone.View.extend
         service: @options.service
       view.$el.appendTo @$el
 
+  reindex:->
+    pos = 0
+    _.each $(".ui-draggable",@$el), (el)->
+      view = $(el).data DATA_VIEW
+      model = view?.model
+      model?.set
+        position: pos++
+
   handle_droppable_drop:(ev,ui)->
     view = ui.draggable.data DATA_VIEW
     unless view
@@ -135,7 +151,8 @@ DropAreaView = Backbone.View.extend
       view = new FormItemView
         el: ui.draggable
         model: @collection.create(data)
-        service: @options.service    
+        service: @options.service
+    setTimeout (=>@reindex()), 0
 
 
 ToolItemView = Backbone.View.extend
