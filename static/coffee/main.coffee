@@ -7,6 +7,7 @@ isPositiveInt = (v)-> /^\d+$/.test v
 FormView = Backbone.View.extend
   events:
     "click *[data-js-submit-form]": "event_submitForm"
+    "click [data-js-add-drop-area]": "event_addDropArea"
 
   dropAreas:{}
 
@@ -17,24 +18,20 @@ FormView = Backbone.View.extend
   _resetCollection:->
     ###
     index models in row
-    ###
-    _.chain(@collection.models)
-      .groupBy(
-        (model)->
-          model.get("row")
-      ).map(
-        (models,row)=>
-          _.chain(models)
-            .sortBy((model)-> model.get("position"))
-            .reduce ((prev,model)->
-              model.set {position:prev+1},{silent:true}
-              prev + 1
-            ),-1
-          row = toInt row
-          area = @getOrAddDropArea(row)
-          area.render()
-          area
-      )
+    ###    
+    rowModels = _.groupBy(@collection.models,(model)->
+        model.get("row")
+    )
+    _.each rowModels,(models,row)=>
+      models = _.sortBy(models, (model)-> model.get("position"))
+      _.reduce models,((prev,model)->
+        model.set {position:prev+1},{silent:true}
+        prev + 1
+      ),-1
+      row = toInt row
+      area = @getOrAddDropArea(row)
+      area.render()
+      area
 
   getOrAddDropArea:(row)->
     unless row? then row = _.size(@dropAreas)
@@ -51,10 +48,13 @@ FormView = Backbone.View.extend
       area.$el.appendTo @$el
     area
 
-
   event_submitForm:(e)->
     @collection.updateAll()
 
+  event_addDropArea:(e)->
+    keys = _.keys(@dropAreas)    
+    nextRow = if keys.length > 0 then _.max(keys)+1 else 0
+    @getOrAddDropArea nextRow
 
 FormItemView = Backbone.View.extend
   events:
@@ -179,18 +179,22 @@ DropAreaView = Backbone.View.extend
       axis: "y"
 
   render:->
-    _.each @formItemViews,(view)->
-      view.destroy()
+    @$el.html("")
     _.each @collection.where(row:@row), (model)=>
-      view = @addFormItemView(model)
+      view = @getOrAddFormItemView(model)
       view.$el.appendTo @$el
 
-  addFormItemView:(model)->
-    item = new FormItemView
-      model: model
-      service: @options.service
-    @formItemViews.push item
-    item
+  getOrAddFormItemView:(model)->
+    filterItem = _.filter @formItemViews, (view)->
+      view.model is model
+    if filterItem.length > 1
+      filterItem[0]
+    else
+      item = new FormItemView
+        model: model
+        service: @options.service
+      @formItemViews.push item
+      item
 
   reindex:->
     position = 0
@@ -227,7 +231,6 @@ ToolItemView = Backbone.View.extend
       clone:true
       connectToSortable:"[data-drop-accept]"
       helper:_.bind( @handle_draggable_helper, this)
-
     @render()
 
   handle_draggable_helper:(event)->
