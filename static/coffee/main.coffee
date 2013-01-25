@@ -1,6 +1,8 @@
 DATA_VIEW = "$view"
 DATA_TYPE = "component-type"
 
+LOG = (type,msg)->
+  #console.log "#{type} #{msg}"
 toInt = (v)-> if v is "" then 0 else parseInt v
 isPositiveInt = (v)-> /^\d+$/.test v
 
@@ -65,6 +67,7 @@ FormItemView = Backbone.View.extend
   @param type
   ###
   initialize:->
+    LOG "FormItemView","initialize"
     @$el.data DATA_VIEW, this
     @model.on "change", => @render()
     @render()
@@ -76,6 +79,7 @@ FormItemView = Backbone.View.extend
     @$el.html html
 
   remove:->
+    LOG "FormItemView","remove"
     @model.destroy()
     Backbone.View.prototype.remove.apply this, arguments
 
@@ -179,7 +183,7 @@ DropAreaView = Backbone.View.extend
       axis: "y"
 
   render:->
-    @$el.html("")
+    @$el.empty()
     _.each @collection.where(row:@row), (model)=>
       view = @getOrAddFormItemView(model)
       view.$el.appendTo @$el
@@ -208,16 +212,20 @@ DropAreaView = Backbone.View.extend
       view?.model?.get("position")
 
   handle_droppable_drop:(ev,ui)->
-    view = ui.draggable.data DATA_VIEW
-    unless view
-      type = ui.draggable.data(DATA_TYPE)
-      data = @options.service.getTemplateData(type)
-      model = new DropAreaModel(data)
-      @collection.push model
-      view = new FormItemView
-        el: ui.draggable
-        model: model
-        service: @options.service
+    view = ui.helper.data DATA_VIEW
+    view?.remove()
+    ui.draggable.empty()
+    type = ui.draggable.data(DATA_TYPE)
+    data = @options.service.getTemplateData(type)
+    data.row = @row
+    model = new DropAreaModel(data)
+    @collection.push model
+    view = new FormItemView
+      el:$("<div>")
+      model: model
+      service: @options.service
+    ui.helper.data DATA_VIEW, view
+    view.$el.appendTo ui.draggable
     setTimeout (=>@reindex()), 0
 
 
