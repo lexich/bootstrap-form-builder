@@ -111,7 +111,10 @@ module.exports = function (grunt) {
     var app = express();
     app.use(express.bodyParser());
     app.use(express.static(base));
-    var data = [];
+    var data = [
+      {label:"Name", placeholder:"Input your name", name:"name", type:"input", position:0, row:0},
+      {label:"Comment", placeholder:"Your comment", name:"comment", type:"textarea", position:1, row:0}
+    ];
     app.get("/forms.json",function(req,res){            
       res.send(data);
     });
