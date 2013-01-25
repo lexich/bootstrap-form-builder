@@ -83,7 +83,7 @@ module.exports = function (grunt) {
     },
     connect: {
       server: {
-        port: 8080,
+        port: 9090,
         base: "./www"
       }
     },
