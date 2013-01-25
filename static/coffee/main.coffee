@@ -5,25 +5,39 @@ FormView = Backbone.View.extend
   events:
     "click *[data-js-submit-form]": "event_submitForm"
 
-  dropAreas:[]
+  dropAreas:{}
 
   initialize:->
-    $items = @$el.find "[data-#{@options.dataDropAccept}]"
-    @dropAreas = _.map $items, @_createDropArea, this
-    @collection.on "reset", =>
-      _.each @dropAreas, (area)->
-        area.render()
+    @getOrAddDropArea(0)
+    @collection.on "reset", _.bind(@_resetCollection,this)
+
+  _resetCollection:->
+    rows = _.groupBy @collection.models, (model)->
+      model.get("row")
+    _.each rows,(models,row)=>
+      row = parseInt row
+      area = @getOrAddDropArea(row)
+      area.render()
+
+  getOrAddDropArea:(row)->
+    unless row? then row = _.size(@dropAreas)
+    area = @dropAreas[row]
+    unless area?
+      area = new DropAreaView
+        className:"#{@className}__placeholder"
+        service: @options.service
+        collection: @collection
+        row:row
+        accept:($el)->
+          $el.hasClass "ui-draggable"
+      @dropAreas[row] = area
+      area.$el.appendTo @$el
+    area
+
 
   event_submitForm:(e)->
     @collection.updateAll()
 
-  _createDropArea:(item)->
-    new DropAreaView
-      el: item
-      service: @options.service
-      collection: @collection
-      accept:($el)->
-        $el.hasClass "ui-draggable"
 
 FormItemView = Backbone.View.extend
   className:"ui-draggable"
@@ -88,7 +102,7 @@ DropAreaModel = Backbone.Model.extend
     placeholder:""
     type:""
     name:""
-    position:-1
+    position:0
     row:0
 
   validate:(attrs)->
@@ -120,7 +134,11 @@ DropAreaCollection = Backbone.Collection.extend
 
 
 DropAreaView = Backbone.View.extend
+  row:0
+  formItemViews:[]
   initialize:->
+    @row = @options.row
+    @$el.attr("data-drop-accept","")
     @$el.droppable
       accept: @options.accept
       drop: _.bind(@handle_droppable_drop,this)
@@ -128,20 +146,29 @@ DropAreaView = Backbone.View.extend
       axis: "y"      
 
   render:->
-    @$el.html("")
-    _.each @collection.models, (model)=>
-      view = new FormItemView
-        model: model
-        service: @options.service
+    _.each @formItemViews,(view)->
+      view.destroy()
+    _.each @collection.where(row:@row), (model)=>
+      view = @addFormItemView(model)
       view.$el.appendTo @$el
+
+  addFormItemView:(model)->
+    item = new FormItemView
+      model: model
+      service: @options.service
+    @formItemViews.push item
+    item
 
   reindex:->
     pos = 0
-    _.each $(".ui-draggable",@$el), (el)->
+    _.each $(".ui-draggable",@$el), (el)=>
       view = $(el).data DATA_VIEW
       model = view?.model
       model?.set
         position: pos++
+        row:@row
+    @formItemViews = _.sortBy @formItemViews,(view)->
+      view?.model?.get("pos")
 
   handle_droppable_drop:(ev,ui)->
     view = ui.draggable.data DATA_VIEW
@@ -206,6 +233,7 @@ Service::=
     collection = new DropAreaCollection
 
     formView = new FormView
+      className:"ui_workarea"
       el: $("form")
       collection: collection
       service: this
@@ -291,7 +319,7 @@ Service::=
 
   renderFormItemTemplate:(html)->
     templateHtml = $("#formItemTemplate").html() or "<%= content %>"
-    _.template templateHtml, content:html  
+    _.template templateHtml, content:html
 
 
 ModalView = Backbone.View.extend
