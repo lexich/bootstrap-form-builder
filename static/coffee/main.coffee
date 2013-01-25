@@ -112,7 +112,7 @@ DropAreaView = Backbone.View.extend
     $item = @createItem model
     ui.draggable.html("")
     $item.appendTo ui.draggable
-    ui.draggable.removeClass "ui-draggable"
+    $item.unwrap()
 
   createItem:(model)->
     $item = $("<li>")
