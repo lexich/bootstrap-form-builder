@@ -1,14 +1,15 @@
 DATA_VIEW = "$view"
 DATA_TYPE = "component-type"
+DATA_MODEL = "$model"
 
 LOG = (type,msg)->
-  #console.log "#{type} #{msg}"
+  console.log "#{type} #{msg}"
 toInt = (v)-> if v is "" then 0 else parseInt v
 isPositiveInt = (v)-> /^\d+$/.test v
 
 FormView = Backbone.View.extend
   events:
-    "click *[data-js-submit-form]": "event_submitForm"
+    "click [data-js-submit-form]": "event_submitForm"
     "click [data-js-add-drop-area]": "event_addDropArea"
 
   dropAreas:{}
@@ -125,6 +126,7 @@ DropAreaModel = Backbone.Model.extend
     placeholder:""
     type:"input"
     name:""
+    help:""
     position:0
     row:0
 
@@ -181,6 +183,9 @@ DropAreaView = Backbone.View.extend
       drop: _.bind(@handle_droppable_drop,this)
     @$el.sortable
       axis: "y"
+      connectWith:"[data-drop-accept]"
+      receive:_.bind(@handle_sortable_receive,this)
+      update:_.bind(@handle_sortable_update,this)
 
   render:->
     @$el.empty()
@@ -200,9 +205,12 @@ DropAreaView = Backbone.View.extend
       @formItemViews.push item
       item
 
+  async_reindex:->
+    setTimeout (=>@reindex()), 0
+
   reindex:->
     position = 0
-    _.each $(".ui-draggable",@$el), (el)=>
+    _.each @$el.children(), (el)=>
       view = $(el).data DATA_VIEW
       model = view?.model
       model?.set
@@ -211,23 +219,35 @@ DropAreaView = Backbone.View.extend
     @formItemViews = _.sortBy @formItemViews,(view)->
       view?.model?.get("position")
 
-  handle_droppable_drop:(ev,ui)->
-    view = ui.helper.data DATA_VIEW
-    view?.remove()
-    ui.draggable.empty()
-    type = ui.draggable.data(DATA_TYPE)
-    data = @options.service.getTemplateData(type)
-    data.row = @row
-    model = new DropAreaModel(data)
-    @collection.push model
-    view = new FormItemView
-      el:$("<div>")
-      model: model
-      service: @options.service
-    ui.helper.data DATA_VIEW, view
-    view.$el.appendTo ui.draggable
-    setTimeout (=>@reindex()), 0
+  handle_sortable_receive:(ev,ui)->
+    LOG "DropAreaView","handle_sortable_receive"
 
+  handle_sortable_update:(ev,ui)->
+    LOG "DropAreaView","handle_sortable_update"
+    view = ui.item.data DATA_VIEW
+    if view?
+      view.model.set "row", @row, silent:true
+    else
+      LOG "DropAreaView","view don't found"
+    @async_reindex()
+
+  handle_droppable_drop:(ev,ui)->
+    LOG "DropAreaView","handle_droppable_drop"
+    view = ui.helper.data DATA_VIEW
+    unless view?
+      type = ui.draggable.data DATA_TYPE
+      data = @options.service.getTemplateData(type)
+      data.row = @row
+      model = new DropAreaModel(data)
+      @collection.push model
+      view = new FormItemView
+        el:$("<div>")
+        model: model
+        service: @options.service
+      ui.helper.data DATA_VIEW, view
+    ui.draggable.empty()
+    ui.draggable.data DATA_VIEW, view
+    view.$el.appendTo ui.draggable
 
 ToolItemView = Backbone.View.extend
   ###
