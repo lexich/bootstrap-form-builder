@@ -3,6 +3,7 @@
   -  label:"Input",
   -  placeholder:"Input",
   -  name: "input",
+  -  help: "help",
   -  type:{ value:"input", type:"select"},
   -  position:{ value:0, type:"hidden"},
   -  row:{ value:0, type:"hidden"}
@@ -12,6 +13,7 @@
     |  <label class="control-label" for="<%= type %>"><%= label %></label>
     |  <div class="controls">
     |    <input type="text" id="<%= type %>" name="<%= name %>" placeholder="<%= placeholder %>">
+    |    <p class="help-block valtype" data-valtype="help"><%= help %></p>
     |  </div>    
     |</div>    
 
@@ -21,6 +23,7 @@
   -  placeholder:"Password",
   -  name: "password",
   -  type:{ value:"password", type:"select" },
+  -  help: "help",
   -  position:{ value:0, type:"hidden"},
   -  row:{ value:0, type:"hidden"}
   - });
@@ -29,6 +32,7 @@
     | <label class="control-label" for="<%= type %>"><%= label %></label>
     | <div class="controls">
     |   <input type="password" id="<%= type %>" name="<%= name %>" placeholder="<%= placeholder %>">
+    |   <p class="help-block valtype" data-valtype="help"><%= help %></p>
     | </div>
     |</div>  
 
@@ -37,6 +41,7 @@
   -  label:"Textarea",
   -  placeholder:"Textarea",
   -  name: "textarea",
+  -  help: "help",
   -  type:{ value:"textarea",type:"select"},
   -  position:{ value:0, type:"hidden"},
   -  row:{ value:0, type:"hidden"}
@@ -46,6 +51,7 @@
     | <label class="control-label" for="<%= type %>"><%= label %></label>
     | <div class="controls">
     |   <textarea rows="3" id="<%= type %>" name="<%= name %>" placeholder="<%= placeholder %>"></textarea>
+    |   <p class="help-block valtype" data-valtype="help"><%= help %></p>
     | </div>
     |</div>  
 
