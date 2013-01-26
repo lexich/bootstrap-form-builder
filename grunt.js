@@ -102,6 +102,28 @@ module.exports = function (grunt) {
       }
     }
   });
+  grunt.registerTask("bower", function(){
+    var done = this.async();
+    var input   = process.argv;
+    var cwd = 'install';
+    require('bower').commands[cwd].line(input)
+      .on('data', function (data) {
+        if (data) {
+          console.log(data);          
+        }
+      })
+      .on('end', function (data) {
+        if (data) {
+          console.log(data);          
+        }
+        done();
+      })
+      .on('error', function (err) {
+        console.error(err.message);        
+        done();
+      });
+      
+  });
   grunt.registerMultiTask("connect","Run a simple static connect server till you shut it down",function(){    
     var path = require('path');
     this.async();
@@ -122,9 +144,8 @@ module.exports = function (grunt) {
       data = req.body;
     });
     app.listen(port);
-
   });
-  grunt.registerTask("default","clean copy jade less coffee watch");
+  grunt.registerTask("default","clean bower copy jade less coffee watch");
   grunt.registerTask("open","clean copy jade less coffee connect");
   
   grunt.loadNpmTasks("grunt-contrib-copy");
