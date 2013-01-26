@@ -87,18 +87,25 @@ module.exports = function (grunt) {
         base: "./www"
       }
     },
+    reload: {
+        port: 6001,
+        proxy: {
+            host: 'localhost',
+            port: 9090,
+        }
+    },
     watch:{
       jade_shell:{
         files:["templates/*.jade","templates/*/*.jade","templates/*/*/*.jade"],
-        tasks:["jade"]
+        tasks:["jade","reload"]
       },
       coffee_shell:{
         files:"static/coffee/*.coffee",
-        tasks:["coffee"]
+        tasks:["coffee","reload"]
       },
       less_shell:{
         files:"static/less/*.less",
-        tasks:["less"]
+        tasks:["less","reload"]
       }
     }
   });
@@ -146,6 +153,7 @@ module.exports = function (grunt) {
     app.listen(port);
   });
   grunt.registerTask("default","clean bower copy jade less coffee watch");
+  grunt.registerTask("dev","clean copy jade less coffee watch");
   grunt.registerTask("open","clean copy jade less coffee connect");
   
   grunt.loadNpmTasks("grunt-contrib-copy");
@@ -155,4 +163,5 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks("grunt-contrib-less");
   grunt.loadNpmTasks("grunt-jade");
   grunt.loadNpmTasks("grunt-shell");
+  grunt.loadNpmTasks('grunt-reload');
 };

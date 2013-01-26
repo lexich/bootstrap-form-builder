@@ -25,7 +25,10 @@ html(class="no-js", lang="ru")
       link(href="static/font-awesome/css/font-awesome-ie7.min.css", rel="stylesheet", media="screen")
     // <![endif]
     link(href="static/css/style.css", rel="stylesheet", media="screen")
-    
+    //live reload
+    script
+        __reloadServerUrl="ws://localhost:6001";
+    script(type="text/javascript", src="//localhost:6001/__reload/client.js")
   body
     block body
     script(src="/static/js/jquery/jquery.js")

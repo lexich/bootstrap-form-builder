@@ -14,6 +14,7 @@
     "jade":"*", 
     "less":"~1.3.3ls ",
     "coffee-script": "~1.4.0",
+    "express":"*",
     "grunt":"*",    
     "grunt-contrib-copy":"*",
     "grunt-clean":"*",
@@ -21,8 +22,8 @@
     "grunt-coffee":"*",
     "grunt-jade":"*",
     "grunt-contrib-less":"*",
-    "grunt-shell":"*",    
-    "express":"*"
+    "grunt-shell":"*",
+    "grunt-reload":"*"    
   },
   "readme": "README.md"
 }
