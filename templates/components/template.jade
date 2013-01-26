@@ -24,9 +24,12 @@ script(type='text/template',id="popoverTemplate")
   |<a href="javascript:void(0);" class="btn" data-js-popover-cancel>Close</button>
   |</form>
 
-script(type='text/template',id="areaTemplateItem")
-  .tool-item
-    | <%= type %>
+script(type='text/template',id="areaTemplateItem")  
+    |<% if(type==""){ %>    
+    |<% } else if(type==""){ %>    
+    |<% } else { %>
+    |<span class="icon-edit icon-2x"><%= type.charAt(0).toUpperCase() + type.slice(1) %></span>
+    |<% } %>
 
 script(type='text/template',id="modalTemplate")
   |<div class="modal">
