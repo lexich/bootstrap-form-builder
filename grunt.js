@@ -152,9 +152,9 @@ module.exports = function (grunt) {
     });
     app.listen(port);
   });
-  grunt.registerTask("default","clean bower copy jade less coffee watch");
+  grunt.registerTask("default","clean bower copy jade less coffee connect");
   grunt.registerTask("dev","clean copy jade less coffee watch");
-  grunt.registerTask("open","clean copy jade less coffee connect");
+  
   
   grunt.loadNpmTasks("grunt-contrib-copy");
   grunt.loadNpmTasks("grunt-clean");
