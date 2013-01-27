@@ -40,23 +40,38 @@ FormView = Backbone.View.extend
     unless row? then row = _.size(@dropAreas)
     area = @dropAreas[row]
     unless area?
+      $el = @options.service.renderFormViewElement @$el
       area = new DropAreaView
-        className:"#{@className}__placeholder"
+        el: $el
         service: @options.service
         collection: @collection
+        formview:this
         row:row
         accept:($el)->
           $el.hasClass "ui-draggable"
-      @dropAreas[row] = area
-      area.$el.appendTo @$el
+      @dropAreas[row] = area      
     area
+
+  removeDropArea:(area)->
+    delete @dropAreas[area.row]
+    newDropAreas = {}
+    _.chain(@dropAreas)
+      .sortBy((area,k)->area.row)
+      .reduce((
+        (memo,area)->
+          newDropAreas[memo] = area
+          area.setRow memo
+          memo + 1
+      ),0)
+    @dropAreas = newDropAreas
+
 
   event_submitForm:(e)->
     @collection.updateAll()
 
   event_addDropArea:(e)->
     keys = _.keys(@dropAreas)    
-    nextRow = if keys.length > 0 then _.max(keys)+1 else 0
+    nextRow = if keys.length > 0 then parseInt(_.max(keys))+1 else 0
     @getOrAddDropArea nextRow
 
 FormItemView = Backbone.View.extend
@@ -78,6 +93,7 @@ FormItemView = Backbone.View.extend
     content = _.template templateHtml, @model.attributes
     html = @options.service.renderFormItemTemplate content
     @$el.html html
+    @$el.find(".debug").html "row:#{@model.get('row')} position:#{@model.get('position')}"
 
   remove:->
     LOG "FormItemView","remove"
@@ -131,6 +147,7 @@ DropAreaModel = Backbone.Model.extend
     row:0
 
   parse:(attrs, options)->
+    LOG "DropAreaModel","parse"
     intParams = _.reduce @defaults, (
       (memo,v,k)->
         if isPositiveInt(v) then memo.push k
@@ -156,6 +173,10 @@ DropAreaModel = Backbone.Model.extend
       return "position must be >= 0"
     if attrs.row is null or attrs.row < 0
       return "row must be >= 0"
+    if _.isString(attrs.row)
+      return "row must be integer"
+    if _.isString(attrs.position)
+      return "position must be integer"
 
 
 DropAreaCollection = Backbone.Collection.extend
@@ -173,32 +194,56 @@ DropAreaCollection = Backbone.Collection.extend
 
 
 DropAreaView = Backbone.View.extend
+  events:
+    "click [data-js-close-area]":"event_close"
+    "click [data-js-options-area]":"event_options"
   row:0
   formItemViews:[]
-  initialize:->
-    @row = @options.row
-    @$el.attr("data-drop-accept","")
-    @$el.droppable
+  initialize:->    
+    @setRow @options.row
+    $area = @getArea() 
+    $area.droppable
       accept: @options.accept
       drop: _.bind(@handle_droppable_drop,this)
-    @$el.sortable
+    $area.sortable
       axis: "y"
       connectWith:"[data-drop-accept]"
       receive:_.bind(@handle_sortable_receive,this)
       update:_.bind(@handle_sortable_update,this)
+  
+  setRow:(row)->
+    models = @collection.where(row:@row)
+    _.each models, (model)=>
+      model.set "row",row, {silent:true}
+    @row = row
+    @$el.find("[data-html-row]").html(@row)
+
+  event_close:(e)->
+    _.each @$el.find("[data-drop-accept]").children(), (el)->
+      view = $(el).data DATA_VIEW
+      view?.remove()
+    @options.formview?.removeDropArea this
+    @remove()
+
+  event_options:(e)->
+
+  getArea:-> @$el.find("[data-drop-accept]")
 
   render:->
-    @$el.empty()
-    _.each @collection.where(row:@row), (model)=>
+    $area = @getArea()
+    $area.empty()
+    models = @collection.where(row:@row)
+    _.each models, (model)=>
       view = @getOrAddFormItemView(model)
-      view.$el.appendTo @$el
+      view.$el.appendTo $area
+
 
   getOrAddFormItemView:(model)->
     filterItem = _.filter @formItemViews, (view)->
       view.model is model
     if filterItem.length > 1
       filterItem[0]
-    else
+    else      
       item = new FormItemView
         model: model
         service: @options.service
@@ -209,15 +254,17 @@ DropAreaView = Backbone.View.extend
     setTimeout (=>@reindex()), 0
 
   reindex:->
+    LOG "DropAreaView","reindex"
     position = 0
-    _.each @$el.children(), (el)=>
+    @formItemViews = []
+    _.reduce @getArea().children(), ((position,el)=>
       view = $(el).data DATA_VIEW
       model = view?.model
       model?.set
-        position: position++
+        position: position
         row:@row
-    @formItemViews = _.sortBy @formItemViews,(view)->
-      view?.model?.get("position")
+      @formItemViews.push view
+    ),0
 
   handle_sortable_receive:(ev,ui)->
     LOG "DropAreaView","handle_sortable_receive"
@@ -226,7 +273,8 @@ DropAreaView = Backbone.View.extend
     LOG "DropAreaView","handle_sortable_update"
     view = ui.item.data DATA_VIEW
     if view?
-      view.model.set "row", @row, silent:true
+      LOG "DropAreaView", "setRow #{@row}"
+      view.model.set "row", @row
     else
       LOG "DropAreaView","view don't found"
     @async_reindex()
@@ -234,20 +282,24 @@ DropAreaView = Backbone.View.extend
   handle_droppable_drop:(ev,ui)->
     LOG "DropAreaView","handle_droppable_drop"
     view = ui.helper.data DATA_VIEW
+    
     unless view?
       type = ui.draggable.data DATA_TYPE
       data = @options.service.getTemplateData(type)
       data.row = @row
-      model = new DropAreaModel(data)
+      model = new DropAreaModel()
+      model.set data
       @collection.push model
       view = new FormItemView
-        el:$("<div>")
+        el:ui.draggable
         model: model
         service: @options.service
       ui.helper.data DATA_VIEW, view
-    ui.draggable.empty()
-    ui.draggable.data DATA_VIEW, view
-    view.$el.appendTo ui.draggable
+    else
+      view.$el = ui.draggable
+      view.el = ui.draggable.get(0)
+    ui.draggable.attr("class","")
+    ui.draggable.data DATA_VIEW, view    
 
 ToolItemView = Backbone.View.extend
   ###
@@ -282,7 +334,7 @@ Service=->
 Service::=
   constructor:Service
   toolData:{}
-  modalTemplates:{}
+  modalTemplates:{}  
   ###
   --OPTIONS--
   @param dataToolBinder
@@ -314,7 +366,7 @@ Service::=
       if type? and type != ""
         memo[type] = $(item).html()
       memo
-    ),{}
+    ),{}  
 
   renderModalItemTemplate:(type,data)->
     if type is null or type is ""
@@ -323,6 +375,11 @@ Service::=
     if not templateHtml or templateHtml == ""
       templateHtml = @modalTemplates["input"]
     _.template templateHtml, data
+
+  renderFormViewElement:($el)->
+    $item = $ _.template $("#formViewTemplate").html(), {}
+    $item.appendTo $el
+    $item
 
   showModal:(options)-> 
     @modal.show options
@@ -369,9 +426,9 @@ Service::=
         if _.isString(v)
           data[k] = v
           meta[k] = ""
-        else if _.isObject(v)
-          data[k] = v.value or ""
-          meta[k] = v.type or ""
+        else if _.isObject(v)          
+          data[k] = if v.value? then v.value else ""
+          meta[k] = if v.type? then v.type else ""
 
       memo[type] =
         type: type

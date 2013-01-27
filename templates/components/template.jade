@@ -4,11 +4,24 @@ script(type="text/template",id="formItemTemplate")
       tbody
         tr
           td
+            span.debug
+          td
             span.icon-cogs.ui_icons(data-js-options)
           td
-            span.icon-remove.ui_icons(data-js-close)
-          
+            span.icon-remove.ui_icons(data-js-close)          
     |<%= content %>
+
+script(type="text/template",id="formViewTemplate")
+  .ui_workarea__placeholder
+    h4(data-html-row) test
+    table
+      tbody
+        tr
+          td
+            span.icon-remove.ui_icons(data-js-close-area)
+          td
+            span.icon-cog.ui_icons(data-js-options-area)
+    div(data-drop-accept)
 
 script(type='text/template',id="popoverTemplate")
   |<form>
