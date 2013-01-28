@@ -2,7 +2,7 @@ module.exports = function (grunt) {
 
   grunt.initConfig({
     less: {
-      development: {        
+      development: {
         files: {
           "www/static/css/style.css": "static/less/style.less"
         }
@@ -12,7 +12,7 @@ module.exports = function (grunt) {
       html: {
         src: ["templates/index.jade","templates/test.jade"],
         dest: "www",
-        options: {        
+        options: {
           client: false
         }
       }
@@ -47,18 +47,16 @@ module.exports = function (grunt) {
         }
       }
     },
-    copy: {      
+    copy: {
       dist : {
-        flatten: true,
-        files: {          
-          "www/static/js/":
-          [
-            "static/js/*.js",
-            "components/backbone/backbone.js",
-            "components/underscore/underscore.js",
-            "components/jquery/jquery.js"
-          ],
-          "www/static/js/bootstrap/":"components/bootstrap/docs/assets/js/*.js",          
+        flatten: false,
+        files: {
+          "www/static/js/":"components/requirejs-text/text.js",
+          "www/static/js/jquery/":"components/jquery/jquery.js",
+          "www/static/js/backbone/":"components/backbone/backbone.js",
+          "www/static/js/underscore/":"components/underscore/underscore.js",
+          "www/static/js/bootstrap/":"components/bootstrap/docs/assets/js/*.js",
+          "www/static/js/requirejs/":"components/requirejs/require.js",
           "www/static/img/": "components/bootstrap/img/*.png",
           "www/static/css/bootstrap/":
           [
@@ -83,13 +81,13 @@ module.exports = function (grunt) {
           ],
           "www/static/js/jasmine/":[
             "components/jasmine/lib/jasmine-core/jasmine.js",
-            "components/jasmine/lib/jasmine-core/jasmine-html.js",
+            "components/jasmine/lib/jasmine-core/jasmine-html.js"
           ],
           "www/static/css/jasmine/":[
             "components/jasmine/lib/jasmine-core/jasmine.css"
           ],
-          "www/static/js/requirejs/":"components/requirejs/require.js",
-          "www/static/js/sinon/":"components/sinon.js/sinon.js"
+          "www/static/js/sinon/":"components/sinon.js/sinon.js",
+          "www/static/templates/":"static/templates/*.html"
         }
       }
     },
@@ -106,7 +104,7 @@ module.exports = function (grunt) {
         port: 6001,
         proxy: {
             host: 'localhost',
-            port: 9090,
+            port: 9090
         }
     },
     watch:{
@@ -119,11 +117,7 @@ module.exports = function (grunt) {
         tasks:["jade","reload"]
       },
       coffee_shell:{
-        files:"static/coffee/*.coffee",
-        tasks:["coffee","reload"]
-      },
-      coffee_shell:{
-        files:"static/coffee/**/*.coffee",
+        files:["static/coffee/*.coffee","static/coffee/**/*.coffee"],
         tasks:["coffee","reload"]
       },
       less_shell:{
@@ -139,22 +133,22 @@ module.exports = function (grunt) {
     require('bower').commands[cwd].line(input)
       .on('data', function (data) {
         if (data) {
-          console.log(data);          
+          console.log(data);
         }
       })
       .on('end', function (data) {
         if (data) {
-          console.log(data);          
+          console.log(data);
         }
         done();
       })
       .on('error', function (err) {
-        console.error(err.message);        
+        console.error(err.message);
         done();
       });
       
   });
-  grunt.registerMultiTask("connect","Run a simple static connect server till you shut it down",function(){    
+  grunt.registerMultiTask("connect","Run a simple static connect server till you shut it down",function(){
     var path = require('path');
     this.async();
     var express = require('express');
@@ -167,10 +161,10 @@ module.exports = function (grunt) {
       {label:"Name", placeholder:"Input your name", name:"name", type:"input", position:0, row:0},
       {label:"Comment", placeholder:"Your comment", name:"comment", type:"textarea", position:1, row:0}
     ];
-    app.get("/forms.json",function(req,res){            
+    app.get("/forms.json",function(req,res){
       res.send(data);
     });
-    app.post("/forms.json",function(req, res){      
+    app.post("/forms.json",function(req, res){
       data = req.body;
     });
     app.listen(port);
