@@ -1,12 +1,7 @@
 define [
-  "jquery",
-  "backbone",
-  "underscore",
-  "view/ToolItem-view",
-  "view/Form-view",
-  "view/DropArea-view",
-  "collection/DropArea-collection"
-],($,Backbone,_,ToolItemView,FormView,DropAreaView,DropAreaCollection)->
+  "jquery",  
+  "underscore",  
+],($,_)->
   Service=->
     @initialize.apply this, arguments
     this
@@ -18,7 +13,7 @@ define [
     ###
     --OPTIONS--
     @param dataToolBinder
-    @param dataPostfixDropAccept - data-* postfix for search drop area
+    
     @param dataPostfixModalType - data-* postfix for search modal-items templates
     @param modal - 
     ###
@@ -26,23 +21,14 @@ define [
       @options = options
       @toolData = @getToolData @options.dataToolBinder
       toolPanelItem = _.map @toolData, (v,k)=>
-        new ToolItemView
-          type: k
-          service:this
-          template:@renderAreaItem(v) 
+        options.createToolItemView(this,k,v)
+        
       @modal = options.modal
-
-      collection = new DropAreaCollection
-
-      formView = new FormView
-        className:"ui_workarea"
-        el: $("form")
-        collection: collection
-        service: this
-        dataDropAccept: @options.dataPostfixDropAccept
+      
+      formView = @options.createFormView(this)
 
       @modalTemplates = @getModalTemplates @options.dataPostfixModalType
-      collection.fetch()
+      @options.collection.fetch()
 
     getModalTemplates:(dataModalType)->
       _.reduce $("*[data-#{dataModalType}]"),((memo,item)->

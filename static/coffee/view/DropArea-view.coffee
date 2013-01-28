@@ -3,10 +3,11 @@ define [
   "backbone",
   "underscore",
   "view/FormItem-view",
+  "model/DropArea-model"
   "jquery-ui/jquery.ui.draggable",
   "jquery-ui/jquery.ui.droppable"
-  "jquery-ui/jquery.ui.sortable"
-],($,Backbone,_,FormItemView)->
+  "jquery-ui/jquery.ui.sortable"  
+],($,Backbone,_,FormItemView,DropAreaModel)->
   DropAreaView = Backbone.View.extend
     events:
       "click [data-js-close-area]":"event_close"

@@ -39,15 +39,36 @@ require.config
 require [
   "jquery",
   "/static/js/view/Modal-view.js",
-  "/static/js/common/Service.js"
-],($,ModalView,Service)->
+  "/static/js/common/Service.js",
+  "collection/DropArea-collection",
+  "view/Form-view",
+  "view/ToolItem-view"
+],($,ModalView,Service,DropAreaCollection,FormView,ToolItemView)->
   $(document).ready ->
     modal = new ModalView
       html:$("#modalTemplate").html()
+    collection = new DropAreaCollection
+    createFormView = (service)-> 
+      new FormView
+        className:"ui_workarea"
+        el: $("form")
+        collection: collection
+        service: service
+        dataDropAccept: "drop-accept"
+
+    createToolItemView = (service,type,data)->
+      new ToolItemView
+          type: type
+          service:service
+          template:service.renderAreaItem(data) 
+
+
     service = new Service
       dataToolBinder: "ui-jsrender"
-      areaTemplateItem: ""
-      dataPostfixDropAccept:"drop-accept"
+      collection: collection
+      createFormView:createFormView
+      createToolItemView:createToolItemView
+      areaTemplateItem: ""      
       dataPostfixModalType:"modal-type"
       modal: modal
       
