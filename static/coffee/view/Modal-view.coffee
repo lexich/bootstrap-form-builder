@@ -1,21 +1,31 @@
 define [
   "jquery",
   "backbone",
-  "underscore"
-],($,Backbone,_)-> 
+  "underscore",
+  "text!/static/templates/modelView.html"
+],($,Backbone,_, templateHTML)->
   ModalView = Backbone.View.extend
     DEFAULT_MODAL_BODY:".modal-body"
+    className:"modal-wrapper"
     events:
       "click *[data-js-close]":"event_close"
       "click *[data-js-save]":"event_save"
 
+    ###
+    @param options
+      - classModalBody - selector which find to update content
+    ###
     initialize:->
       @$el.hide()
-      @$el.html @options.html
+      @$el.html templateHTML
       @$el.appendTo $("body")
       @options.classModalBody = @options.classModalBody || @DEFAULT_MODAL_BODY
-      
 
+    ###
+    @param options
+      - preRender - callback which send 2 params $el and body to modify when view render
+      - postSave - callback which send 2 params $el and body to modify when view catch event_save
+    ###
     show:(options)->
       @callback_preRender = ($el, $body)=> options?.preRender $el, $body
       @callback_postSave = ($el, $body)=> options?.postSave $el, $body
@@ -43,4 +53,5 @@ define [
     event_save:->
       @hide()
       @callback_postSave @$el, $(@options.classModalBody, @$el)
+
   ModalView
