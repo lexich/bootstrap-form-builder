@@ -10,7 +10,7 @@ module.exports = function (grunt) {
     },
     jade: {
       html: {
-        src: ["templates/index.jade"],
+        src: ["templates/index.jade","templates/test.jade"],
         dest: "www",
         options: {        
           client: false
@@ -34,7 +34,11 @@ module.exports = function (grunt) {
     },
     coffee: {
       app: {
-        src: ["static/coffee/*.coffee","static/coffee/**/*.coffee"],
+        src: [
+          "static/coffee/*.coffee",
+          "static/coffee/**/*.coffee",
+          "static/coffee/**/**/*.coffee"
+        ],
         dest: "www/static/js/",
         options: {
             bare: true,
@@ -84,9 +88,8 @@ module.exports = function (grunt) {
           "www/static/css/jasmine/":[
             "components/jasmine/lib/jasmine-core/jasmine.css"
           ],
-          "www/static/js/requirejs/":[
-            "components/requirejs/require.js"
-          ]
+          "www/static/js/requirejs/":"components/requirejs/require.js",
+          "www/static/js/sinon/":"components/sinon.js/sinon.js"
         }
       }
     },
@@ -108,7 +111,11 @@ module.exports = function (grunt) {
     },
     watch:{
       jade_shell:{
-        files:["templates/*.jade","templates/*/*.jade","templates/*/*/*.jade"],
+        files:[
+          "templates/*.jade",
+          "templates/*/*.jade",
+          "templates/*/*/*.jade"
+        ],
         tasks:["jade","reload"]
       },
       coffee_shell:{
