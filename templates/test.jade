@@ -1,0 +1,19 @@
+extends base
+
+block script 
+  script
+    __reloadServerUrl="ws://localhost:6001";
+  script(src="//localhost:6001/__reload/client.js")  
+  script(src="/static/js/sinon/sinon.js")    
+  script(src="/static/js/jasmine/jasmine.js")
+  script(src="/static/js/jasmine/jasmine-html.js")
+  script(src="/static/js/common/base.js")
+  script(src="/static/js/requirejs/require.js")
+  script(src="/static/js/config.js")  
+  script(src="/static/js/tests/tests.js")  
+
+block link
+  link(href="static/css/jasmine/jasmine.css", rel="stylesheet", media="screen")
+
+block body  
+  p Test

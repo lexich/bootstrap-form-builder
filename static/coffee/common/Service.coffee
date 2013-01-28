@@ -17,26 +17,23 @@ define [
     @param dataPostfixModalType - data-* postfix for search modal-items templates
     @param modal - 
     ###
-    initialize:(options)->
-      @options = options
-      @toolData = @getToolData @options.dataToolBinder
+    initialize:(options)->      
+      @toolData = @getToolData options.dataToolBinder
       toolPanelItem = _.map @toolData, (v,k)=>
         options.createToolItemView(this,k,v)
         
       @modal = options.modal
       
-      formView = @options.createFormView(this)
+      formView = options.createFormView(this)
 
-      @modalTemplates = @getModalTemplates @options.dataPostfixModalType
-      @options.collection.fetch()
-
-    getModalTemplates:(dataModalType)->
-      _.reduce $("*[data-#{dataModalType}]"),((memo,item)->
-        type = $(item).data(dataModalType)
-        if type? and type != ""
-          memo[type] = $(item).html()
-        memo
+      @modalTemplates = _.reduce $("[data-#{options.dataPostfixModalType}]"),(
+        (memo,item)->
+          type = $(item).data(options.dataPostfixModalType)
+          if type? and type != ""
+            memo[type] = $(item).html()
+          memo
       ),{}  
+      options.collection.fetch()
 
     renderModalItemTemplate:(type,data)->
       if type is null or type is ""
@@ -54,7 +51,8 @@ define [
     showModal:(options)-> 
       @modal.show options
 
-    getData:(type)-> @toolData[type]
+    getData:(type)->
+      @toolData[type]
 
     getItemFormTypes:->
       _.keys @toolData
@@ -65,7 +63,8 @@ define [
     getTemplateData:(type)->
       @getData(type)?.data
       
-    getTemplate:(type)-> @getData(type)?.template    
+    getTemplate:(type)->
+      @getData(type)?.template    
       
 
     parceModalItemData:($body)->

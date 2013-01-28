@@ -17,19 +17,23 @@ html(class="no-js", lang="ru")
     meta(name="HandheldFriendly", content="True")
     meta(name="MobileOptimized", content="320")
     meta(http-equiv="content-type", content="text/html; charset=utf8")
-    meta(name="viewport", content="width=device-width, initial-scale=1.0")    
-    link(href="static/css/bootstrap/bootstrap.css", rel="stylesheet", media="screen")
-    link(href="static/css/bootstrap/bootstrap-responsive.css", rel="stylesheet", media="screen")
-    link(href="static/font-awesome/css/font-awesome.min.css", rel="stylesheet", media="screen")
-    //if IE 7
-      link(href="static/font-awesome/css/font-awesome-ie7.min.css", rel="stylesheet", media="screen")
-    // <![endif]
-    link(href="static/css/style.css", rel="stylesheet", media="screen")
-    //live reload
-    script
-        __reloadServerUrl="ws://localhost:6001";
-    script(src="//localhost:6001/__reload/client.js")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    block link    
+      link(href="static/css/bootstrap/bootstrap.css", rel="stylesheet", media="screen")
+      link(href="static/css/bootstrap/bootstrap-responsive.css", rel="stylesheet", media="screen")
+      link(href="static/font-awesome/css/font-awesome.min.css", rel="stylesheet", media="screen")
+      //if IE 7
+        link(href="static/font-awesome/css/font-awesome-ie7.min.css", rel="stylesheet", media="screen")
+      // <![endif]
+      link(href="static/css/style.css", rel="stylesheet", media="screen")    
   body
     block body
-    script(src="/static/js/common/base.js")
-    script(src="/static/js/requirejs/require.js",data-main="/static/js/main.js")
+    block script
+      //live reload
+      script
+          __reloadServerUrl="ws://localhost:6001";
+      script(src="//localhost:6001/__reload/client.js")
+      script(src="/static/js/common/base.js")
+      script(src="/static/js/requirejs/require.js")
+      script(src="/static/js/config.js")
+      script(src="/static/js/main.js")
