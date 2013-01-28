@@ -1,10 +1,10 @@
-require [
+require [  
   "jquery",
-  "/static/js/view/Modal-view.js",
-  "/static/js/common/Service.js",
+  "view/Modal-view",
+  "common/Service",
   "collection/DropArea-collection",
   "view/Form-view",
-  "view/ToolItem-view"
+  "view/ToolItem-view",
 ],($,ModalView,Service,DropAreaCollection,FormView,ToolItemView)->
   $(document).ready ->
     modal = new ModalView
