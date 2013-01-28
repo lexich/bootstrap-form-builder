@@ -31,16 +31,5 @@ html(class="no-js", lang="ru")
     script(src="//localhost:6001/__reload/client.js")
   body
     block body
-    script(src="/static/js/jquery/jquery.js")
-    script(src="/static/js/underscore/underscore.js")
-    script(src="/static/js/backbone/backbone.js")    
-    script(src="/static/js/bootstrap/bootstrap.js")
-    script(src="/static/js/bootstrap/bootstrap-popover.js")
-    script(src="/static/js/jquery-ui/jquery.ui.core.js")
-    script(src="/static/js/jquery-ui/jquery.ui.widget.js")
-    script(src="/static/js/jquery-ui/jquery.ui.mouse.js")
-    script(src="/static/js/jquery-ui/jquery.ui.resizable.js")
-    script(src="/static/js/jquery-ui/jquery.ui.draggable.js")
-    script(src="/static/js/jquery-ui/jquery.ui.droppable.js") 
-    script(src="/static/js/jquery-ui/jquery.ui.sortable.js")
-    script(src="/static/js/main.js");
+    script(src="/static/js/common/base.js")
+    script(src="/static/js/requirejs/require.js",data-main="/static/js/main.js")

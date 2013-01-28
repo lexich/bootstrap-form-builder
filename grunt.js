@@ -34,10 +34,12 @@ module.exports = function (grunt) {
     },
     coffee: {
       app: {
-        src: ["static/coffee/*.coffee"],
-        dest: "www/static/js",
+        src: ["static/coffee/*.coffee","static/coffee/**/*.coffee"],
+        dest: "www/static/js/",
         options: {
-            bare: true
+            bare: true,
+            preserve_dirs: true,
+            base_path: 'static/coffee'
         }
       }
     },
@@ -74,6 +76,16 @@ module.exports = function (grunt) {
             "components/jquery-ui/ui/jquery.ui.draggable.js",
             "components/jquery-ui/ui/jquery.ui.droppable.js",
             "components/jquery-ui/ui/jquery.ui.sortable.js"
+          ],
+          "www/static/js/jasmine/":[
+            "components/jasmine/lib/jasmine-core/jasmine.js",
+            "components/jasmine/lib/jasmine-core/jasmine-html.js",
+          ],
+          "www/static/css/jasmine/":[
+            "components/jasmine/lib/jasmine-core/jasmine.css"
+          ],
+          "www/static/js/requirejs/":[
+            "components/requirejs/require.js"
           ]
         }
       }
@@ -101,6 +113,10 @@ module.exports = function (grunt) {
       },
       coffee_shell:{
         files:"static/coffee/*.coffee",
+        tasks:["coffee","reload"]
+      },
+      coffee_shell:{
+        files:"static/coffee/**/*.coffee",
         tasks:["coffee","reload"]
       },
       less_shell:{
