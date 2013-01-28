@@ -1,6 +1,7 @@
 require [
   "tests/model/DropArea-model.test"
   "tests/collection/DropArea-collection.test"
+  "tests/view/Modal-view.test"
 ],-> 
   jasmineEnv = jasmine.getEnv();
   jasmineEnv.updateInterval = 1000;

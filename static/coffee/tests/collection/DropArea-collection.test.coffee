@@ -35,7 +35,7 @@ define [
       expect(model.get("position")).toEqual(1)
       expect(model.get("row")).toEqual(2)
 
-    it "updateAllData",->
+    it "Collection updateAll",->
       sinon.spy()   
       model = new DropAreaModel
         label:"one"
