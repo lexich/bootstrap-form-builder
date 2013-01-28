@@ -1,12 +1,14 @@
 define [
   "jquery",  
-  "underscore",  
-],($,_)->
+  "underscore",
+  "view/FormItem-view"
+],($,_,FormItemView)->
   Service=->
     @initialize.apply this, arguments
     this
 
   Service::=
+    formItemViews:[]
     constructor:Service
     toolData:{}
     modalTemplates:{}  
@@ -20,7 +22,8 @@ define [
     initialize:(options)->      
       @toolData = @getToolData options.dataToolBinder
       toolPanelItem = _.map @toolData, (v,k)=>
-        options.createToolItemView(this,k,v)
+        options.createToolItemView(this,k,v).render()
+
         
       @modal = options.modal
       
@@ -33,7 +36,20 @@ define [
             memo[type] = $(item).html()
           memo
       ),{}  
-      options.collection.fetch()
+    
+    getOrAddFormItemView:(model)->
+      filterItem = _.filter @formItemViews, (view)->
+        view.model is model
+
+      if filterItem.length > 1
+        filterItem[0]
+      else
+        item = new FormItemView
+          model: model
+          service: this
+        @formItemViews.push item
+        item
+
 
     renderModalItemTemplate:(type,data)->
       if type is null or type is ""
@@ -43,10 +59,12 @@ define [
         templateHtml = @modalTemplates["input"]
       _.template templateHtml, data
 
-    renderFormViewElement:($el)->
-      $item = $ _.template $("#formViewTemplate").html(), {}
-      $item.appendTo $el
-      $item
+    renderFormViewElement:(params)->
+      params = _.extend {
+        row:0
+      }, params || {}
+      $item = $ _.template $("#formViewTemplate").html(), params or {}
+      
 
     showModal:(options)-> 
       @modal.show options

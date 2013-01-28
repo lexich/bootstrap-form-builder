@@ -13,6 +13,9 @@ define [
       position:0
       row:0
 
+    initialize:->
+      LOG "DropAreaModel","initialize"
+
     parse:(attrs, options)->
       LOG "DropAreaModel","parse"
       intParams = _.reduce @defaults, (

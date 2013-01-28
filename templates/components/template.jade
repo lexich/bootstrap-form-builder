@@ -12,16 +12,15 @@ script(type="text/template",id="formItemTemplate")
     |<%= content %>
 
 script(type="text/template",id="formViewTemplate")
-  .ui_workarea__placeholder
-    h4(data-html-row) test
-    table
-      tbody
-        tr
-          td
-            span.icon-remove.ui_icons(data-js-close-area)
-          td
-            span.icon-cog.ui_icons(data-js-options-area)
-    div(data-drop-accept)
+  h4(data-html-row) row: <%= row %>
+  table
+    tbody
+      tr
+        td
+          span.icon-remove.ui_icons(data-js-close-area)
+        td
+          span.icon-cog.ui_icons(data-js-options-area)
+  div(data-drop-accept)
 
 script(type='text/template',id="popoverTemplate")
   |<form>

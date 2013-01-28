@@ -36,6 +36,4 @@ require [
       dataPostfixModalType:"modal-type"
       modal: modal
       
-    $("#modal").click ->
-      service.showModal ($el,$body)->
-        $body.append $("p").text("Hello world")
+    collection.fetch()

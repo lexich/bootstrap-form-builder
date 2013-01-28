@@ -13,8 +13,7 @@ define [
         appendTo:"body"
         clone:true
         connectToSortable:"[data-drop-accept]"
-        helper:_.bind( @handle_draggable_helper, this)
-      @render()
+        helper:_.bind( @handle_draggable_helper, this)      
 
     handle_draggable_helper:(event)->
       $el = $(event.target)
@@ -27,4 +26,6 @@ define [
       @$el.html @options.template
       @$el.attr "data-#{DATA_TYPE}", @options.type
       data.$el.before @$el
+      this
+      
   ToolItemView

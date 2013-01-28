@@ -14,8 +14,7 @@ define [
     initialize:->
       LOG "FormItemView","initialize"
       @$el.data DATA_VIEW, this
-      @model.on "change", => @render()
-      @render()
+      @model.on "change", => @render()      
     
     render:->
       templateHtml = @options.service.getTemplate @model.get("type")
