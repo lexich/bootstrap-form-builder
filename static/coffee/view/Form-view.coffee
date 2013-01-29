@@ -12,7 +12,6 @@ define [
     dropAreas:{}
 
     initialize:->
-      @getOrAddDropArea(0)
       @collection.on "reset", _.bind(@_resetCollection,this)
 
     _resetCollection:->
