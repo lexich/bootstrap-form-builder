@@ -12,6 +12,9 @@ define [
     events:
       "click [data-js-close-area]":"event_close"
       "click [data-js-options-area]":"event_options"
+
+    DEFAULT_AREA_SELECTOR: "[data-drop-accept]"
+    DEFAULT_ROW_VIEW: "[data-html-row]"
     row:0
     
     className:"ui_workarea__placeholder"
@@ -28,7 +31,7 @@ define [
       @$el.html @options.service.renderFormViewElement
         row: @row
       
-      @$area = @$el.find("[data-drop-accept]")
+      @$area = @$el.find @DEFAULT_AREA_SELECTOR
 
       @$area.droppable
         accept: @options.accept
@@ -36,16 +39,18 @@ define [
 
       @$area.sortable
         axis: "y"
-        connectWith:"[data-drop-accept]"
+        connectWith: @DEFAULT_AREA_SELECTOR
         receive:_.bind(@handle_sortable_receive,this)
         update:_.bind(@handle_sortable_update,this)
 
     setRow:(row)->
-      @$el.find("[data-html-row]").html("row: #{row}")
-      @row = row
+      if @row != row
+        @$el.find(@DEFAULT_ROW_VIEW).html("row: #{row}")
+        @row = row
+        @reindex()
 
     event_close:(e)->
-      _.each @$el.find("[data-drop-accept]").children(), (el)->
+      _.each @$area.children(), (el)->
         view = $(el).data DATA_VIEW
         view?.remove()
       @options.formview?.removeDropArea this
