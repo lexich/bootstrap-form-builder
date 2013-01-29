@@ -22,7 +22,7 @@ define [
     @param options
       - row
       - accept
-      - formview
+      - removeDropArea {function} - function to remove this item from base container
       - service
     ###
     initialize:->
@@ -53,7 +53,7 @@ define [
       _.each @$area.children(), (el)->
         view = $(el).data DATA_VIEW
         view?.remove()
-      @options.formview?.removeDropArea this
+      @options.removeDropArea? this
       @remove()
 
     event_options:(e)->

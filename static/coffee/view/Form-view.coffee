@@ -35,16 +35,16 @@ define [
     getOrAddDropArea:(row)->
       unless row? then row = _.size(@dropAreas)
       area = @dropAreas[row]
-      unless area?        
-        area = new DropAreaView          
+      unless area?
+        area = new DropAreaView
           service: @options.service
           collection: @collection
-          formview:this
+          removeDropArea: _.bind(@removeDropArea,this)
           row:row
           accept:($el)->
             $el.hasClass "ui-draggable"
         area.$el.appendTo @$el
-        @dropAreas[row] = area      
+        @dropAreas[row] = area
       area
 
     removeDropArea:(area)->
