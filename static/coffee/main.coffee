@@ -16,7 +16,7 @@ require [
     createFormView = (service)-> 
       new FormView
         className:"ui_workarea"
-        el: $("form")
+        el: $("[data-html-form]:first")
         collection: collection
         service: service
         dataDropAccept: "drop-accept"

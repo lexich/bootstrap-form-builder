@@ -3,7 +3,8 @@ define [
   "backbone",
   "underscore",
   "view/DropArea-view"
-],($,Backbone,_,DropAreaView)-> 
+  "text!/static/templates/formView.html"
+],($,Backbone,_,DropAreaView,templateHtml)-> 
   FormView = Backbone.View.extend
     events:
       "click [data-js-submit-form]": "event_submitForm"
@@ -11,28 +12,30 @@ define [
 
     dropAreas:{}
 
-    initialize:->
-      @collection.on "reset", _.bind(@_resetCollection,this)
+    initialize:->            
+      @collection.on "reset", => 
+        @dropAreas = {}
+        @render()  
 
-    _resetCollection:->
-      ###
-      index models in row
-      ###    
-      rowModels = _.groupBy(@collection.models,(model)->
+    render:->
+      @$el.html templateHtml
+      $placeholder = @getPlaceholder()
+      _.chain(@collection.models)
+        .groupBy (model)->
           model.get("row")
-      )
-      _.each rowModels,(models,row)=>
-        models = _.sortBy(models, (model)-> model.get("position"))
-        _.reduce models,((prev,model)->
-          model.set {position:prev+1},{silent:true}
-          prev + 1
-        ),-1
-        row = toInt row
-        area = @getOrAddDropArea(row)
-        area.render()
-        area
+        .map (models,row)=>
+          row = toInt row
+          @renderRow row, $placeholder      
 
-    getOrAddDropArea:(row)->
+    getPlaceholder:-> @$el.find("[data-html-formloader]:first")
+
+    renderRow:(row,$placeholder)->
+      row = toInt row
+      area = @getOrAddDropArea(row, $placeholder)
+      area.render()
+      area
+
+    getOrAddDropArea:(row, $placeholder)->
       unless row? then row = _.size(@dropAreas)
       area = @dropAreas[row]
       unless area?
@@ -43,12 +46,13 @@ define [
           row:row
           accept:($el)->
             $el.hasClass "ui-draggable"
-        area.$el.appendTo @$el
+        area.$el.appendTo $placeholder
         @dropAreas[row] = area
       area
 
-    removeDropArea:(area)->
-      delete @dropAreas[area.row]
+    removeDropArea:(row)->
+      return false if _.isUndefined(@dropAreas[row])
+      delete @dropAreas[row]
       newDropAreas = {}
       _.chain(@dropAreas)
         .sortBy((area,k)->area.row)
@@ -59,7 +63,7 @@ define [
             memo + 1
         ),0)
       @dropAreas = newDropAreas
-
+      true
 
     event_submitForm:(e)->
       @collection.updateAll()
@@ -67,5 +71,6 @@ define [
     event_addDropArea:(e)->
       keys = _.keys(@dropAreas)
       nextRow = if keys.length > 0 then parseInt(_.max(keys))+1 else 0
-      @getOrAddDropArea nextRow
+      @getOrAddDropArea nextRow, @getPlaceholder()
+
   FormView
