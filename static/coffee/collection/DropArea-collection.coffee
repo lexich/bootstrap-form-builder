@@ -4,15 +4,15 @@ define [
 ],(Backbone,DropAreaModel)->
 
   DropAreaCollection = Backbone.Collection.extend
-    url : "/forms.json"
+    DEFAULT_URL:"/forms.json"
     model : DropAreaModel
 
     initialize:(options)->
-      @url = options.url if options.url      
+      @url = if options.url then options.url else @DEFAULT_URL
     
     comparator:(model)->
       model.get("row") * 1000 + model.get("position")
-    
+
     updateAll: ->
       options =
         success: (model, resp, xhr)=>
