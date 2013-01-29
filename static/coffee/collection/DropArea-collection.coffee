@@ -6,10 +6,13 @@ define [
   DropAreaCollection = Backbone.Collection.extend
     url : "/forms.json"
     model : DropAreaModel
-    parse:(attrs,options)->
-      attrs
+
+    initialize:(options)->
+      @url = options.url if options.url      
+    
     comparator:(model)->
       model.get("row") * 1000 + model.get("position")
+    
     updateAll: ->
       options =
         success: (model, resp, xhr)=>

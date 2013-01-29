@@ -5,7 +5,8 @@ define [
   describe "Test collection",->
     beforeEach ->
       @server = sinon.fakeServer.create()
-      @collection = new DropAreaCollection()      
+      @collection = new DropAreaCollection
+        url:"/forms1.json"        
     afterEach ->
       @server.restore()
     
@@ -19,7 +20,7 @@ define [
         position:"1"
         row:2
       
-      @server.respondWith "GET","/forms.json",[
+      @server.respondWith "GET","/forms1.json",[
         200,{"Content-Type":"application/json"},respond
       ]
       
@@ -51,7 +52,7 @@ define [
       expect(@server.requests.length).toEqual(1)
       request = @server.requests[0]
       expect(request.method).toEqual("POST")
-      expect(request.url).toEqual("/forms.json")
+      expect(request.url).toEqual("/forms1.json")
       expect(request.requestBody).toEqual(
         JSON.stringify(@collection.toJSON())
       )
