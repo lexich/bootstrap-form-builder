@@ -1,5 +1,5 @@
 script(type="text/template",id="formItemTemplate")
-  .control-group.ui_wrapper(data-drag-accept)
+  .ui_wrapper(data-drag-accept)
     table.form-item__tools
       tbody
         tr
@@ -21,20 +21,6 @@ script(type="text/template",id="formViewTemplate")
         td
           span.icon-cog.ui_icons(data-js-options-area)
   div(data-drop-accept)
-
-script(type='text/template',id="popoverTemplate")
-  |<form>
-  |<% _.each(data, function(v,k){ %>
-  |<div class="control-group">
-  |  <label class="control-label" for="_id__<%= k %>"><%= k %></label>
-  |  <div class="controls">
-  |    <input id="_id__<%= k %>" type="text" name="<%= k %>" value="<%= v %>" />
-  |  </div>
-  |</div>
-  |<% }); %>
-  |<a href="javascript:void(0);" class="btn" data-js-popover-ok >OK</button>
-  |<a href="javascript:void(0);" class="btn" data-js-popover-cancel>Close</button>
-  |</form>
 
 script(type='text/template',id="areaTemplateItem")  
     |<% if(type==""){ %>    

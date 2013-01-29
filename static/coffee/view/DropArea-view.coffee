@@ -17,7 +17,7 @@ define [
     DEFAULT_ROW_VIEW: "[data-html-row]"
     row:0
 
-    className:"ui_workarea__placeholder"
+    className:"ui_workarea__placeholder form-horizontal"
     ###
     @param options
       - row - {int|default 0}
@@ -29,7 +29,7 @@ define [
         * getTemplateData
     ###
     initialize:->
-
+      @fluentMode = false
       @row = @options.row if @options.row
       
       @$el.html @options?.service?.renderFormViewElement
@@ -42,7 +42,7 @@ define [
         drop: _.bind(@handle_droppable_drop,this)
 
       @$area.sortable
-        axis: "y"
+        #axis:"y"
         connectWith: @DEFAULT_AREA_SELECTOR
         update:_.bind(@handle_sortable_update,this)
 
@@ -69,7 +69,26 @@ define [
       @options.removeDropArea? @row
       @remove()
 
+    getFluentMode:-> @fluentMode
+
+    setFluentViewMode:(bMode)->
+      @fluentMode = bMode
+      $children = @$area.children()
+      return unless $children.length > 0
+      pattern = /^span\d{1,2}$/
+      $children.removeClass (item,className)->
+        if pattern.test(className) then className else ""
+      span = Math.floor(12.0/$children.length) - 1
+      if span <= 1 then span = 2
+      if bMode        
+        $children.addClass("span#{span}")
+        @$el.removeClass("form-horizontal")
+      else                
+        @$el.addClass("form-horizontal")      
+
     event_options:(e)->
+      @setFluentViewMode not @getFluentMode()
+        
 
     reindex:->
       LOG "DropAreaView","reindex"
@@ -81,6 +100,7 @@ define [
           row:@row
         position + 1
       ),0    
+      @setFluentViewMode @getFluentMode()
 
     handle_sortable_update:(ev,ui)->
       LOG "DropAreaView","handle_sortable_update"
