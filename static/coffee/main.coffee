@@ -11,6 +11,7 @@ require [
       html:$("#modalTemplate").html()
 
     collection = new DropAreaCollection
+      url:"/forms.json"
 
     createFormView = (service)-> 
       new FormView
