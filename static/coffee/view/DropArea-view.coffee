@@ -6,7 +6,7 @@ define [
   "model/DropArea-model"
   "jquery-ui/jquery.ui.draggable",
   "jquery-ui/jquery.ui.droppable"
-  "jquery-ui/jquery.ui.sortable"  
+  "jquery-ui/jquery.ui.sortable"
 ],($,Backbone,_,FormItemView,DropAreaModel)->
   DropAreaView = Backbone.View.extend
     events:
@@ -16,32 +16,45 @@ define [
     DEFAULT_AREA_SELECTOR: "[data-drop-accept]"
     DEFAULT_ROW_VIEW: "[data-html-row]"
     row:0
-    
+
     className:"ui_workarea__placeholder"
     ###
     @param options
-      - row
-      - accept
+      - row - {int|default 0}
+      - accept {string|default ""}
       - removeDropArea {function} - function to remove this item from base container
       - service
+        * renderFormViewElement
+        * getOrAddFormItemView
+        * getTemplateData
     ###
     initialize:->
-      @row = @options.row
+
+      @row = @options.row if @options.row
       
-      @$el.html @options.service.renderFormViewElement
+      @$el.html @options?.service?.renderFormViewElement
         row: @row
       
       @$area = @$el.find @DEFAULT_AREA_SELECTOR
 
       @$area.droppable
-        accept: @options.accept
+        accept: @options.accept || ""
         drop: _.bind(@handle_droppable_drop,this)
 
       @$area.sortable
         axis: "y"
         connectWith: @DEFAULT_AREA_SELECTOR
-        receive:_.bind(@handle_sortable_receive,this)
         update:_.bind(@handle_sortable_update,this)
+
+    render:->
+      LOG "DropAreaView", "render"
+      @$area.empty()
+      models = @collection.where(row:@row)
+      _.each models, (model)=>
+        view = @options?.service?.getOrAddFormItemView model
+        if view?
+          view.$el.appendTo @$area
+          view.render()
 
     setRow:(row)->
       if @row != row
@@ -57,16 +70,6 @@ define [
       @remove()
 
     event_options:(e)->
-          
-    render:->      
-      LOG "DropAreaView", "render"
-      @$area.empty()
-      models = @collection.where(row:@row)
-      _.each models, (model)=>
-        view = @options.service.getOrAddFormItemView(model)
-        view.$el.appendTo @$area
-        view.render()
-     
 
     reindex:->
       LOG "DropAreaView","reindex"
@@ -77,10 +80,7 @@ define [
           position: position
           row:@row
         position + 1
-      ),0
-
-    handle_sortable_receive:(ev,ui)->
-      LOG "DropAreaView","handle_sortable_receive"
+      ),0    
 
     handle_sortable_update:(ev,ui)->
       LOG "DropAreaView","handle_sortable_update"
@@ -91,9 +91,8 @@ define [
       else
         LOG "DropAreaView","view don't found"
       setTimeout (=>
-        @reindex()        
+        @reindex()
       ), 0
-      
 
     handle_droppable_drop:(ev,ui)->
       LOG "DropAreaView","handle_droppable_drop"
@@ -109,7 +108,7 @@ define [
         view = new FormItemView
           el:ui.draggable
           model: model
-          service: @options.service        
+          service: @options.service
         view.render()
         ui.helper.data DATA_VIEW, view
       else
