@@ -66,7 +66,7 @@ define [
       _.each @$area.children(), (el)->
         view = $(el).data DATA_VIEW
         view?.remove()
-      @options.removeDropArea? this
+      @options.removeDropArea? @row
       @remove()
 
     event_options:(e)->
