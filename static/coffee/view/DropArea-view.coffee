@@ -46,12 +46,10 @@ define [
         connectWith: @DEFAULT_AREA_SELECTOR
         update:_.bind(@handle_sortable_update,this)
 
-    getModels:-> @collection.where(row:@row)
-
     render:->
       LOG "DropAreaView", "render"
       @$area.empty()
-      models = @getModels()
+      models = @collection.where(row:@row)
       _.each models, (model)=>
         view = @options?.service?.getOrAddFormItemView model
         if view?
@@ -91,7 +89,7 @@ define [
         @$el.removeClass("form-horizontal")
       else                
         @$el.addClass("form-horizontal")
-      _.each @getModels(),(model)=>
+      _.each @collection.where(row:@row),(model)=>
         model.set "direction",@getDirection(),{
           validation:true
           silent:true

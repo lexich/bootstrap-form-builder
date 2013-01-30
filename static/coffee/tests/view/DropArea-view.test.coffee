@@ -113,15 +113,11 @@ define [
       expect(bCallFluentMode).toBeTruthy()
       expect(bParamFluentMode).toBeTruthy()
 
-    it "getModels",->
-      models = @view.getModels()
-      expect(models.length).toEqual(3)
-
     it "check getDirection",->
       @view.render()          
       expect(@view.getFluentMode()).toEqual(false)
       expect(@view.getDirection()).toEqual("horizontal")      
-      models = @view.getModels()
+      models = @view.collection.where row: @view.row
       expect(models.length).toEqual(3)      
       expect(models[0].get("direction")).toEqual(@view.getDirection())
       expect(models[1].get("direction")).toEqual(@view.getDirection())
