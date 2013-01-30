@@ -15,7 +15,7 @@ define [
       LOG "FormItemView","initialize"
       @$el.data DATA_VIEW, this
       @model.on "change", => @render()      
-    
+
     render:->
       templateHtml = @options.service.getTemplate @model.get("type")
       content = _.template templateHtml, @model.attributes
@@ -38,21 +38,26 @@ define [
 
     handle_preRender:($el, $body)->
       type = @model.get("type")
-      meta = @options.service.getTemplateMetaData(type)
       data = @model.attributes
-      service = @options.service
-      content = _.map data, (v,k)->
-        itemType = meta[k] or ""
-        service.renderModalItemTemplate itemType,
-          name: k
-          value: v
-          data: service.getItemFormTypes()
-      $body.html content.join("")
+      $item = @options.service.renderModalForm(type, data)
+      if $item.length is 1
+        $body.empty()
+        $item.appendTo $body
+        $item.show()
+      else 
+        meta = @options.service.getTemplateMetaData(type)
+        service = @options.service
+        content = _.map data, (v,k)->
+          itemType = meta[k] or ""
+          service.renderModalItemTemplate itemType,
+            name: k
+            value: v
+            data: service.getItemFormTypes()
+        $body.html content.join("")      
     
     handle_postSave:($el,$body)->
       data = @options.service.parceModalItemData $body
       @model.set data
-
 
     event_okPopover:(e)->
       data = _.reduce $(".popover input",@$el), ((memo,item)->
