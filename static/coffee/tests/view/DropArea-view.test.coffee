@@ -132,3 +132,6 @@ define [
       expect(bRow).toBeTruthy()
       expect(bKey).toBeTruthy()
       expect(bBaseValue).toBeTruthy()
+
+    it "check setDirection",->
+      expect(false).toBeTruthy()

@@ -49,12 +49,14 @@ define [
     render:->
       LOG "DropAreaView", "render"
       @$area.empty()
-      models = @collection.where(row:@row)
+      models = @collection.where(row:@row)      
       _.each models, (model)=>
         view = @options?.service?.getOrAddFormItemView model
         if view?
           view.$el.appendTo @$area
           view.render()
+      if models.length > 0
+        @setDirection models[0].get("direction")
 
     setRow:(row)->
       if @row != row
@@ -71,11 +73,17 @@ define [
 
     getFluentMode:-> @fluentMode
 
+    setDirection:(direction)->      
+      if direction is "vertical"
+        @setFluentViewMode true
+      else if direction is "horizontal"
+        @setFluentViewMode false
+
+
     getDirection:->
       if @getFluentMode() then "vertical" else "horizontal"
 
-    setFluentViewMode:(bMode)->
-      return if bMode is @fluentMode
+    setFluentViewMode:(bMode)->      
       @fluentMode = bMode
       $children = @$area.children()
       return unless $children.length > 0
@@ -87,8 +95,10 @@ define [
       if bMode        
         $children.addClass("span#{span}")
         @$el.removeClass("form-horizontal")
+        @$area.addClass("fluid-row")
       else                
         @$el.addClass("form-horizontal")
+        @$area.removeClass("fluid-row")
       models = @collection.smartSliceNormalize @row, "direction", @getDirection()
       _.each models,(model)=>
         model.set "direction",@getDirection(),{
