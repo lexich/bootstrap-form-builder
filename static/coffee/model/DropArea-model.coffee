@@ -11,7 +11,8 @@ define [
       name:""
       help:""
       position:0
-      row:0
+      row:0,
+      direction:"horizontal"
 
     initialize:->
       LOG "DropAreaModel","initialize"
@@ -31,21 +32,24 @@ define [
         memo
       ),{}
       result
-
-    validate:(attrs)->
+    validate:(attrs, options)->    
       if attrs.label is null or attrs.label is ""
-        return "label mustn't be not null"
-      if attrs.placeholder is null or attrs.placeholder is ""
-        return "placeholder mustn't be not null"
-      if attrs.type is null or attrs.type is ""
-        return "type mustn't be not null"
-      if attrs.position is null or attrs.position < 0
-        return "position must be >= 0"
-      if attrs.row is null or attrs.row < 0
-        return "row must be >= 0"
-      if _.isString(attrs.row)
-        return "row must be integer"
-      if _.isString(attrs.position)
-        return "position must be integer"
+        "label mustn't be not null"
+      else if attrs.placeholder is null or attrs.placeholder is ""
+        "placeholder mustn't be not null"
+      else if attrs.type is null or attrs.type is ""
+        "type mustn't be not null"      
+      else if attrs.help is null
+        "help mustn't be null"
+      else if not _.isNumber(attrs.row)
+        "row must be integer"
+      else if attrs.row < 0
+        "row must be >= 0"      
+      else if not _.isNumber(attrs.position)
+        "position must be integer"
+      else if attrs.position < 0
+        "position must be >= 0"
+      else if attrs.direction not in ["horizontal","vertical"]
+        "direction must be [horizontal,vertical]"
 
   DropAreaModel
