@@ -55,8 +55,9 @@ define [
       return @_renderModalFormCache[name] if @_renderModalFormCache[name]?
       selector = "[data-ui-jsrender-modal-template='#{name}']:first" 
       $item = $(selector)
-      if $item.length > 1
-        _.each $("input,select,textarea",$item), ($input)->
+      if $item.length is 1
+        _.each $("input,select,textarea",$item), (input)->
+          $input = $(input)
           name = $input.attr("name")
           value = data[name]
           unless _.isUndefined(value)
