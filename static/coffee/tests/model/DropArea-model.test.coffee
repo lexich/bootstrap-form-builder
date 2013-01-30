@@ -15,6 +15,7 @@ define [
       expect(@model.get("name")).toEqual("")
       expect(@model.get("help")).toEqual("")
       expect(@model.get("direction")).toEqual("horizontal")
+      expect(@model.get("size")).toEqual(10)
 
 
     it "initialization",->
@@ -124,7 +125,7 @@ define [
       expect(@model.validationError).toBeNull()
       error = @model.validationError
 
-      @model.set direction:"",{validate:true}
+      @model.set direction:"",{validate:true}      
       expect(@model.validationError).not.toBeNull()
       error = @model.validationError
 
@@ -134,3 +135,6 @@ define [
       @model.set name:"horizontal",{validate:true}
       expect(@model.validationError).toBeNull()
       
+      expect(@model.set size:0,{validate:true}).toBeFalsy()
+      expect(@model.set size:13,{validate:true}).toBeFalsy()
+      expect(@model.set size:1,{validate:true}).toBeTruthy()

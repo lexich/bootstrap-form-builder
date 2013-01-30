@@ -13,6 +13,7 @@ define [
       position:0
       row:0,
       direction:"horizontal"
+      size:10
 
     initialize:->
       LOG "DropAreaModel","initialize"
@@ -51,5 +52,9 @@ define [
         "position must be >= 0"
       else if attrs.direction not in ["horizontal","vertical"]
         "direction must be [horizontal,vertical]"
+      else if not _.isNumber(attrs.size)
+        "size must be number"
+      else if attrs.size < 1 or attrs.size > 12
+        "size must be more then 0 and less or equal then 12"
 
   DropAreaModel
