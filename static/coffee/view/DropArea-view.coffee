@@ -49,7 +49,7 @@ define [
     render:->
       LOG "DropAreaView", "render"
       @$area.empty()
-      models = @collection.where(row:@row)      
+      models = @collection.where(row:@row)
       _.each models, (model)=>
         view = @options?.service?.getOrAddFormItemView model
         if view?
@@ -73,30 +73,25 @@ define [
 
     getFluentMode:-> @fluentMode
 
-    setDirection:(direction)->      
+    setDirection:(direction)->
       if direction is "vertical"
         @setFluentViewMode true
       else if direction is "horizontal"
         @setFluentViewMode false
 
-
     getDirection:->
       if @getFluentMode() then "vertical" else "horizontal"
 
-    setFluentViewMode:(bMode)->      
+    setFluentViewMode:(bMode)->
       @fluentMode = bMode
       $children = @$area.children()
       return unless $children.length > 0
-      pattern = /^span\d{1,2}$/
-      $children.removeClass (item,className)->
-        if pattern.test(className) then className else ""
+
       span = Math.floor(12.0/$children.length) - 1
-      if span <= 1 then span = 2      
       if bMode        
-        $children.addClass("span#{span}")
         @$el.removeClass("form-horizontal")
         @$area.addClass("fluid-row")
-      else                
+      else
         @$el.addClass("form-horizontal")
         @$area.removeClass("fluid-row")
       models = @collection.smartSliceNormalize @row, "direction", @getDirection()
@@ -105,7 +100,6 @@ define [
           validation:true
           silent:true
         }
-
 
     event_options:(e)->
       @setFluentViewMode not @getFluentMode()
@@ -124,7 +118,6 @@ define [
           
         position + 1
       ),0    
-      
 
     handle_sortable_update:(ev,ui)->
       LOG "DropAreaView","handle_sortable_update"

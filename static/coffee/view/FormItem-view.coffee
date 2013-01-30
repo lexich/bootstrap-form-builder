@@ -14,13 +14,18 @@ define [
     initialize:->
       LOG "FormItemView","initialize"
       @$el.data DATA_VIEW, this
-      @model.on "change", => @render()      
+      @model.on "change", => @render()
 
     render:->
       templateHtml = @options.service.getTemplate @model.get("type")
       content = _.template templateHtml, @model.attributes
       html = @options.service.renderFormItemTemplate content
       @$el.html html
+      @$el.removeClass (item,className)->
+        if /^span\d{1,2}$/.test(className) then className else ""
+      if @model.get("direction") is "vertical"
+        @$el.addClass("span#{@model.get('size')}")
+
       @$el.find(".debug").html "row:#{@model.get('row')} position:#{@model.get('position')}"
 
     remove:->
@@ -53,7 +58,7 @@ define [
             name: k
             value: v
             data: service.getItemFormTypes()
-        $body.html content.join("")      
+        $body.html content.join("")
     
     handle_postSave:($el,$body)->
       data = @options.service.parceModalItemData $body
