@@ -46,10 +46,12 @@ define [
         connectWith: @DEFAULT_AREA_SELECTOR
         update:_.bind(@handle_sortable_update,this)
 
+    getModels:-> @collection.where(row:@row)
+
     render:->
       LOG "DropAreaView", "render"
       @$area.empty()
-      models = @collection.where(row:@row)
+      models = @getModels()
       _.each models, (model)=>
         view = @options?.service?.getOrAddFormItemView model
         if view?
@@ -71,7 +73,11 @@ define [
 
     getFluentMode:-> @fluentMode
 
+    getDirection:->
+      if @getFluentMode() then "vertical" else "horizontal"
+
     setFluentViewMode:(bMode)->
+      return if bMode is @fluentMode
       @fluentMode = bMode
       $children = @$area.children()
       return unless $children.length > 0
@@ -84,23 +90,32 @@ define [
         $children.addClass("span#{span}")
         @$el.removeClass("form-horizontal")
       else                
-        @$el.addClass("form-horizontal")      
+        @$el.addClass("form-horizontal")
+      _.each @getModels(),(model)=>
+        model.set "direction",@getDirection(),{
+          validation:true
+          silent:true
+        }
+
 
     event_options:(e)->
       @setFluentViewMode not @getFluentMode()
-        
 
     reindex:->
       LOG "DropAreaView","reindex"
+      @setFluentViewMode @getFluentMode()
       _.reduce @$area.children(), ((position,el)=>
         view = $(el).data DATA_VIEW
         model = view?.model
-        model?.set
+        model?.set {
           position: position
           row:@row
+          direction: @getDirection()
+        }, validation: true
+          
         position + 1
       ),0    
-      @setFluentViewMode @getFluentMode()
+      
 
     handle_sortable_update:(ev,ui)->
       LOG "DropAreaView","handle_sortable_update"

@@ -100,8 +100,7 @@ define [
       @view.setFluentViewMode(true)
       expect(@view.getFluentMode()).toEqual(true)
       expect(not @view.$el.hasClass("form-horizontal")).toBeTruthy()
-      expect($children.hasClass("span3")).toBeTruthy()
-
+      expect($children.hasClass("span3")).toBeTruthy()    
 
     it "check event_options",->
       @view.render()      
@@ -113,3 +112,23 @@ define [
       @view.$el.find("[data-js-options-area]").click()
       expect(bCallFluentMode).toBeTruthy()
       expect(bParamFluentMode).toBeTruthy()
+
+    it "getModels",->
+      models = @view.getModels()
+      expect(models.length).toEqual(3)
+
+    it "check getDirection",->
+      @view.render()          
+      expect(@view.getFluentMode()).toEqual(false)
+      expect(@view.getDirection()).toEqual("horizontal")      
+      models = @view.getModels()
+      expect(models.length).toEqual(3)      
+      expect(models[0].get("direction")).toEqual(@view.getDirection())
+      expect(models[1].get("direction")).toEqual(@view.getDirection())
+      expect(models[2].get("direction")).toEqual(@view.getDirection())
+      @view.setFluentViewMode true
+      expect(@view.getDirection()).toEqual("vertical")
+      expect(models[0].get("direction")).toEqual(@view.getDirection())
+      expect(models[1].get("direction")).toEqual(@view.getDirection())
+      expect(models[2].get("direction")).toEqual(@view.getDirection())
+
