@@ -48,10 +48,11 @@ define [
       delete @view
       delete @row
 
-    it "check initialize", ->
+    it "check initialize", ->      
       expect(@view.$area?).toBeTruthy()
       expect(@view.row).toEqual(@row)
       expect(@view.$area.html()).toEqual("DATA")
+      expect(@view.getFluentMode()).toBeFalsy()
 
     it "check setRow", ->
       bReindex = false
@@ -90,6 +91,25 @@ define [
       expect($(@view.$area.children()[1]).data(DATA_VIEW).bRemove).toBeTruthy()
       expect($(@view.$area.children()[2]).data(DATA_VIEW).bRemove).toBeTruthy()
     
-    xit "checl event_options",->
+    it "check setFluentViewMode",->
       @view.render()
+      expect(@view.getFluentMode()).toBeFalsy()
+      $children = @view.$area.children()
+      expect($children.length).toEqual(3)
+      expect( @view.$el.hasClass("form-horizontal")).toBeTruthy()
+      @view.setFluentViewMode(true)
+      expect(@view.getFluentMode()).toEqual(true)
+      expect(not @view.$el.hasClass("form-horizontal")).toBeTruthy()
+      expect($children.hasClass("span3")).toBeTruthy()
+
+
+    it "check event_options",->
+      @view.render()      
+      bCallFluentMode = false
+      bParamFluentMode = false
+      @view.setFluentViewMode = (mode)=>
+        bCallFluentMode = true
+        bParamFluentMode = (mode is not @view.getFluentMode())
       @view.$el.find("[data-js-options-area]").click()
+      expect(bCallFluentMode).toBeTruthy()
+      expect(bParamFluentMode).toBeTruthy()

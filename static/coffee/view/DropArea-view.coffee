@@ -23,20 +23,20 @@ define [
       - row - {int|default 0}
       - accept {string|default ""}
       - removeDropArea {function} - function to remove this item from base container
+      - fluentMode
       - service
         * renderFormViewElement
         * getOrAddFormItemView
         * getTemplateData
     ###
     initialize:->
-      @fluentMode = false
       @row = @options.row if @options.row
       
       @$el.html @options?.service?.renderFormViewElement
         row: @row
       
       @$area = @$el.find @DEFAULT_AREA_SELECTOR
-
+      @setFluentViewMode( @options.fluentMode or false )
       @$area.droppable
         accept: @options.accept || ""
         drop: _.bind(@handle_droppable_drop,this)
