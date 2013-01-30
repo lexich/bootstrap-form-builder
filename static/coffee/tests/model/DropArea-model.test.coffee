@@ -15,7 +15,7 @@ define [
       expect(@model.get("name")).toEqual("")
       expect(@model.get("help")).toEqual("")
       expect(@model.get("direction")).toEqual("horizontal")
-      expect(@model.get("size")).toEqual(10)
+      expect(@model.get("size")).toEqual(3)
 
 
     it "initialization",->

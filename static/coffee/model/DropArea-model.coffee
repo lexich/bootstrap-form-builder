@@ -13,7 +13,7 @@ define [
       position:0
       row:0,
       direction:"horizontal"
-      size:10
+      size:3
 
     initialize:->
       LOG "DropAreaModel","initialize"
