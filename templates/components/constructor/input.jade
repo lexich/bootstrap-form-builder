@@ -21,7 +21,7 @@ mixin item-template(name,data)
     .control-group
       |<label class="control-label" for="<%= type %>"><%= label %></label>
       |<div class="controls">
-      |  <input type="text" id="<%= type %>" name="<%= name %>" placeholder="<%= placeholder %>">
+      |  <input type="text" id="<%= type %>" name="<%= name %>" placeholder="<%= placeholder %>" class="span10">
       |  <p class="help-block valtype" data-valtype="help"><%= help %></p>
       |</div>
   +template(name)
@@ -53,7 +53,7 @@ mixin item-template(name,data)
     .control-group
       |<label class="control-label" for="<%= type %>"><%= label %></label>
       |<div class="controls">
-      |  <input type="password" id="<%= type %>" name="<%= name %>" placeholder="<%= placeholder %>">
+      |  <input type="password" id="<%= type %>" name="<%= name %>" placeholder="<%= placeholder %>" class="span10">
       |  <p class="help-block valtype" data-valtype="help"><%= help %></p>
       |</div>
 
@@ -72,6 +72,6 @@ mixin item-template(name,data)
     .control-group
       |<label class="control-label" for="<%= type %>"><%= label %></label>
       |<div class="controls">
-      |  <textarea rows="3" id="<%= type %>" name="<%= name %>" placeholder="<%= placeholder %>"></textarea>
+      |  <textarea rows="3" id="<%= type %>" name="<%= name %>" placeholder="<%= placeholder %>" class="span10"></textarea>
       |  <p class="help-block valtype" data-valtype="help"><%= help %></p>
       |</div>
