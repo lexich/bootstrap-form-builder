@@ -23,7 +23,6 @@ define [
           result.push item
         row++
       result
-      
 
     initialize:(options)->
       @url = if options.url then options.url else @DEFAULT_URL
@@ -31,10 +30,22 @@ define [
     comparator:(model)->
       model.get("row") * 1000 + model.get("position")
 
-    updateAll: ->
+    updateAll:->      
       options =
         success: (model, resp, xhr)=>
           @reset(model)
       Backbone.sync 'create', this, options
+
+    smartSliceNormalize:(row,key,baseValue)->
+      models = @where row:row
+      groups = _.groupBy models, (model)-> model.get(key)
+      keys = _.keys(groups)
+      if keys.length > 1
+        _.each models,(model)=>
+          model.set key, baseValue, {
+            validation:true
+            silent: true
+          }
+      models
 
   DropAreaCollection
