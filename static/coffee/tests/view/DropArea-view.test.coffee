@@ -1,19 +1,18 @@
 define [
   "view/DropArea-view"  
   "model/DropArea-model"
-],(DropAreaView, DropAreaModel)->
+  "collection/DropArea-collection"
+],(DropAreaView, DropAreaModel, DropAreaCollection)->
 
   describe "DropArea View",->
 
     beforeEach ->
       @model = new DropAreaModel()
-      @collection = 
-        models: [
-          new DropAreaModel(),
-          new DropAreaModel(),
-          new DropAreaModel(),
-        ],
-        where:-> @models
+      @collection = new DropAreaCollection([
+        new DropAreaModel(),
+        new DropAreaModel(),
+        new DropAreaModel(),
+      ])
 
       @service = 
         renderFormViewElement:(row)->
@@ -35,7 +34,7 @@ define [
           view.$el.data DATA_VIEW, view
           view
 
-      @row = 1
+      @row = 0
       @view = new DropAreaView
         collection: @collection
         service: @service
@@ -97,7 +96,9 @@ define [
       $children = @view.$area.children()
       expect($children.length).toEqual(3)
       expect( @view.$el.hasClass("form-horizontal")).toBeTruthy()
+      models = @view.collection.where row: @view.row
       @view.setFluentViewMode(true)
+
       expect(@view.getFluentMode()).toEqual(true)
       expect(not @view.$el.hasClass("form-horizontal")).toBeTruthy()
       expect($children.hasClass("span3")).toBeTruthy()    
@@ -116,15 +117,18 @@ define [
     it "check getDirection",->
       @view.render()          
       expect(@view.getFluentMode()).toEqual(false)
-      expect(@view.getDirection()).toEqual("horizontal")      
-      models = @view.collection.where row: @view.row
-      expect(models.length).toEqual(3)      
-      expect(models[0].get("direction")).toEqual(@view.getDirection())
-      expect(models[1].get("direction")).toEqual(@view.getDirection())
-      expect(models[2].get("direction")).toEqual(@view.getDirection())
+      expect(@view.getDirection()).toEqual("horizontal")
+      bCallSmartSliceNormalize = false
+      bRow = false
+      bKey = false
+      bBaseValue = false
+      @view.collection.smartSliceNormalize = (row, key, baseValue)=>
+        bCallSmartSliceNormalize = true
+        bRow = row is @view.row
+        bKey = key is "direction"
+        bBaseValue = baseValue is @view.getDirection()        
       @view.setFluentViewMode true
-      expect(@view.getDirection()).toEqual("vertical")
-      expect(models[0].get("direction")).toEqual(@view.getDirection())
-      expect(models[1].get("direction")).toEqual(@view.getDirection())
-      expect(models[2].get("direction")).toEqual(@view.getDirection())
-
+      expect(bCallSmartSliceNormalize).toBeTruthy()
+      expect(bRow).toBeTruthy()
+      expect(bKey).toBeTruthy()
+      expect(bBaseValue).toBeTruthy()

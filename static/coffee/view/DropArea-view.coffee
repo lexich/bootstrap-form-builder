@@ -83,13 +83,14 @@ define [
       $children.removeClass (item,className)->
         if pattern.test(className) then className else ""
       span = Math.floor(12.0/$children.length) - 1
-      if span <= 1 then span = 2
+      if span <= 1 then span = 2      
       if bMode        
         $children.addClass("span#{span}")
         @$el.removeClass("form-horizontal")
       else                
         @$el.addClass("form-horizontal")
-      _.each @collection.where(row:@row),(model)=>
+      models = @collection.smartSliceNormalize @row, "direction", @getDirection()
+      _.each models,(model)=>
         model.set "direction",@getDirection(),{
           validation:true
           silent:true
