@@ -2,12 +2,12 @@ mixin template(name)
   div(data-ui-jsrender-modal-template=name, style="display:none")
     block
 
-mixin script(name,data)
+mixin item-template(name,data)
   script(type="text/template",data-ui-jsrender='#{data}',data-ui-jsrender-type="#{name}")
     block
 
 .span2
-  name = "input"
+  - var name = "input"
   - var jsrender = JSON.stringify({
   -  label:name,
   -  placeholder:name,
@@ -17,53 +17,50 @@ mixin script(name,data)
   -  position:{ value:0, type:"hidden"},
   -  row:{ value:0, type:"hidden"}
   - });  
-  +script(name, jsrender)
-    <div class="control-group">
-      <label class="control-label" for="<%= type %>"><%= label %></label>
-      <div class="controls">
-        <input type="text" id="<%= type %>" name="<%= name %>" placeholder="<%= placeholder %>">
-        <p class="help-block valtype" data-valtype="help"><%= help %></p>
-      </div>    
-    </div>
-
+  +item-template(name, jsrender)    
+    .control-group
+      |<label class="control-label" for="<%= type %>"><%= label %></label>
+      |<div class="controls">
+      |  <input type="text" id="<%= type %>" name="<%= name %>" placeholder="<%= placeholder %>">
+      |  <p class="help-block valtype" data-valtype="help"><%= help %></p>
+      |</div>
   +template(name)
     <p><input name="#{name}" value="#{name}"></p>
 
 .span2
+  - var name = "password"
   - var jsrender = JSON.stringify({
-  -  label:"Password",
-  -  placeholder:"Password",
-  -  name: "password",
-  -  type:{ value:"password", type:"select" },
+  -  label:name,
+  -  placeholder:name,
+  -  name: name,
+  -  type:{ value:name, type:"select" },
   -  help: "help",
   -  position:{ value:0, type:"hidden"},
   -  row:{ value:0, type:"hidden"}
   - });
-  script(type="text/template",data-ui-jsrender='#{jsrender}',data-ui-jsrender-type="password", data-ui-jsrender-img="")
-    |<div class="control-group">
-    | <label class="control-label" for="<%= type %>"><%= label %></label>
-    | <div class="controls">
-    |   <input type="password" id="<%= type %>" name="<%= name %>" placeholder="<%= placeholder %>">
-    |   <p class="help-block valtype" data-valtype="help"><%= help %></p>
-    | </div>
-    |</div>  
+  +item-template(name,jsrender)
+    .control-group
+      |<label class="control-label" for="<%= type %>"><%= label %></label>
+      |<div class="controls">
+      |  <input type="password" id="<%= type %>" name="<%= name %>" placeholder="<%= placeholder %>">
+      |  <p class="help-block valtype" data-valtype="help"><%= help %></p>
+      |</div>
 
 .span2
+  - var name = "textarea"
   - var jsrender = JSON.stringify({
-  -  label:"Textarea",
-  -  placeholder:"Textarea",
-  -  name: "textarea",
+  -  label:name,
+  -  placeholder:name,
+  -  name: name,
   -  help: "help",
-  -  type:{ value:"textarea",type:"select"},
+  -  type:{ value:name,type:"select"},
   -  position:{ value:0, type:"hidden"},
   -  row:{ value:0, type:"hidden"}
   - });
-  script(type="text/template",data-ui-jsrender='#{jsrender}', data-ui-jsrender-type="textarea", data-ui-jsrender-img="")
-    |<div class="control-group">
-    | <label class="control-label" for="<%= type %>"><%= label %></label>
-    | <div class="controls">
-    |   <textarea rows="3" id="<%= type %>" name="<%= name %>" placeholder="<%= placeholder %>"></textarea>
-    |   <p class="help-block valtype" data-valtype="help"><%= help %></p>
-    | </div>
-    |</div>  
-
+  +item-template(name,jsrender)
+    .control-group
+      |<label class="control-label" for="<%= type %>"><%= label %></label>
+      |<div class="controls">
+      |  <textarea rows="3" id="<%= type %>" name="<%= name %>" placeholder="<%= placeholder %>"></textarea>
+      |  <p class="help-block valtype" data-valtype="help"><%= help %></p>
+      |</div>
