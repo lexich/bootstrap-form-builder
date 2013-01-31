@@ -82,7 +82,8 @@ define [
       if axis in ["x","y"]
         @$area.sortable( "option", "axis", axis );
         true
-      false
+      else
+        false
 
     setDirection:(direction)->
       if direction is "vertical"
