@@ -98,7 +98,6 @@ define [
       _.each models,(model)=>
         model.set "direction",@getDirection(),{
           validation:true
-          silent:true
         }
 
     event_options:(e)->

@@ -14,7 +14,7 @@ define [
         new DropAreaModel(),
       ])
 
-      @service = 
+      @service =
         renderFormViewElement:(row)->
           $("<div>").html """
           <div data-drop-accept>DATA</div>
@@ -22,6 +22,7 @@ define [
           <span data-js-close-area></span>
           <span data-js-options-area></span>
           """
+
         getOrAddFormItemView: (model)=>
           view = new ->
             $el:$("<div>")
@@ -92,7 +93,7 @@ define [
     
     it "check setFluentViewMode",->
       @view.render()
-      expect(@view.getFluentMode()).toBeFalsy()
+      expect(@view.getFluentMode()).toEqual(false)
       $children = @view.$area.children()
       expect($children.length).toEqual(3)
       expect( @view.$el.hasClass("form-horizontal")).toBeTruthy()
@@ -101,7 +102,6 @@ define [
 
       expect(@view.getFluentMode()).toEqual(true)
       expect(not @view.$el.hasClass("form-horizontal")).toBeTruthy()
-      expect($children.hasClass("span3")).toBeTruthy()    
 
     it "check event_options",->
       @view.render()      
@@ -134,4 +134,10 @@ define [
       expect(bBaseValue).toBeTruthy()
 
     it "check setDirection",->
-      expect(false).toBeTruthy()
+      expect(@view.getFluentMode()).toEqual(false)
+      @view.setDirection "vertical"
+      expect(@view.getFluentMode()).toEqual(true)
+      @view.setDirection "horizontal"
+      expect(@view.getFluentMode()).toEqual(false)
+      @view.setDirection "junk"
+      expect(@view.getFluentMode()).toEqual(false)
