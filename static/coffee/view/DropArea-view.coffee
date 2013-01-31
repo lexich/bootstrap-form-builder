@@ -74,6 +74,16 @@ define [
 
     getFluentMode:-> @fluentMode
 
+    ###
+    @param axis {string|["x","y"]} - axis param for jqueri-ui sortable plugin
+    @return {boolean|true,false} - return true if success
+    ###
+    setAxis:(axis)->
+      if axis in ["x","y"]
+        @$area.sortable( "option", "axis", axis );
+        true
+      false
+
     setDirection:(direction)->
       if direction is "vertical"
         @setFluentViewMode true
@@ -92,7 +102,9 @@ define [
       if bMode        
         @$el.removeClass("form-horizontal")
         @$area.addClass("fluid-row")
+        @setAxis("x")
       else
+        @setAxis("y")
         @$el.addClass("form-horizontal")
         @$area.removeClass("fluid-row")
       models = @collection.smartSliceNormalize @row, "direction", @getDirection()
