@@ -42,9 +42,10 @@ define [
         drop: _.bind(@handle_droppable_drop,this)
 
       @$area.sortable
-        #axis:"y"
+        #axis:"y"        
         connectWith: @DEFAULT_AREA_SELECTOR
         update:_.bind(@handle_sortable_update,this)
+        start:_.bind(@handle_sortable_start,this)
 
     render:->
       LOG "DropAreaView", "render"
@@ -117,6 +118,12 @@ define [
           
         position + 1
       ),0    
+
+    handle_sortable_start:(ev,ui)->
+      if @getFluentMode()
+        ui.placeholder.addClass("span1")
+      else
+        ui.placeholder.removeClass("span1")
 
     handle_sortable_update:(ev,ui)->
       LOG "DropAreaView","handle_sortable_update"
