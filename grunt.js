@@ -86,6 +86,12 @@ module.exports = function (grunt) {
           "www/static/css/jasmine/":[
             "components/jasmine/lib/jasmine-core/jasmine.css"
           ],
+          "www/static/plugins/select2/":[
+            "components/select2/select2.css",
+            "components/select2/select2.js",
+            "components/select2/select2.png",
+            "components/select2/spinner.gif"
+          ],
           "www/static/js/sinon/":"components/sinon.js/sinon.js",
           "www/static/templates/":"static/templates/*.html"
         }
