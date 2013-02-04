@@ -7,7 +7,8 @@ require.config
     "bootstrap":"bootstrap/bootstrap"
     "base":"common/base"
     "jasmine-html":"jasmine/jasmine-html"
-    "jasmine":"jasmine/jasmine"  
+    "jasmine":"jasmine/jasmine" 
+    "select2":"../plugins/select2/select2"
   shim:
     "jasmine":
       exports:"jasmine" 

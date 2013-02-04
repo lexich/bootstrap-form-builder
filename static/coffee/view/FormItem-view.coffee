@@ -1,9 +1,10 @@
 define [
   "jquery",
   "backbone",
-  "underscore"
-],($,Backbone,_)-> 
-  FormItemView = Backbone.View.extend
+  "underscore",
+  "view/API-view"
+],($,Backbone,_, APIView)-> 
+  FormItemView = APIView.extend
     events:
       "click *[data-js-close]" : "event_close"
       "click *[data-js-options]" : "event_options"
@@ -27,6 +28,7 @@ define [
         @$el.addClass("span#{@model.get('size')}")
 
       @$el.find(".debug").html "row:#{@model.get('row')} position:#{@model.get('position')}"
+      @updateUI()
 
     remove:->
       LOG "FormItemView","remove"

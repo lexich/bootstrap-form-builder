@@ -5,6 +5,7 @@ require [
   "collection/DropArea-collection",
   "view/Form-view",
   "view/ToolItem-view",
+  "bootstrap"
 ],($,ModalView,Service,DropAreaCollection,FormView,ToolItemView)->
   $(document).ready ->
     modal = new ModalView
