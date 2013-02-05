@@ -1,0 +1,49 @@
+{% set title = "Form Builder" %}
+{% set description = "Description" %}
+{% set author = "lexich" %}
+{% set work_form_title = "Source form" %}
+{% set form_builder_title = "Form Builder" %}
+{% set submit_form = "Submit Form" %}
+{% set add_drag_area = "Add area" %}
+
+<!DOCTYPE html><!--[if lt IE 7]>
+<html lang="ru" class="no-js ie6 oldie"></html><![endif]--><!--[if IE 7]>
+<html lang="ru" class="no-js ie7 oldie"></html><![endif]--><!--[if IE 8]>
+<html lang="ru" class="no-js ie8 oldie"></html><![endif]-->
+<!-- [if gt IE 8] <!-->
+<html lang="ru" class="no-js">
+  <!-- <![endif]-->
+  <head>   
+    <title>{{ title }}</title>
+    {% block meta %}
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description" content="{{ description }}">
+    <meta name="author" content="{{ author }}">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta http-equiv="content-type" content="text/html; charset=utf8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% endblock %}
+    {% block stylesheet %}
+    <link href="static/css/bootstrap/bootstrap.css" rel="stylesheet" media="screen">
+    <link href="static/css/bootstrap/bootstrap-responsive.css" rel="stylesheet" media="screen">
+    <link href="static/font-awesome/css/font-awesome.min.css" rel="stylesheet" media="screen">
+    <!--[if IE 7]>
+        <link href="static/font-awesome/css/font-awesome-ie7.min.css" rel="stylesheet" media="screen"><![endif]-->
+    <!-- <![endif]-->
+    <link href="static/css/style.css" rel="stylesheet" media="screen">
+    {% endblock %}
+  </head>
+  <body>
+    {% block content %}{% endblock %}
+    {% block script %}
+    <!--live reload-->
+    <script>__reloadServerUrl="ws://localhost:6001";</script>
+    <script src="//localhost:6001/__reload/client.js"></script>
+    <script src="/static/js/common/base.js"></script>
+    <script src="/static/js/requirejs/require.js">     </script>
+    <script src="/static/js/config.js"></script>
+    <script src="/static/js/main.js"></script>
+    {% endblock %}
+  </body>
+</html>

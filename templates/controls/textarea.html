@@ -1,0 +1,22 @@
+{% macro component %} 
+  {% set name = "textarea" %}
+  {% set jsrender = {
+      label:"textarea",
+      placeholder:"textarea",
+      name: "textarea",
+      help: "help",
+      type:{ value:"textarea",type:"select"},
+      position:{ value:0, type:"hidden"},
+      row:{ value:0, type:"hidden"}
+    } 
+  %}
+<script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}", data-ui-jsrender-type="{{ name }}">
+  <div class="control-group">
+    <label class="control-label" for="<%= type %>"><%= label %></label>
+    <div class="controls">
+      <textarea rows="3" id="<%= type %>" name="<%= name %>" placeholder="<%= placeholder %>" class="span10"></textarea>
+      <p class="help-block valtype" data-valtype="help"><%= help %></p>
+    </div>
+  </div>
+</script>
+{% endmacro %}

@@ -1,0 +1,60 @@
+
+<script type="text/template" id="formItemTemplate">
+  <div data-drag-accept="data-drag-accept" class="ui_wrapper">
+    <table class="form-item__tools">
+      <tbody>
+        <tr>
+          <td><span class="debug"></span></td>
+          <td><span data-js-options="data-js-options" class="icon-cogs ui_icons"></span></td>
+          <td><span data-js-close="data-js-close" class="icon-remove ui_icons">         </span></td>
+        </tr>
+      </tbody>
+    </table><%= content %>
+  </div>
+</script>
+<script type="text/template" id="formViewTemplate">
+  <h4 data-html-row="data-html-row">row: <%= row %></h4>
+  <table>
+    <tbody>
+      <tr>
+        <td><span data-js-close-area="data-js-close-area" class="icon-remove ui_icons"></span></td>
+        <td><span data-js-options-area="data-js-options-area" class="icon-cog ui_icons"></span></td>
+      </tr>
+    </tbody>
+  </table>
+  <div data-drop-accept="data-drop-accept" class="workarea__drop"></div>
+</script>
+<script type="text/template" id="areaTemplateItem">
+   
+  <% if(type==""){ %>    
+  <% } else if(type==""){ %>    
+  <% } else { %>
+  <span class="icon-edit icon-2x"><%= type.charAt(0).toUpperCase() + type.slice(1) %></span>
+  <% } %>
+</script>
+<script type="text/template" id="modalTemplate">
+  <div class="modal">
+   <div class="modal-header">
+     <button type="button" data-js-close class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+     <h3>Settings</h3>
+   </div>
+   <div class="modal-body"></div>
+   <div class="modal-footer">
+     <a href="#" data-js-close class="btn">Close</a>
+     <a href="#" data-js-save class="btn btn-primary">Save changes</a>
+   </div>
+  </div> 
+</script>
+<script type="text/template" data-modal-type="input">
+  <label for="__id_<%= name %>"><%= name %></label>
+  <input id="__id_<%= name %>" type="text" name="<%= name %>" value="<%= value %>">
+</script>
+<script type="text/template" data-modal-type="select">
+  <label for="__id_<%= name %>"><%= name %></label>
+  <select id="__id_<%= name %>" name="<%= name %>" value="<%= value %>">
+  <% _.each(data,function(item){ %>
+    <option value="<%= item %>" <% if(value==item){ %>selected="selected"<% } %>  ><%= item %></option>
+  <%});%>
+  </select>
+</script>
+<script type="text/template" data-modal-type="hidden"><input id="__id_<%= name %>" type="hidden" name="<%= name %>" value="<%= value %>"></script>

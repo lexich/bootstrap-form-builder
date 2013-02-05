@@ -1,4 +1,6 @@
 module.exports = function (grunt) {
+  var path = require("path");
+  var fs = require("fs");
 
   grunt.initConfig({
     less: {
@@ -7,21 +9,8 @@ module.exports = function (grunt) {
           "www/static/css/style.css": "static/less/style.less"
         }
       }
-    },
-    jade: {
-      html: {
-        src: ["templates/index.jade","templates/test.jade"],
-        dest: "www",
-        options: {
-          client: false
-        }
-      }
-    },
-    shell: {
-      jade: {
-        command : "jade -P -O www templates/index.jade",
-        stdout: true
-      },
+    },    
+    shell: {    
       less:{
         command : "lessc static/less/style.less www/static/css/style.css",
         stdout: true
@@ -114,13 +103,9 @@ module.exports = function (grunt) {
         }
     },
     watch:{
-      jade_shell:{
-        files:[
-          "templates/*.jade",
-          "templates/*/*.jade",
-          "templates/*/*/*.jade"
-        ],
-        tasks:["jade","reload"]
+      swig:{
+        files:["templates/*.html","templates/**/*.html","templates/**/**/*.html"],
+        tasks:["swig", "reload"]
       },
       coffee_shell:{
         files:["static/coffee/*.coffee","static/coffee/**/*.coffee"],
@@ -129,6 +114,15 @@ module.exports = function (grunt) {
       less_shell:{
         files:"static/less/*.less",
         tasks:["less","reload"]
+      }
+    },
+    swig:{
+      development:{
+        root:"templates",
+        out:"www",
+        files:[
+          "index.html","test.html"
+        ]                 
       }
     }
   });
@@ -175,16 +169,42 @@ module.exports = function (grunt) {
     });
     app.listen(port);
   });
-  grunt.registerTask("default","clean bower copy jade less coffee connect");
-  grunt.registerTask("dev","clean copy jade less coffee watch");
+
+  grunt.registerMultiTask("swig","Run swig",function(){
+    var swig = require("swig");
+    var html = require("html");
+    
+    swig.init({
+      root:this.data.root,
+      autoescape: true,
+      allowErrors: true,
+      encoding:"utf8"
+    });
+    try{
+      var out = this.data.out;
+      this.data.files.forEach(function(file){
+        var tmpl = swig.compileFile(file);
+        var data = tmpl.render({});
+        var prettyData = html.prettyPrint(data, {indent_size: 2});
+        var outFile = path.join(out, file );
+        fs.writeFileSync(outFile, prettyData);
+        console.log("write: " + outFile);
+      });      
+    } catch (err){
+      console.error(err);
+    }
+    
+  });
+
+  grunt.registerTask("default","clean bower copy less coffee swig connect");
+  grunt.registerTask("dev","clean copy less coffee swig watch");
   
   
   grunt.loadNpmTasks("grunt-contrib-copy");
   grunt.loadNpmTasks("grunt-clean");
   //grunt.loadNpmTasks("grunt-connect");
   grunt.loadNpmTasks("grunt-coffee");
-  grunt.loadNpmTasks("grunt-contrib-less");
-  grunt.loadNpmTasks("grunt-jade");
+  grunt.loadNpmTasks("grunt-contrib-less");  
   grunt.loadNpmTasks("grunt-shell");
   grunt.loadNpmTasks('grunt-reload');
 };
