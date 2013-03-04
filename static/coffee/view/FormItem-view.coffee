@@ -28,7 +28,7 @@ define [
         @$el.addClass("span#{@model.get('size')}")
 
       @$el.find(".debug").html "row:#{@model.get('row')} position:#{@model.get('position')}"
-      @updateUI()
+      APIView::render.apply this, arguments
 
     remove:->
       LOG "FormItemView","remove"

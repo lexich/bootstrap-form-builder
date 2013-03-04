@@ -167,6 +167,15 @@ module.exports = function (grunt) {
     app.post("/forms.json",function(req, res){
       data = req.body;
     });
+    app.get("/select2.json",function(req, res){
+      res.send({ 
+        more: false,
+        results: [
+          { id: "CA", text: "California" },
+          { id: "AL", text: "Alabama" }
+        ]
+      });
+    });
     app.listen(port);
   });
 

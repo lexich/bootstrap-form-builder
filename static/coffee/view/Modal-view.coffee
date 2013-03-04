@@ -19,7 +19,7 @@ define [
       @$el.hide()
       @$el.html templateHTML
       @$el.appendTo $("body")
-      @options.classModalBody = @options.classModalBody || @DEFAULT_MODAL_BODY
+      @options.classModalBody = @options.classModalBody or @DEFAULT_MODAL_BODY
 
     ###
     @param options
