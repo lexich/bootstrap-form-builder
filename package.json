@@ -16,16 +16,12 @@
     "html":"*",
     "less":"~1.3.3",
     "coffee-script": "~1.4.0",
-    "express":"*",
-    "grunt":"*",    
-    "grunt-contrib-copy":"*",
-    "grunt-clean":"*",
-    "grunt-connect":"*",
-    "grunt-coffee":"*",
-    "grunt-jade":"*",
-    "grunt-contrib-less":"*",
-    "grunt-shell":"*",
-    "grunt-reload":"*"    
+    "express":"*"
+  },
+  "devDependencies": {
+    "grunt-cli":"*",
+    "grunt-contrib":"*",
+    "grunt-reload":"*"
   },
   "readme": "README.md"
 }
