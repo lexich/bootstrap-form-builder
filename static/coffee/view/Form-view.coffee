@@ -69,8 +69,9 @@ define [
       @collection.updateAll()
 
     event_addDropArea:(e)->
-      keys = _.keys(@dropAreas)
-      nextRow = if keys.length > 0 then parseInt(_.max(keys))+1 else 0
-      @getOrAddDropArea nextRow, @getPlaceholder()
+      max_key = _.chain(@dropAreas).keys().map((key)->parseInt key).max().value();
+      @getOrAddDropArea max_key + 1, @getPlaceholder()
+      window.scrollTo 0, $(document).height();
+
 
   FormView

@@ -25,6 +25,7 @@ define [
       data = @options.service.getData(@options.type)
       @$el.html @options.template
       @$el.attr "data-#{DATA_TYPE}", @options.type
+      @$el.addClass("ui_tools-#{@options.type}")
       data.$el.before @$el
       this
       

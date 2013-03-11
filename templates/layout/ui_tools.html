@@ -4,31 +4,46 @@
 {% import 'controls/select2.html' as select2 %}
 {% import 'controls/other.html' as other  %}
 {% import 'controls/datepicker.html' as datepicker %}
+{% import 'controls/file.html' as file %}
 
 {% macro navigation_tabs %}
-  <ul class="nav nav-tabs">
-    <li class="active">
-      <a href="#input" data-toggle="tab">Input</a>
-    </li>
-    <li>
-      <a href="#js" data-toggle="tab">JS</a>
-    </li>
-  </ul>
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <div class="nav-collapse collapse">
+                <ul class="nav">
+                    <li class="active">
+                        <a href="#input" data-toggle="tab">Input</a>
+                    </li>
+                    <li>
+                        <a href="#js" data-toggle="tab">Dynamic</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="tab-content ui_tools navbar-inner">
+        <div id="input" class="tab-pane active">
+            <div class="span2">{{ password.component() }}</div>
+            <div class="span2">{{ textarea.component() }}</div>
+            <div class="span2">{{ input.component() }}</div>
+            <div class="span2">{{ file.component() }}</div>
+        </div>
+        <div id="js" class="tab-pane">
+            <div class="span2">{{ select2.component() }}</div>
+            <div class="span2">{{ datepicker.component() }}</div>
+        </div>
+    </div>
+</div>
 {% endmacro %}
 
 {% macro navigation_content %}
-<div class="tab-content ui_tools">
-  <div id="input" class="tab-pane active">
-    <div class="span2">{{ password.component() }}</div>
-    <div class="span2">{{ textarea.component() }}</div>
-    <div class="span2">{{ input.component() }}</div>
-  </div>
-  <div class="tab-pane" id="js">
-    <div class="span2">{{ select2.component() }}</div>
-    <div class="span2">{{ datepicker.component() }}</div>
-  </div>
-</div>
 <div style="display:none">
   {{ input.modal() }}
 </div>
+{% endmacro %}
+
+{% macro navigation_tabs_full %}
+    {{ navigation_tabs() }}
+    {{ navigation_content() }}
 {% endmacro %}

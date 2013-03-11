@@ -4,12 +4,8 @@
 
 {% block content %}
   {% parent %}
-    <div class="body container">
-    <div class="row-fluid">
-      <h3>{{form_builder_title}}</h3>
-      {{ tools.navigation_tabs() }}
-      {{ tools.navigation_content() }}
-    </div>
+  {{ tools.navigation_tabs_full() }}
+  <div class="body container">
     <div class="row-fluid">
       <div class="span12" data-html-form>
       </div>

@@ -106,7 +106,7 @@ module.exports = (grunt) ->
         ,
           flattern: true
           expand: true
-          src: "*.png"
+          src: ["*.png","**/*.png"]
           cwd: "static/img/"
           dest: "<%= resource.img %>/"
         ,
