@@ -1,4 +1,4 @@
-
+{# Обертка для контролов #}
 <script type="text/template" id="formItemTemplate">
   <div data-drag-accept="data-drag-accept" class="ui_wrapper">
     <table class="form-item__tools">
@@ -12,6 +12,8 @@
     </table><%= content %>
   </div>
 </script>
+
+{# Контейнер для оберток контролов #}
 <script type="text/template" id="formViewTemplate">
   <h4 data-html-row="data-html-row">row: <%= row %></h4>
   <table>
@@ -24,14 +26,16 @@
   </table>
   <div data-drop-accept="data-drop-accept" class="workarea__drop"></div>
 </script>
+
+{# Значек для схематичного отображения контролов #}
 <script type="text/template" id="areaTemplateItem">
-   
   <% if(type==""){ %>    
   <% } else if(type==""){ %>    
   <% } else { %>
-  <span class="icon-edit icon-2x"><%= type.charAt(0).toUpperCase() + type.slice(1) %></span>
+  <p><%= type.charAt(0).toUpperCase() + type.slice(1) %></p>
   <% } %>
 </script>
+{# Модальное окно #}
 <script type="text/template" id="modalTemplate">
   <div class="modal">
    <div class="modal-header">
@@ -45,6 +49,7 @@
    </div>
   </div> 
 </script>
+
 <script type="text/template" data-modal-type="input">
   <label for="__id_<%= name %>"><%= name %></label>
   <input id="__id_<%= name %>" type="text" name="<%= name %>" value="<%= value %>">

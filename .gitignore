@@ -2,3 +2,4 @@ components/*
 !templates/components
 node_modules
 www
+.idea

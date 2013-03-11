@@ -9,6 +9,7 @@ require.config
     "jasmine-html":"jasmine/jasmine-html"
     "jasmine":"jasmine/jasmine" 
     "select2":"../plugins/select2/select2"
+    "datepicker":"../plugins/datepicker/js/bootstrap-datepicker"
   shim:
     "jasmine":
       exports:"jasmine" 
@@ -22,6 +23,12 @@ require.config
       deps:["underscore","jquery"]
       exports:"Backbone"
     "bootstrap":
+      deps:["jquery"]
+
+    "datepicker":
+      deps:["bootstrap"]
+
+    "select2":
       deps:["jquery"]
 
     #jquery ui

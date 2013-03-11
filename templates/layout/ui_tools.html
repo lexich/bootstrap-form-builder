@@ -3,6 +3,7 @@
 {% import 'controls/textarea.html' as textarea %}
 {% import 'controls/select2.html' as select2 %}
 {% import 'controls/other.html' as other  %}
+{% import 'controls/datepicker.html' as datepicker %}
 
 {% macro navigation_tabs %}
   <ul class="nav nav-tabs">
@@ -10,7 +11,7 @@
       <a href="#input" data-toggle="tab">Input</a>
     </li>
     <li>
-      <a href="#other" data-toggle="tab">Other</a>
+      <a href="#js" data-toggle="tab">JS</a>
     </li>
   </ul>
 {% endmacro %}
@@ -20,13 +21,11 @@
   <div id="input" class="tab-pane active">
     <div class="span2">{{ password.component() }}</div>
     <div class="span2">{{ textarea.component() }}</div>
-    <div class="span2">{{ select2.component() }}</div>
     <div class="span2">{{ input.component() }}</div>
   </div>
-  <div class="tab-pane" id="other">
-    <div class="span2">
-      <p>Other1</p>
-    </div>
+  <div class="tab-pane" id="js">
+    <div class="span2">{{ select2.component() }}</div>
+    <div class="span2">{{ datepicker.component() }}</div>
   </div>
 </div>
 <div style="display:none">
