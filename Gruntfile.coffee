@@ -1,3 +1,20 @@
+data = [
+  label: "Name"
+  placeholder: "Input your name"
+  name: "name"
+  type: "input"
+  position: 0
+  row: 0
+,
+  label: "Comment"
+  placeholder: "Your comment"
+  name: "comment"
+  type: "textarea"
+  position: 1
+  row: 0
+]
+
+
 module.exports = (grunt) ->
   path = require("path")
   fs = require("fs")
@@ -180,7 +197,7 @@ module.exports = (grunt) ->
         port: 9090
         base: "./www"
 
-    reload:
+    livereload:
       port: 6001
       proxy:
         host: "localhost"
@@ -189,15 +206,15 @@ module.exports = (grunt) ->
     watch:
       swig:
         files: ["templates/*.html", "templates/**/*.html", "templates/**/**/*.html"]
-        tasks: ["swig", "reload"]
+        tasks: ["swig", "livereload"]
 
       coffee_shell:
         files: ["static/coffee/*.coffee", "static/coffee/**/*.coffee"]
-        tasks: ["coffee", "reload"]
+        tasks: ["coffee", "livereload"]
 
       less_shell:
         files: "static/less/*.less"
-        tasks: ["less", "reload"]
+        tasks: ["less", "livereload"]
 
     swig:
       development:
@@ -223,7 +240,6 @@ module.exports = (grunt) ->
 
   grunt.registerMultiTask "connect2", "Run a simple static connect server till you shut it down", ->
     path = require("path")
-    @async()
     express = require("express")
     port = @data.port or 1337
     base = @data.base or __dirname
@@ -262,13 +278,10 @@ module.exports = (grunt) ->
           text: "Alabama"
         ]
 
-
     app.listen port
 
   grunt.registerMultiTask "swig", "Run swig", ->
     html = require("html")
-
-
     try
       @data.files.forEach (files) ->
         swig = require("swig")
@@ -286,13 +299,9 @@ module.exports = (grunt) ->
           outFile = path.join(files.dest, file)
           fs.writeFileSync outFile, prettyData
           console.log "write: " + outFile
-
     catch err
       console.error err
 
-  grunt.registerTask "default", ["clean", "bower", "copy", "less", "coffee", "swig", "connect2"]
-  grunt.registerTask "dev", ["clean", "copy", "less", "coffee", "swig", "watch"]
-  
+  grunt.registerTask "default", ["clean", "copy", "less", "coffee", "swig","connect2", "watch"]
 
-  grunt.loadNpmTasks('grunt-contrib');
-  grunt.loadNpmTasks "grunt-reload"
+  grunt.loadNpmTasks "grunt-contrib"

@@ -1,4 +1,4 @@
-{% set title = "Построитель форм" %}
+{% set title = "Form Builder" %}
 {% set description = "Description" %}
 {% set author = "lexich" %}
 {% set work_form_title = "Исходная форма" %}
@@ -40,12 +40,13 @@
     {% block content %}{% endblock %}
     {% block script %}
     <!--live reload-->
-    <script>__reloadServerUrl="ws://localhost:6001";</script>
-    <script src="//localhost:6001/__reload/client.js"></script>
     <script src="/static/js/common/base.js"></script>
     <script src="/static/js/requirejs/require.js">     </script>
     <script src="/static/js/config.js"></script>
     <script src="/static/js/main.js"></script>
+    <script>
+        document.write('<script src=\"http://' + (location.host || 'localhost').split(':')[0] + ':' + 6001 + '/livereload.js?snipver=1\"><\/script>');
+    </script>
     {% endblock %}
   </body>
 </html>
