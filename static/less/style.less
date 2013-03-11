@@ -90,8 +90,19 @@ table.form-item__tools{
   .ui_tools-password  { .ui_tools_mixin("../img/components/password_input.png"); }
   .ui_tools-datepicker  { .ui_tools_mixin("../img/components/datepicker_input.png"); }
   .ui_tools-file  { .ui_tools_mixin("../img/components/file_input.png"); }
+  .ui_tools-checkbox  { .ui_tools_mixin("../img/components/checkbox_input.png"); }
 }
 
+.ui_tools__container{
+  ul{
+    text-decoration: none;
+    li{
+      float: left;
+      list-style: none;
+      overflow-x: auto;
+    }
+  }
+}
 
 .tool-item{ 
   border: 1px solid @lightgray;

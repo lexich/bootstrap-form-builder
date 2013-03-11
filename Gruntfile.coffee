@@ -101,6 +101,27 @@ module.exports = (grunt) ->
           cwd: "<%= components %>/requirejs/"
           dest: "<%= resource.js %>/requirejs/"
         ]
+      fuelux:
+        files:[
+          flattern: true
+          expand: true
+          src: "*.js"
+          cwd: "<%= components %>/fuelux/dist"
+          dest: "<%= resource.js %>/fuelux/"
+        ,
+          flattern: true
+          expand: true
+          src: "*.min.css"
+          cwd: "<%= components %>/fuelux/dist/css"
+          dest: "<%= resource.css %>/fuelux/"
+        ,
+          flattern: true
+          expand: true
+          src: "*.png"
+          cwd: "<%= components %>/fuelux/dist/img"
+          dest: "<%= resource.img %>/fuelux/"
+        ]
+
       common:
         files:[
           flattern: true

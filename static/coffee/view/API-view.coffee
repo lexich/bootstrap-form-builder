@@ -3,7 +3,8 @@ define [
          "backbone",
          "underscore",
          "select2",
-         "datepicker"
+         "datepicker",
+         "fuelux/all"
 ], ($, Backbone, _)->
   APIView = Backbone.View.extend
     init_select2: ->
@@ -25,6 +26,10 @@ define [
     init_datepicker: ->
       $el = $("input", @$el)
       $el.datepicker()
+
+    init_checkbox: ->
+      $el = $("input", @$el)
+      $el.checkbox()
 
     render: ->
       type = @model.get("type")

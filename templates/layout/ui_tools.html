@@ -5,6 +5,8 @@
 {% import 'controls/other.html' as other  %}
 {% import 'controls/datepicker.html' as datepicker %}
 {% import 'controls/file.html' as file %}
+{% import 'controls/checkbox.html' as checkbox %}
+
 
 {% macro navigation_tabs %}
 <div class="navbar navbar-inverse navbar-fixed-top">
@@ -23,15 +25,21 @@
         </div>
     </div>
     <div class="tab-content ui_tools navbar-inner">
-        <div id="input" class="tab-pane active">
-            <div class="span2">{{ password.component() }}</div>
-            <div class="span2">{{ textarea.component() }}</div>
-            <div class="span2">{{ input.component() }}</div>
-            <div class="span2">{{ file.component() }}</div>
+        <div id="input" class="tab-pane active ui_tools__container">
+            <ul>
+                <li>{{ password.component() }}</li>
+                <li>{{ textarea.component() }}</li>
+                <li>{{ input.component() }}</li>
+                <li>{{ file.component() }}</li>
+            </ul>
         </div>
-        <div id="js" class="tab-pane">
-            <div class="span2">{{ select2.component() }}</div>
-            <div class="span2">{{ datepicker.component() }}</div>
+
+        <div id="js" class="tab-pane ui_tools__container">
+            <ul>
+                <li>{{ select2.component() }}</li>
+                <li>{{ datepicker.component() }}</li>
+                <li>{{ checkbox.component() }}</li>
+            </ul>
         </div>
     </div>
 </div>
