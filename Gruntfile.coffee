@@ -150,6 +150,14 @@ module.exports = (grunt) ->
           cwd: "<%= components %>/bootstrap-datepicker/css"
           dest: "<%= resource.css %>/"
         ]
+      templates:
+        files:[
+          flattern: true
+          expand: true
+          src: "*.html"
+          cwd: "static/templates/"
+          dest: "<%= resource.templates %>/"
+        ]
       common:
         files:[
           flattern: true
@@ -195,12 +203,6 @@ module.exports = (grunt) ->
           src: "sinon.js"
           cwd: "<%= components %>/sinon.js/"
           dest: "<%= resource.js %>/sinon/"
-        ,
-          flattern: true
-          expand: true
-          src: "*.html"
-          cwd: "static/templates/"
-          dest: "<%= resource.templates %>/"
         ]
 
     clean:
@@ -268,6 +270,10 @@ module.exports = (grunt) ->
       less_shell:
         files: "static/less/*.less"
         tasks: ["less"]
+
+      templates:
+        files: "static/templates/*.html"
+        tasks: ["copy:templates"]
 
     swig:
       dev:
