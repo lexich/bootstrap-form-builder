@@ -12,8 +12,10 @@ define [
       @$el.draggable
         appendTo:"body"
         clone:true
+        opacity: 0.7
         connectToSortable:"[data-drop-accept]"
-        helper:_.bind( @handle_draggable_helper, this)      
+        helper:_.bind( @handle_draggable_helper, this)
+        cursor: "pointer"
 
     handle_draggable_helper:(event)->
       $el = $(event.target)

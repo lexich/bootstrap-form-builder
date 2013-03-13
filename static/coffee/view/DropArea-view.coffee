@@ -49,6 +49,7 @@ define [
         update:_.bind(@handle_sortable_update,this)
         start:_.bind(@handle_sortable_start,this)
 
+
     render:->
       LOG "DropAreaView", "render"
       @$area.empty()
