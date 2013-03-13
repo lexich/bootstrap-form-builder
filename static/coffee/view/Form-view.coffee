@@ -3,7 +3,7 @@ define [
   "backbone",
   "underscore",
   "view/DropArea-view"
-  "text!/static/templates/formView.html"
+  "text!../../templates/formView.html"
 ],($,Backbone,_,DropAreaView,templateHtml)-> 
   FormView = Backbone.View.extend
     events:

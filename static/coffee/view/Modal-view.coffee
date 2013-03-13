@@ -2,7 +2,7 @@ define [
   "jquery",
   "backbone",
   "underscore",
-  "text!/static/templates/modalView.html"
+  "text!../../templates/modalView.html"
 ],($,Backbone,_, templateHTML)->
   ModalView = Backbone.View.extend
     DEFAULT_MODAL_BODY:".modal-body"

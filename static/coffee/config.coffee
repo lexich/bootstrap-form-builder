@@ -8,8 +8,8 @@ require.config
     "base":"common/base"
     "jasmine-html":"jasmine/jasmine-html"
     "jasmine":"jasmine/jasmine" 
-    "select2":"../plugins/select2/select2"
-    "datepicker":"../plugins/datepicker/js/bootstrap-datepicker"
+    "select2":"select2/select2"
+    "datepicker":"datepicker/bootstrap-datepicker"
   shim:
     "jasmine":
       exports:"jasmine" 

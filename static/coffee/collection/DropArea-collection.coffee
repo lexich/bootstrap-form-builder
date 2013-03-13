@@ -1,7 +1,7 @@
 define [
   "backbone"
   "underscore"
-  "/static/js/model/DropArea-model.js"
+  "model/DropArea-model"
 ],(Backbone,_, DropAreaModel)->
 
   DropAreaCollection = Backbone.Collection.extend

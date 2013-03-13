@@ -25,34 +25,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% endblock %}
     {% block stylesheet %}
-    <link href="static/css/bootstrap/bootstrap.css" rel="stylesheet" media="screen">
-    <link href="static/css/bootstrap/bootstrap-responsive.css" rel="stylesheet" media="screen">
-
-    <!-- Start Fuelux -->
-    <link href="static/css/fuelux/fuelux.min.css" rel="stylesheet" media="screen">
-    <link href="static/css/fuelux/fuelux-responsive.min.css" rel="stylesheet" media="screen">
-    <!-- End FuelUX -->
-
-    <link href="static/font-awesome/css/font-awesome.min.css" rel="stylesheet" media="screen">
-    <!--[if IE 7]>
-        <link href="static/font-awesome/css/font-awesome-ie7.min.css" rel="stylesheet" media="screen"><![endif]-->
-    <!-- <![endif]-->
-    <link href="static/plugins/select2/select2.css" rel="stylesheet" media="screen">
-    <link href="static/plugins/datepicker/css/datepicker.css" rel="stylesheet" media="screen">
-    <link href="static/css/style.css" rel="stylesheet" media="screen">
+    {% if compile and compile.compress_css %}
+      {% if compile.compress_css %}<link href="{{ compile.compress_css }}" rel="stylesheet" media="screen">{% endif %}
+      {% if compile.compress_cssie7 %}<link href="{{ compile.compress_cssie7 }}" rel="stylesheet" media="screen">{% endif %}
+    {% else %}
+      <!-- Bootstrap -->
+      <link href="static/css/bootstrap.css" rel="stylesheet" media="screen">
+      <link href="static/css/bootstrap-responsive.css" rel="stylesheet" media="screen">
+      <!-- End Bootstrap-->
+      <!-- Start Fuelux -->
+      <link href="static/css/fuelux.min.css" rel="stylesheet" media="screen">
+      <link href="static/css/fuelux-responsive.min.css" rel="stylesheet" media="screen">
+      <!-- End FuelUX -->
+      <link href="static/css/font-awesome.min.css" rel="stylesheet" media="screen">
+      <!--[if IE 7]><link href="static/font-awesome/css/font-awesome-ie7.min.css" rel="stylesheet" media="screen"><!--[endif]-->
+      <link href="static/css/select2.css" rel="stylesheet" media="screen">
+      <link href="static/css/datepicker.css" rel="stylesheet" media="screen">
+      <link href="static/css/style.css" rel="stylesheet" media="screen">
+    {% endif %}
     {% endblock %}
   </head>
   <body>
     {% block content %}{% endblock %}
     {% block script %}
+    {% if compile and compile.livereload %}
     <!--live reload-->
+    <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':' + 6001 + '/livereload.js?snipver=1"><\/script>');</script>
+    <!-- end live reload-->
+    {% endif %}
+
     <script src="/static/js/common/base.js"></script>
     <script src="/static/js/requirejs/require.js">     </script>
     <script src="/static/js/config.js"></script>
-    <script src="/static/js/main.js"></script>
-    <script>
-        document.write('<script src=\"http://' + (location.host || 'localhost').split(':')[0] + ':' + 6001 + '/livereload.js?snipver=1\"><\/script>');
-    </script>
+    {% if compile and compile.compress_js %}
+        <script src="{{compile.compress_js}}"></script>
+    {% else %}
+        <script src="/static/js/main.js"></script>
+    {% endif %}
+
     {% endblock %}
   </body>
 </html>
