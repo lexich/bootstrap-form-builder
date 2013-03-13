@@ -46,6 +46,7 @@ define [
           row:row
           accept:($el)->
             $el.hasClass "ui-draggable"
+        area.$el.append "<hr/>"
         area.$el.appendTo $placeholder
         @dropAreas[row] = area
       area

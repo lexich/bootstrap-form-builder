@@ -42,7 +42,7 @@ define [
         drop: _.bind(@handle_droppable_drop,this)
 
       @$area.sortable
-        #axis:"y"        
+        placeholder: "ui_workarea__placeholder_sortable"
         connectWith: @DEFAULT_AREA_SELECTOR
         update:_.bind(@handle_sortable_update,this)
         start:_.bind(@handle_sortable_start,this)
@@ -133,6 +133,7 @@ define [
       ),0    
 
     handle_sortable_start:(ev,ui)->
+      LOG "DropAreaView", "handle_sortable_start"
       if @getFluentMode()
         ui.placeholder.addClass("span1")
       else
