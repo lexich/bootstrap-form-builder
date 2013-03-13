@@ -1,10 +1,10 @@
 {# Обертка для контролов #}
 <script type="text/template" id="formItemTemplate">
   <div data-drag-accept="data-drag-accept" class="ui_wrapper">
-    <table class="form-item__tools">
+    <table data-js-show-tools-item class="form-item__tools ui_settings">
       <tbody>
         <tr>
-          <td><span class="debug"></span></td>
+          <td><span class="debug-show"></span></td>
           <td><span data-js-options="data-js-options" class="icon-cogs ui_icons"></span></td>
           <td><span data-js-close="data-js-close" class="icon-remove ui_icons">         </span></td>
         </tr>
@@ -15,12 +15,12 @@
 
 {# Контейнер для оберток контролов #}
 <script type="text/template" id="formViewTemplate">
-  <h4 data-html-row="data-html-row">row: <%= row %></h4>
-  <table>
+  <h4 class="debug-show" data-html-row="data-html-row">row: <%= row %></h4>
+  <table data-js-show-tools class="ui_settings">
     <tbody>
       <tr>
-        <td><span data-js-close-area="data-js-close-area" class="icon-remove ui_icons"></span></td>
-        <td><span data-js-options-area="data-js-options-area" class="icon-cog ui_icons"></span></td>
+        <td><span data-js-close-area class="icon-remove ui_icons"></span></td>
+        <td><span data-js-options-area class="icon-cog ui_icons"></span></td>
       </tr>
     </tbody>
   </table>

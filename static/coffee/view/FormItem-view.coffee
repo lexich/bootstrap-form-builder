@@ -8,6 +8,8 @@ define [
     events:
       "click *[data-js-close]" : "event_close"
       "click *[data-js-options]" : "event_options"
+      "mouseenter": "event_mouseenter"
+      "mouseleave": "event_mouseleave"
     ###
     @param service
     @param type
@@ -27,7 +29,7 @@ define [
       if @model.get("direction") is "vertical"
         @$el.addClass("span#{@model.get('size')}")
 
-      @$el.find(".debug").html "row:#{@model.get('row')} position:#{@model.get('position')}"
+      @$el.find(".debug-show").html "row:#{@model.get('row')} position:#{@model.get('position')}"
       APIView::render.apply this, arguments
 
     remove:->
@@ -72,4 +74,13 @@ define [
       ),{}
       @model.set data
       @popover?.popover("hide")
+
+    event_mouseenter:(e)->
+      LOG "FormItemView", "event_mouseenter"
+      $("[data-js-show-tools-item]",@$el).addClass("ui_settings-show")
+
+    event_mouseleave:(e)->
+      LOG "FormItemView", "event_mouseleave"
+      $("[data-js-show-tools-item]",@$el).removeClass("ui_settings-show")
+
   FormItemView

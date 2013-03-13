@@ -12,6 +12,8 @@ define [
     events:
       "click [data-js-close-area]":"event_close"
       "click [data-js-options-area]":"event_options"
+      "mouseenter": "event_mouseenter"
+      "mouseleave": "event_mouseleave"
 
     DEFAULT_AREA_SELECTOR: "[data-drop-accept]"
     DEFAULT_ROW_VIEW: "[data-html-row]"
@@ -172,6 +174,14 @@ define [
         view.$el = ui.draggable
         view.el = ui.draggable.get(0)
       ui.draggable.attr("class","")
-      ui.draggable.data DATA_VIEW, view 
+      ui.draggable.data DATA_VIEW, view
+
+    event_mouseenter:(e)->
+      LOG "DropAreaView", "event_mouseenter"
+      $("[data-js-show-tools]",@$el).addClass("ui_settings-show")
+
+    event_mouseleave:(e)->
+      LOG "DropAreaView", "event_mouseleave"
+      $("[data-js-show-tools]", @$el).removeClass("ui_settings-show")
 
   DropAreaView

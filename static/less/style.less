@@ -13,7 +13,10 @@
 
 .ui_workarea{  
   width: 95%; 
-  margin: 10px; 
+  margin: 10px;
+  .btn{
+    color: @black;
+  }
 }
 
 .workarea__drop{
@@ -27,8 +30,9 @@
 }
 
 .ui_workarea__placeholder_sortable{
+  min-width: 200px;
+  min-height: 95px;
   width: 100%;
-  height: 50px;
   .border-radius(1em);
   .box-shadow(0 0 5px rgba(0,0,0,0.5));
   margin: 10px 0 40px 0;
@@ -135,3 +139,15 @@ table.form-item__tools{
   display: block;
   margin: 0 auto;
 }
+
+.ui_settings{
+  visibility: hidden;
+}
+.ui_settings{
+  &.ui_settings-show{
+    visibility: visible;
+  }
+}
+
+.debug-show{display: none;}
+.debug{.debug-show{display: block;}}

@@ -9,7 +9,7 @@ define [
     events:
       "click [data-js-submit-form]": "event_submitForm"
       "click [data-js-add-drop-area]": "event_addDropArea"
-
+      "click [data-js-show-debug]": "event_showDebug"
     dropAreas:{}
 
     initialize:->            
@@ -73,6 +73,12 @@ define [
       max_key = _.chain(@dropAreas).keys().map((key)->parseInt key).max().value();
       @getOrAddDropArea max_key + 1, @getPlaceholder()
       window.scrollTo 0, $(document).height();
+
+    event_showDebug:(e)->
+      $("body").toggleClass("debug")
+      $(e.target).toggleClass("btn-link")
+
+
 
 
   FormView
