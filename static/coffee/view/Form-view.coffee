@@ -70,7 +70,10 @@ define [
       @collection.updateAll()
 
     event_addDropArea:(e)->
-      max_key = _.chain(@dropAreas).keys().map((key)->parseInt key).max().value();
+      if _.size(@dropAreas) is 0
+        max_key = -1
+      else
+        max_key = _.chain(@dropAreas).keys().map((key)->parseInt key).max().value();
       @getOrAddDropArea max_key + 1, @getPlaceholder()
       window.scrollTo 0, $(document).height();
 
