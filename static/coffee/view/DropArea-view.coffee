@@ -81,12 +81,12 @@ define [
     @param axis {string|["x","y"]} - axis param for jqueri-ui sortable plugin
     @return {boolean|true,false} - return true if success
     ###
-    setAxis:(axis)->
-      if axis in ["x","y"]
-        @$area.sortable( "option", "axis", axis );
-        true
-      else
-        false
+    #setAxis:(axis)->
+    #  if axis in ["x","y"]
+    #    @$area.sortable( "option", "axis", axis );
+    #    true
+    #  else
+    #    false
 
     setDirection:(direction)->
       if direction is "vertical"
@@ -106,9 +106,9 @@ define [
       if bMode        
         @$el.removeClass("form-horizontal")
         @$area.addClass("fluid-row")
-        @setAxis("x")
+        #@setAxis("x")
       else
-        @setAxis("y")
+        #@setAxis("y")
         @$el.addClass("form-horizontal")
         @$area.removeClass("fluid-row")
       models = @collection.smartSliceNormalize @row, "direction", @getDirection()
