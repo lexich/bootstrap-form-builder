@@ -14,7 +14,7 @@
     "requirejs-text":"~2.0.5",
     "jasmine":"~1.3.1",
     "select2":"~3.2.0",
-    "sinon.js":"*",
+    "sinon":"*",
     "fuelux":"*"
   }
 }
