@@ -4,7 +4,11 @@
   "version": "0.0.2",
   "author": {
     "name": "lexich"
-  },  
+  },
+  "scripts": {
+    "preinstall":"npm install -g grunt-cli --save-dev",
+    "preinstall2":"npm install -g grunt --save-dev"
+  },
   "homepage": "crvtu.ru",
   "engines": {
     "node": ">=0.8.0"
@@ -18,8 +22,6 @@
     "express":"~3.1.0"
   },
   "devDependencies": {
-    "grunt-cli":"~0.1.6",
-    "grunt":"~0.4.1",
     "grunt-contrib-clean":"~0.4.0",
     "grunt-contrib-coffee":"~0.6.0",
     "grunt-contrib-concat":"~0.1.3",
