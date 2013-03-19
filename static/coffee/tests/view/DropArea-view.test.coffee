@@ -145,9 +145,7 @@ define [
       @view.setDirection "junk"
       expect(@view.getFluentMode()).toEqual(false)
 
-    xit "check setAxis",->
+    it "check setAxis",->
       expect(@view.setAxis("x")).toBeTruthy()
       expect(@view.setAxis("y")).toBeTruthy()
       expect(@view.setAxis("")).toBeFalsy()
-
-
