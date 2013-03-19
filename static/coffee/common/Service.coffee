@@ -24,9 +24,7 @@ define [
       toolPanelItem = _.map @toolData, (v,k)=>
         options.createToolItemView(this,k,v).render()
 
-        
       @modal = options.modal
-      
       formView = options.createFormView(this)
 
       @modalTemplates = _.reduce $("[data-#{options.dataPostfixModalType}]"),(
@@ -35,18 +33,18 @@ define [
           if type? and type != ""
             memo[type] = $(item).html()
           memo
-      ),{}  
-    
-    getOrAddFormItemView:(model)->
+      ),{}
+
+    getOrAddFormItemView:(model, options)->
+      options = options ? {}
       filterItem = _.filter @formItemViews, (view)->
         view.model is model
 
       if filterItem.length > 1
         filterItem[0]
       else
-        item = new FormItemView
-          model: model
-          service: this
+        options = _.extend(options, {model, service: this})
+        item = new FormItemView options
         @formItemViews.push item
         item
 

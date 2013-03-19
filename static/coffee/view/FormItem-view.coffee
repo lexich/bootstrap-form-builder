@@ -15,6 +15,7 @@ define [
     ###
     @param service
     @param type
+    @param size
     ###
     initialize:->
       LOG "FormItemView","initialize"
@@ -38,17 +39,32 @@ define [
     event_close:->
       @remove()
 
-    cleanSize:->
-      @$el.removeClass (item,className)->
+    cleanSize:($el)->
+      $el.removeClass (item,className)->
         if /^span\d+/.test(className) then className else ""
 
+    getSizeOfRow:->
+      _.reduce @$el.parent().children(),((memo,el)=>
+        memo + @getSizeFromClass $(el)
+      ),0
+
+
     updateSize:->
-      @cleanSize()
       if @model.get("direction") is "vertical"
+        oldSize = @getSizeFromClass @$el
         size = @model.get("size")
-        size = 1 if size < 1
-        size = 12 if size > 12
+        freeSize = 12 - @getSizeOfRow()
+        delta = size - oldSize
+        if freeSize < delta and @model.set("size", oldSize + freeSize, {silent:true})
+          size = @model.get("size")
+      @cleanSize(@$el)
+      if @model.get("direction") is "vertical"
         @$el.addClass "span#{size}"
+
+    getSizeFromClass:($el)->
+      clazz = $el.attr("class")
+      res = /span(\d+)/.exec clazz
+      if res and res.length >= 2 then parseInt(res[1]) else 0
 
     event_incSize:(e)->
       size = @model.get "size"

@@ -68,10 +68,10 @@ define [
 
     it "check cleanSize",->
       @view.$el.addClass("span4")
-      @view.cleanSize()
+      @view.cleanSize(@view.$el)
       expect(@view.$el.hasClass("span4")).toBeFalsy()
       @view.$el.addClass("span")
-      @view.cleanSize()
+      @view.cleanSize(@view.$el)
       expect(@view.$el.hasClass("span")).toBeTruthy()
 
     it "check updateSize",->

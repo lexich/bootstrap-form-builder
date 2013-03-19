@@ -51,7 +51,6 @@ define [
 
       @$area.disableSelection()
 
-
     render:->
       LOG "DropAreaView", "render"
       @$area.empty()
@@ -172,10 +171,9 @@ define [
         model = new DropAreaModel()
         model.set data
         @collection.push model
-        view = new FormItemView
+        view = @options.service.getOrAddFormItemView model, {
           el:ui.draggable
-          model: model
-          service: @options.service
+        }
         view.render()
         ui.helper.data DATA_VIEW, view
       else
