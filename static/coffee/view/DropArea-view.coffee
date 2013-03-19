@@ -49,6 +49,8 @@ define [
         update:_.bind(@handle_sortable_update,this)
         start:_.bind(@handle_sortable_start,this)
 
+      @$area.disableSelection()
+
 
     render:->
       LOG "DropAreaView", "render"
@@ -81,12 +83,12 @@ define [
     @param axis {string|["x","y"]} - axis param for jqueri-ui sortable plugin
     @return {boolean|true,false} - return true if success
     ###
-    #setAxis:(axis)->
-    #  if axis in ["x","y"]
-    #    @$area.sortable( "option", "axis", axis );
-    #    true
-    #  else
-    #    false
+    setAxis:(axis)->
+      if axis in ["x","y"]
+        @$area.sortable "option", "axis", axis
+        true
+      else
+        false
 
     setDirection:(direction)->
       if direction is "vertical"
@@ -102,13 +104,12 @@ define [
       $children = @$area.children()
       return unless $children.length > 0
 
-      span = Math.floor(12.0/$children.length) - 1
       if bMode        
         @$el.removeClass("form-horizontal")
         @$area.addClass("fluid-row")
-        #@setAxis("x")
+        @setAxis("x")
       else
-        #@setAxis("y")
+        @setAxis("y")
         @$el.addClass("form-horizontal")
         @$area.removeClass("fluid-row")
       models = @collection.smartSliceNormalize @row, "direction", @getDirection()
@@ -138,9 +139,10 @@ define [
     handle_sortable_start:(ev,ui)->
       LOG "DropAreaView", "handle_sortable_start"
       if @getFluentMode()
-        ui.placeholder.addClass("span1")
+        ui.placeholder.removeClass("row-fluid")
       else
-        ui.placeholder.removeClass("span1")
+        ui.placeholder.addClass("row-fluid")
+
 
     handle_sortable_update:(ev,ui)->
       LOG "DropAreaView","handle_sortable_update"
