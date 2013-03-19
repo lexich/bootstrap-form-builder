@@ -97,13 +97,13 @@ define [
         @setFluentViewMode false
       else
         return
-      @$el.attr("data-direction", direction)
 
     getDirection:->
       if @getFluentMode() then "vertical" else "horizontal"
 
     setFluentViewMode:(bMode)->
       @fluentMode = bMode
+      @$el.attr "data-direction", @getDirection()
       $children = @$area.children()
       return unless $children.length > 0
 
