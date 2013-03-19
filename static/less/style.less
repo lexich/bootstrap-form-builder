@@ -32,10 +32,10 @@
 .ui_workarea__placeholder_sortable{
   min-width: 200px;
   min-height: 95px;
-  width: 100%;
   .border-radius(1em);
   .box-shadow(0 0 5px rgba(0,0,0,0.5));
   margin: 10px 0 40px 0;
+  float: left;
 }
 
 .form-item{
@@ -142,6 +142,7 @@ table.form-item__tools{
 
 .ui_settings{
   visibility: hidden;
+  min-height: 26px;
 }
 .ui_settings{
   &.ui_settings-show{
@@ -153,5 +154,5 @@ table.form-item__tools{
 .debug{.debug-show{display: block;}}
 
 .navbar-fixed-top-back{
-  z-index: -1;
+  z-index: 0;
 }

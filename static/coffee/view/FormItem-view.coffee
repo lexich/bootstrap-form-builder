@@ -8,6 +8,8 @@ define [
     events:
       "click *[data-js-close]" : "event_close"
       "click *[data-js-options]" : "event_options"
+      "click [data-js-inc-size]":"event_incSize"
+      "click [data-js-dec-size]":"event_decSize"
       "mouseenter": "event_mouseenter"
       "mouseleave": "event_mouseleave"
     ###
@@ -24,12 +26,8 @@ define [
       content = _.template templateHtml, @model.attributes
       html = @options.service.renderFormItemTemplate content
       @$el.html html
-      @$el.removeClass (item,className)->
-        if /^span\d{1,2}$/.test(className) then className else ""
-      if @model.get("direction") is "vertical"
-        @$el.addClass("span#{@model.get('size')}")
-
       @$el.find(".debug-show").html "row:#{@model.get('row')} position:#{@model.get('position')}"
+      @updateSize()
       APIView::render.apply this, arguments
 
     remove:->
@@ -39,6 +37,26 @@ define [
 
     event_close:->
       @remove()
+
+    cleanSize:->
+      @$el.removeClass (item,className)->
+        if /^span\d+/.test(className) then className else ""
+
+    updateSize:->
+      @cleanSize()
+      if @model.get("direction") is "vertical"
+        size = @model.get("size")
+        size = 1 if size < 1
+        size = 12 if size > 12
+        @$el.addClass "span#{size}"
+
+    event_incSize:(e)->
+      size = @model.get "size"
+      @model.set "size", size + 1, validate:true
+
+    event_decSize:(e)->
+      size = @model.get "size"
+      @model.set "size", size - 1, validate:true
 
     event_options:(e)->
       @options.service.showModal
