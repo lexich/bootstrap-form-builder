@@ -6,8 +6,8 @@ define [
 ],($,Backbone,_, APIView)-> 
   FormItemView = APIView.extend
     events:
-      "click *[data-js-close]" : "event_close"
-      "click *[data-js-options]" : "event_options"
+      "click [data-js-close]" : "event_close"
+      "click [data-js-options]" : "event_options"
       "click [data-js-inc-size]":"event_incSize"
       "click [data-js-dec-size]":"event_decSize"
       "mouseenter": "event_mouseenter"
