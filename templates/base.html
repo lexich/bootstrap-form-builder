@@ -27,7 +27,7 @@
     {% block stylesheet %}
     {% if compile and compile.compress_css %}
       {% if compile.compress_css %}<link href="{{ compile.compress_css }}" rel="stylesheet" media="screen">{% endif %}
-      {% if compile.compress_cssie7 %}<link href="{{ compile.compress_cssie7 }}" rel="stylesheet" media="screen">{% endif %}
+      {% if compile.compress_cssie7 %}<!--[if lt IE 7]><link href="{{ compile.compress_cssie7 }}" rel="stylesheet" media="screen"><![endif]-->{% endif %}
     {% else %}
       <!-- Bootstrap -->
       <link href="static/css/bootstrap.css" rel="stylesheet" media="screen">
