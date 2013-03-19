@@ -19,7 +19,7 @@ define [
           $("<div>").html """
           <div data-drop-accept>DATA</div>
           <div data-html-row></div>
-          <span data-js-close-area></span>
+          <span data-js-close-area><input /></span>
           <span data-js-options-area></span>
           """
 
@@ -138,15 +138,23 @@ define [
 
     it "check setDirection",->
       expect(@view.getFluentMode()).toEqual(false)
+      $els = $("<input>").appendTo(@view.$area)
+
       @view.setDirection "vertical"
       expect(@view.getFluentMode()).toEqual(true)
-      expect(@view.$el.prop("data-direction"),"vertical")
+      expect(@view.$el.attr("data-direction")).toEqual("vertical")
+      expect($els.hasClass("span12")).toBeFalsy()
+
       @view.setDirection "horizontal"
+      expect($els.length).toEqual(1)
+      expect($els.hasClass("span12")).toBeTruthy()
       expect(@view.getFluentMode()).toEqual(false)
-      expect(@view.$el.prop("data-direction"),"horizontal")
+      expect(@view.$el.attr("data-direction")).toEqual("horizontal")
+
       @view.setDirection "junk"
       expect(@view.getFluentMode()).toEqual(false)
-      expect(@view.$el.prop("data-direction"),"horizontal")
+      expect(@view.$el.attr("data-direction")).toEqual("horizontal")
+
 
     it "check setAxis",->
       expect(@view.setAxis("x")).toBeTruthy()

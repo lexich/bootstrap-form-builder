@@ -156,3 +156,12 @@ table.form-item__tools{
 .navbar-fixed-top-back{
   z-index: 0;
 }
+
+[data-js-inc-size],[data-js-dec-size]{
+  display: none;
+}
+[data-direction='vertical']{
+  [data-js-inc-size],[data-js-dec-size]{
+    display: block;
+  }
+}

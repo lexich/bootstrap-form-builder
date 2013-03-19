@@ -111,9 +111,11 @@ define [
         @$el.removeClass("form-horizontal")
         @$area.addClass("fluid-row")
         @setAxis("x")
+        $("select, input, textarea",@$el).removeClass "span12"
       else
         @setAxis("y")
         @$el.addClass("form-horizontal")
+        $("select, input, textarea",@$el).addClass "span12"
         @$area.removeClass("fluid-row")
       models = @collection.smartSliceNormalize @row, "direction", @getDirection()
       _.each models,(model)=>
