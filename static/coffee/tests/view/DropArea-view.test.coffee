@@ -140,10 +140,13 @@ define [
       expect(@view.getFluentMode()).toEqual(false)
       @view.setDirection "vertical"
       expect(@view.getFluentMode()).toEqual(true)
+      expect(@view.$el.prop("data-direction"),"vertical")
       @view.setDirection "horizontal"
       expect(@view.getFluentMode()).toEqual(false)
+      expect(@view.$el.prop("data-direction"),"horizontal")
       @view.setDirection "junk"
       expect(@view.getFluentMode()).toEqual(false)
+      expect(@view.$el.prop("data-direction"),"horizontal")
 
     it "check setAxis",->
       expect(@view.setAxis("x")).toBeTruthy()

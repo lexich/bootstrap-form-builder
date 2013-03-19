@@ -95,6 +95,9 @@ define [
         @setFluentViewMode true
       else if direction is "horizontal"
         @setFluentViewMode false
+      else
+        return
+      @$el.attr("data-direction", direction)
 
     getDirection:->
       if @getFluentMode() then "vertical" else "horizontal"
