@@ -64,7 +64,7 @@ define [
     getSizeFromClass:($el)->
       clazz = $el.attr("class")
       res = /span(\d+)/.exec clazz
-      if res and res.length >= 2 then parseInt(res[1]) else 0
+      if res and res.length >= 2 then parseInt(res[1]) else 1
 
     event_incSize:(e)->
       size = @model.get "size"
