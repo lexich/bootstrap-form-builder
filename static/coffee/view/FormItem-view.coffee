@@ -8,8 +8,7 @@ define [
     events:
       "click [data-js-close]" : "event_close"
       "click [data-js-options]" : "event_options"
-      "click [data-js-inc-size]":"event_incSize"
-      "click [data-js-dec-size]":"event_decSize"
+      "click [data-js-min-size]":"event_Min"
       "mouseenter": "event_mouseenter"
       "mouseleave": "event_mouseleave"
     ###
@@ -21,6 +20,11 @@ define [
       LOG "FormItemView","initialize"
       @$el.data DATA_VIEW, this
       @model.on "change", => @render()
+      @bindEvents()
+
+    bindEvents: ->
+      @events["click [data-js-right-size]"] = => @handle_Inc (=>@$el.next()), 1
+      @events["click [data-js-left-size]"] =  => @handle_Inc (=>@$el.prev()), 1
 
     render:->
       templateHtml = @options.service.getTemplate @model.get("type")
@@ -36,48 +40,72 @@ define [
       @model.destroy()
       Backbone.View.prototype.remove.apply this, arguments
 
-    event_close:->
-      @remove()
-
-    cleanSize:($el)->
-      $el.removeClass (item,className)->
-        if /^span\d+/.test(className) then className else ""
+    getSizeFromClass:($el)->
+      clazz = $el.attr("class")
+      res = /span(\d+)/.exec clazz
+      if res and res.length >= 2 then parseInt(res[1]) else 1
 
     getSizeOfRow:->
       _.reduce @$el.parent().children(),((memo,el)=>
         memo + @getSizeFromClass $(el)
       ),0
 
-
     updateSize:->
-      if @model.get("direction") is "vertical"
-        oldSize = @getSizeFromClass @$el
-        size = @model.get("size")
-        freeSize = 12 - @getSizeOfRow()
-        delta = size - oldSize
-        if freeSize < delta and @model.set("size", oldSize + freeSize, {silent:true})
-          size = @model.get("size")
-      @cleanSize(@$el)
+      size = @model.get("size")
+      @$el.removeClass (item,className)->
+        if /^span\d+/.test(className) then className else ""
       if @model.get("direction") is "vertical"
         @$el.addClass "span#{size}"
 
-    getSizeFromClass:($el)->
-      clazz = $el.attr("class")
-      res = /span(\d+)/.exec clazz
-      if res and res.length >= 2 then parseInt(res[1]) else 1
 
-    event_incSize:(e)->
-      size = @model.get "size"
-      @model.set "size", size + 1, validate:true
+    reduceNElement:($item, move)->
+      view = $item.data DATA_VIEW
+      size = view.model.get "size"
+      if 1 < size > move and view.model.set("size", size - move, validate:true) then move
+      else if size > 0 and view.model.set("size", 1, validate: true)            then size - 1
+      else                                                                      0
 
-    event_decSize:(e)->
+    ###############
+    # Events
+    ###############
+    event_close:->
+      @remove()
+
+    event_Min:(e)->
       size = @model.get "size"
-      @model.set "size", size - 1, validate:true
+      if size > 1
+        @model.set "size", size - 1, validate: true
 
     event_options:(e)->
       @options.service.showModal
         preRender: _.bind(@handle_preRender, this)
         postSave: _.bind(@handle_postSave, this)
+
+    event_okPopover:(e)->
+      data = _.reduce $(".popover input",@$el), ((memo,item)->
+        memo[$(item).attr("name")] = $(item).val() and memo
+      ),{}
+      @model.set data
+      @popover?.popover("hide")
+
+    event_mouseenter:(e)->
+      LOG "FormItemView", "event_mouseenter"
+      $("[data-js-show-tools-item]",@$el).addClass("ui_settings-show")
+
+    event_mouseleave:(e)->
+      LOG "FormItemView", "event_mouseleave"
+      $("[data-js-show-tools-item]",@$el).removeClass("ui_settings-show")
+
+    ###############
+    # handlers
+    ###############
+
+    handle_Inc:(get$item, move)->
+      size = @model.get "size"
+      return unless 1 <= size + move <= 12
+      freeSpace = 12 - @getSizeOfRow()
+      if freeSpace >= move or (move = @reduceNElement get$item(), move)
+        @model.set "size", size + move, validate:true
 
     handle_preRender:($el, $body)->
       type = @model.get("type")
@@ -102,19 +130,5 @@ define [
       data = @options.service.parceModalItemData $body
       @model.set data
 
-    event_okPopover:(e)->
-      data = _.reduce $(".popover input",@$el), ((memo,item)->
-        memo[$(item).attr("name")] = $(item).val() and memo
-      ),{}
-      @model.set data
-      @popover?.popover("hide")
-
-    event_mouseenter:(e)->
-      LOG "FormItemView", "event_mouseenter"
-      $("[data-js-show-tools-item]",@$el).addClass("ui_settings-show")
-
-    event_mouseleave:(e)->
-      LOG "FormItemView", "event_mouseleave"
-      $("[data-js-show-tools-item]",@$el).removeClass("ui_settings-show")
 
   FormItemView
