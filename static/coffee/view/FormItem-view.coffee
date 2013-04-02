@@ -29,7 +29,8 @@ define [
 
     render:->
       templateHtml = @options.service.getTemplate @model.get("type")
-      content = _.template templateHtml, @model.attributes
+      data = _.extend id:@options.service.nextID(), @model.attributes
+      content = _.template templateHtml, data
       html = @options.service.renderFormItemTemplate content
       @$el.html html
       @updateSize()

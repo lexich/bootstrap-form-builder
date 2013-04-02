@@ -119,6 +119,10 @@ define [
         memo
       ),{}  
 
+    nextID:->
+      @__nextID = if @__nextID? then @__nextID + 1 else 0
+      "$genid#{@__nextID}"
+
     renderAreaItem:(data)->
       htmlTemplate = $("#areaTemplateItem").html()
       _.template htmlTemplate, data

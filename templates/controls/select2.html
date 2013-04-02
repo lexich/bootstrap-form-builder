@@ -14,9 +14,9 @@
   %}
 <script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="{{ name }}">
   <div class="control-group">
-    <label class="control-label" for="<%= name %>"><%= label %></label>
+    <label class="control-label" for="<%= id %>"><%= label %></label>
     <div class="controls" placeholder="<%= placeholder %>">
-      <input name="<%= name %>" 
+      <input name="<%= name %>" id="<%= id %>"
         data-js-url="<%= url %>" 
         data-js-more="<%= more %>"
         data-js-placeholder="<%= placeholder %>" />
