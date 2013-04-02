@@ -4,10 +4,11 @@ define [
   "underscore",
   "view/FormItem-view",
   "model/FormItem-model"
+  "model/DropArea-model"
   "jquery-ui/jquery.ui.draggable",
   "jquery-ui/jquery.ui.droppable"
   "jquery-ui/jquery.ui.sortable"
-],($,Backbone,_,FormItemView,FormItemModel)->
+],($,Backbone,_,FormItemView,FormItemModel, DropAreaModel)->
   DropAreaView = Backbone.View.extend
     events:
       "click": "event_click"
@@ -15,7 +16,6 @@ define [
     DEFAULT_AREA_SELECTOR: "[data-drop-accept]"
     DEFAULT_ROW_VIEW: "[data-html-row]"
     HOVER_CLASS: "hover-container"
-    row:0
 
     className:"ui_workarea__placeholder form-horizontal"
     ###
@@ -31,45 +31,52 @@ define [
     ###
     initialize:->
       @model.on "change", _.bind(@on_changeModel,this)
-      @model.on "change:direction", _.bind(@on_changeDirection,this)
 
     on_changeModel:(model)->
       @$el.html @options?.service?.renderFormViewElement model.toJSON()
-      @initArea @get$Area()
       @reindex()
       @render()
+      @initArea @get$Area()
+      @changeDirection model
       model.save()
 
-    on_changeDirection:(model)->
+    changeDirection:(model)->
       direction = model.get("direction")
       @$el.attr "data-direction", direction
-      $children = @get$Area().children()
+      $area = @get$Area()
+      $children = $area.children()
       return unless $children.length > 0
 
-      if direction is "vertical"
+      if direction is DropAreaModel::VERTICAL
         @$el.removeClass("form-horizontal")
-        @get$Area().addClass("fluid-row")
+        $area.addClass("fluid-row")
         @setAxis("x")
         $("select, input, textarea",@$el).removeClass "span12"
-      else if direction is FormItemModel::HORIZONTAL
+      else if direction is DropAreaModel::HORIZONTAL
         @setAxis("y")
         @$el.addClass("form-horizontal")
         $("select, input, textarea",@$el).addClass "span12"
         @get$Area().removeClass("fluid-row")
 
-      models = @collection.smartSliceNormalize @row, "direction", direction
+      models = @collection.smartSliceNormalize @model.get("row"), "direction", direction
       _.each models,(model)=>
         model.set "direction",direction,{validation:true}
 
     get$Area:-> $(@DEFAULT_AREA_SELECTOR, @$el)
 
+    ###
+    Apply to $area jQuery.UI plugins
+    @param $area
+    ###
     initArea:($area)->
+      #Reinitialize droppable
       if $area.data("droppable")
         $area.droppable("destroy")
       $area.droppable
         accept: @options.accept || ""
         drop: _.bind(@handle_droppable_drop,this)
 
+      #Reinitialize sortable
       if $area.data("sortable")
         $area.sortable("destroy")
       $area.sortable
@@ -113,7 +120,7 @@ define [
     ###
     setAxis:(axis)->
       if axis in ["x","y"]
-        @get$Area().sortable "option", "axis", axis
+        #@get$Area().sortable "option", "axis", axis
         true
       else
         false
@@ -129,7 +136,6 @@ define [
         model?.set {
           position: position
           row: @model.get "row"
-          direction: @model.get("direction")
         }, validation: true
           
         position + 1
@@ -138,18 +144,15 @@ define [
     handle_sortable_start:(ev,ui)->
       LOG "DropAreaView", "handle_sortable_start"
       direction = @model.get("direction")
-      if direction is FormItemModel::HORIZONTAL
-        ui.placeholder.removeClass("row-fluid")
-      else if direction is FormItemModel::VERTICAL
-        ui.placeholder.addClass("row-fluid")
+      #if direction is DropAreaModel::HORIZONTAL
+      #  ui.placeholder.removeClass("row-fluid")
+      #else if direction is DropAreaModel::VERTICAL
+      #  ui.placeholder.addClass("row-fluid")
 
     handle_sortable_update:(ev,ui)->
       LOG "DropAreaView","handle_sortable_update"
       view = ui.item.data DATA_VIEW
-      if view?
-        view.model.set "row", @row
-      else
-        LOG "DropAreaView","view don't found"
+      view?.model.set "row", model.get("row"), {validate:true}
       setTimeout (=>
         @reindex()
       ), 0
@@ -161,11 +164,14 @@ define [
       unless view?
         type = ui.draggable.data DATA_TYPE
         data = @options.service.getTemplateData(type)
-        data.row = @row
+        data.row = @model.get "row"
         model = new FormItemModel()
         model.set data
         @collection.push model
-        view = @options.service.getOrAddFormItemView model, {el:ui.draggable}
+        view = @options.service.getOrAddFormItemView model, {
+          el:ui
+          draggable
+        }
         view.render()
         ui.helper.data DATA_VIEW, view
       else

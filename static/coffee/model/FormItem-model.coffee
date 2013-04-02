@@ -12,7 +12,6 @@ define [
       help:""
       position:0
       row:0,
-      direction:"horizontal"
       size:3
 
     initialize:->
@@ -50,8 +49,6 @@ define [
         "position must be integer"
       else if attrs.position < 0
         "position must be >= 0"
-      else if attrs.direction not in ["horizontal","vertical"]
-        "direction must be [horizontal,vertical]"
       else if not _.isNumber(attrs.size)
         "size must be number"
       else if attrs.size < 1 or attrs.size > 12
