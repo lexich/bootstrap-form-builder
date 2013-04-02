@@ -31,6 +31,14 @@ module.exports = (grunt) ->
           bare: true
 
     copy:
+      html5sortable:
+        files:[
+          flattern: true
+          expand: true
+          src: "jquery.sortable.js"
+          cwd: "<%= components %>/html5sortable/"
+          dest: "<%= resource.js %>/html5sortable/"
+        ]
       bootstrap:
         files:[
           flattern: true
@@ -280,7 +288,7 @@ module.exports = (grunt) ->
         root: "www"
         livereload: false
         files: [
-          src: ["index.html", "test.html"]
+          src: ["index.html", "test.html", "dragndrop.html"]
           cwd: "templates"
           dest: "www/"
         ]
@@ -335,6 +343,22 @@ module.exports = (grunt) ->
       position: 1
       row: 0
     ]
+    dataArea = {}
+
+    app.get "/area.json", (req, res)->
+      row = parseInt(req.query.row or 0)
+      unless dataArea[row]?
+        dataArea[row] =
+          title: "Test Area"
+          row: row
+          direction: "horizontal"
+      res.send dataArea[row]
+
+    app.post "/area.json", (req, res)->
+      d = req.body
+      row = parseInt(d.row or 0)
+      dataArea[d.row] = d
+
     app.get "/forms.json", (req, res) ->
       res.send data
 

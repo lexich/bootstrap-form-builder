@@ -25,6 +25,7 @@ define [
         options.createToolItemView(this,k,v).render()
 
       @modal = options.modal
+      @settings = options.settings
       formView = options.createFormView(this)
 
       @modalTemplates = _.reduce $("[data-#{options.dataPostfixModalType}]"),(
@@ -80,6 +81,15 @@ define [
 
     showModal:(options)-> 
       @modal.show options
+
+    showSettings:(options)->
+      @settings.show options
+
+    hideSettings:->
+      @settings.hide()
+
+    bindSettingsContainer:(options)->
+      @settings.bindContainer options
 
     getData:(type)->
       @toolData[type]

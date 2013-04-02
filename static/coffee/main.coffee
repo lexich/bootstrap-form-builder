@@ -1,17 +1,28 @@
 require [  
-  "jquery",
-  "view/Modal-view",
-  "common/Service",
-  "collection/DropArea-collection",
-  "view/Form-view",
-  "view/ToolItem-view",
+  "jquery"
+  "view/Modal-view"
+  "common/Service"
+  "collection/FormItem-collection"
+  "view/Form-view"
+  "view/ToolItem-view"
+  "view/Settings-view"
   "bootstrap"
-],($,ModalView,Service,DropAreaCollection,FormView,ToolItemView)->
+],($,
+   ModalView,
+   Service,
+   FormItemCollection,
+   FormView,
+   ToolItemView,
+   SettingsView
+)->
   $(document).ready ->
     modal = new ModalView
       html:$("#modalTemplate").html()
 
-    collection = new DropAreaCollection
+    settings = new SettingsView
+      el: $("[data-html-settings]:first")
+
+    collection = new FormItemCollection
       url:"/forms.json"
 
     createFormView = (service)-> 
@@ -37,5 +48,6 @@ require [
       areaTemplateItem: ""      
       dataPostfixModalType:"modal-type"
       modal: modal
+      settings: settings
       
     collection.fetch()

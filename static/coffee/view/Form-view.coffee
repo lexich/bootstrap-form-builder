@@ -1,10 +1,11 @@
 define [
-  "jquery",
-  "backbone",
-  "underscore",
+  "jquery"
+  "backbone"
+  "underscore"
   "view/DropArea-view"
+  "model/DropArea-model"
   "text!../../templates/formView.html"
-],($,Backbone,_,DropAreaView,templateHtml)-> 
+],($,Backbone,_,DropAreaView, DropAreaModel, templateHtml)->
   FormView = Backbone.View.extend
     events:
       "click [data-js-submit-form]": "event_submitForm"
@@ -39,16 +40,21 @@ define [
       unless row? then row = _.size(@dropAreas)
       area = @dropAreas[row]
       unless area?
+        model = new DropAreaModel row:row
+
         area = new DropAreaView
           service: @options.service
+          model: model
           collection: @collection
           removeDropArea: _.bind(@removeDropArea,this)
-          row:row
           accept:($el)->
             $el.hasClass "ui-draggable"
+
+        model.fetch data: {row:row}
         area.$el.append "<hr/>"
         area.$el.appendTo $placeholder
         @dropAreas[row] = area
+
       area
 
     removeDropArea:(row)->

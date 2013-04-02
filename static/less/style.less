@@ -4,11 +4,20 @@
 
 @lightgray:#ccc;
 @img:"../img";
+@bodyOffset:105px;
+
+
+.lverticalline{
+  border-left:1px solid @lightgray;
+}
+.rverticalline{
+  border-right:1px solid @lightgray;
+}
 
 
 .body{
   margin: auto;
-  margin-top: 105px;
+  margin-top: @bodyOffset;
 }
 
 .ui_workarea{  
@@ -16,6 +25,12 @@
   margin: 10px;
   .btn{
     color: @black;
+  }
+  .hover{
+    background-color: lighten(@lightgray,15%);
+  }
+  .hover-container{
+    border: 1px solid @lightgray;
   }
 }
 
@@ -148,6 +163,16 @@ table.form-item__tools{
   &.ui_settings-show{
     visibility: visible;
   }
+}
+
+.ui_settings_editor{
+  height: 100%;
+  min-height: 600px;
+  overflow: hidden;
+}
+.ui_settings_editor__area{
+  position: fixed;
+  top: @bodyOffset;
 }
 
 .debug-show{display: none;}

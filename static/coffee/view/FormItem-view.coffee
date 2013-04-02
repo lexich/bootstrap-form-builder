@@ -5,12 +5,13 @@ define [
   "view/API-view"
 ],($,Backbone,_, APIView)-> 
   FormItemView = APIView.extend
+    HOVER_CLASS: "hover"
+
     events:
-      "click [data-js-close]" : "event_close"
-      "click [data-js-options]" : "event_options"
       "click [data-js-min-size]":"event_Min"
       "mouseenter": "event_mouseenter"
       "mouseleave": "event_mouseleave"
+      "click":  "event_click"
     ###
     @param service
     @param type
@@ -68,18 +69,12 @@ define [
     ###############
     # Events
     ###############
-    event_close:->
-      @remove()
 
     event_Min:(e)->
       size = @model.get "size"
       if size > 1
         @model.set "size", size - 1, validate: true
 
-    event_options:(e)->
-      @options.service.showModal
-        preRender: _.bind(@handle_preRender, this)
-        postSave: _.bind(@handle_postSave, this)
 
     event_okPopover:(e)->
       data = _.reduce $(".popover input",@$el), ((memo,item)->
@@ -88,13 +83,28 @@ define [
       @model.set data
       @popover?.popover("hide")
 
+
+    showSettings:(holder)->
+      bShow = @options.service.showSettings
+        preRender: _.bind(@handle_preRender, this)
+        postSave: _.bind(@handle_postSave, this)
+        remove: => @remove()
+        holder: holder
+        hide: => @$el.removeClass @HOVER_CLASS
+      if bShow then @$el.addClass @HOVER_CLASS
+
+    hideSettings:->
+      if @options.service.hideSettings()
+        @$el.removeClass @HOVER_CLASS
+
+    event_click:(e)->
+      @showSettings(true)
+
     event_mouseenter:(e)->
-      LOG "FormItemView", "event_mouseenter"
-      $("[data-js-show-tools-item]",@$el).addClass("ui_settings-show")
+      @showSettings(null)
 
     event_mouseleave:(e)->
-      LOG "FormItemView", "event_mouseleave"
-      $("[data-js-show-tools-item]",@$el).removeClass("ui_settings-show")
+      @hideSettings()
 
     ###############
     # handlers

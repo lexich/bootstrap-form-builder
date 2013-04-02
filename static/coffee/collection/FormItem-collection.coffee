@@ -1,12 +1,12 @@
 define [
   "backbone"
   "underscore"
-  "model/DropArea-model"
-],(Backbone,_, DropAreaModel)->
+  "model/FormItem-model"
+],(Backbone,_, FormItemModel)->
 
-  DropAreaCollection = Backbone.Collection.extend
+  FormItemCollection = Backbone.Collection.extend
     DEFAULT_URL:"/forms.json"
-    model : DropAreaModel
+    model : FormItemModel
 
     parse:(response)-> 
       itemsMap = _.groupBy response, (item)->item.row
@@ -48,4 +48,4 @@ define [
           }
       models
 
-  DropAreaCollection
+  FormItemCollection
