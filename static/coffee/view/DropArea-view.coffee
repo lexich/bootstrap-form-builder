@@ -33,11 +33,12 @@ define [
       @model.on "change", _.bind(@on_changeModel,this)
       @model.on "change:direction", _.bind(@on_changeDirection,this)
 
-    on_changeModel:->
-      @$el.html @options?.service?.renderFormViewElement @model.toJSON()
+    on_changeModel:(model)->
+      @$el.html @options?.service?.renderFormViewElement model.toJSON()
       @initArea @get$Area()
       @reindex()
       @render()
+      model.save()
 
     on_changeDirection:(model)->
       direction = model.get("direction")
@@ -63,16 +64,19 @@ define [
     get$Area:-> $(@DEFAULT_AREA_SELECTOR, @$el)
 
     initArea:($area)->
+      if $area.data("droppable")
+        $area.droppable("destroy")
       $area.droppable
         accept: @options.accept || ""
         drop: _.bind(@handle_droppable_drop,this)
 
+      if $area.data("sortable")
+        $area.sortable("destroy")
       $area.sortable
         placeholder: "ui_workarea__placeholder_sortable"
         connectWith: @DEFAULT_AREA_SELECTOR
         update:_.bind(@handle_sortable_update,this)
         start:_.bind(@handle_sortable_start,this)
-
       $area.disableSelection()
 
 
@@ -169,6 +173,7 @@ define [
         view.el = ui.draggable.get(0)
       ui.draggable.attr("class","")
       ui.draggable.data DATA_VIEW, view
+      @initArea @get$Area()
 
     event_click:->
       @bindSettings(true)
