@@ -38,6 +38,7 @@ define [
       @render()
       @initArea @get$Area()
       @changeDirection model
+
       model.save()
 
     changeDirection:(model)->
@@ -47,20 +48,16 @@ define [
       $children = $area.children()
       return unless $children.length > 0
 
-      if direction is DropAreaModel::VERTICAL
-        @$el.removeClass("form-horizontal")
-        $area.addClass("fluid-row")
-        @setAxis("x")
-        $("select, input, textarea",@$el).removeClass "span12"
-      else if direction is DropAreaModel::HORIZONTAL
-        @setAxis("y")
-        @$el.addClass("form-horizontal")
-        $("select, input, textarea",@$el).addClass "span12"
-        @get$Area().removeClass("fluid-row")
-
       models = @collection.smartSliceNormalize @model.get("row"), "direction", direction
       _.each models,(model)=>
-        model.set "direction",direction,{validation:true}
+        model.set "direction",direction,{validate:true}
+
+      if direction is DropAreaModel::VERTICAL
+        @$el.removeClass("form-horizontal")
+        $area.addClass("row-fluid")
+      else if direction is DropAreaModel::HORIZONTAL
+        @$el.addClass("form-horizontal")
+        $area.removeClass("row-fluid")
 
     get$Area:-> $(@DEFAULT_AREA_SELECTOR, @$el)
 
@@ -94,8 +91,8 @@ define [
       _.each models, (model)=>
         view = @options?.service?.getOrAddFormItemView model
         if view?
-                  view.$el.appendTo @get$Area()
-                  view.render()
+          view.$el.appendTo @get$Area()
+          view.render()
 
     bindSettings:(holder)->
       @options.service.bindSettingsContainer
@@ -114,17 +111,6 @@ define [
       @options.removeDropArea? @model.get("row")
       @remove()
 
-    ###
-    @param axis {string|["x","y"]} - axis param for jqueri-ui sortable plugin
-    @return {boolean|true,false} - return true if success
-    ###
-    setAxis:(axis)->
-      if axis in ["x","y"]
-        #@get$Area().sortable "option", "axis", axis
-        true
-      else
-        false
-
     setDirection:(direction)->
       @model.set "direction", direction, {validate:true}
 
@@ -137,25 +123,18 @@ define [
           position: position
           row: @model.get "row"
           direction: @model.get("direction")
-        }, validation: true
+        }, validate: true
         position + 1
       ),0
 
     handle_sortable_start:(ev,ui)->
       LOG "DropAreaView", "handle_sortable_start"
-      direction = @model.get("direction")
-      #if direction is DropAreaModel::HORIZONTAL
-      #  ui.placeholder.removeClass("row-fluid")
-      #else if direction is DropAreaModel::VERTICAL
-      #  ui.placeholder.addClass("row-fluid")
 
     handle_sortable_update:(ev,ui)->
       LOG "DropAreaView","handle_sortable_update"
       view = ui.item.data DATA_VIEW
       view?.model?.set "row", @model.get("row"), {validate:true}
-      setTimeout (=>
-        @reindex()
-      ), 0
+      setTimeout (=> @reindex()), 0
       @initArea @get$Area()
       @changeDirection @model
 

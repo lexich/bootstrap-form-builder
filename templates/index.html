@@ -11,9 +11,14 @@
             <div class="span4 ui_settings_editor" >
                 <div class="ui_settings_editor__area" data-html-settings>
                     <br>
-                    <p>
-                        <button class="btn icon-share" type="button" data-js-submit-form>Сохранить Формы</button>
-                    </p>
+                    <h4>Настройки Элемента</h4>
+                    <div data-html-settings-loader></div>
+                    <div data-html-settings-item>
+                        <a href="javascript:void(0);" data-js-save class="btn btn-primary">Применить</a>
+                        <a href="javascript:void(0);" data-js-remove class="btn">Удалить</a>
+                        <a href="javascript:void(0);" data-js-hide class="btn">Закрыть</a>
+                    </div>
+
                     <h4>Настройки контейнера</h4>
                     <div data-html-settings-container-loader></div>
                     <div data-html-settings-container>
@@ -29,14 +34,10 @@
                         <a href="javascript:void(0);" data-js-save class="btn btn-primary">Применить</a>
                         <a href="javascript:void(0);" data-js-remove class="btn">Удалить</a>
                     </div>
-
-                    <h4>Настройки Элемента</h4>
-                    <div data-html-settings-loader></div>
-                    <div data-html-settings-item>
-                        <a href="javascript:void(0);" data-js-save class="btn btn-primary">Применить</a>
-                        <a href="javascript:void(0);" data-js-remove class="btn">Удалить</a>
-                        <a href="javascript:void(0);" data-js-hide class="btn">Закрыть</a>
-                    </div>
+                    <br>
+                    <p>
+                        <a class="btn icon-share" type="button" data-js-submit-form>Сохранить Формы</a>
+                    </p>
                 </div>
             </div>
         </div>
