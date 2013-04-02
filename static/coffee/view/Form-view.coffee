@@ -4,8 +4,7 @@ define [
   "underscore"
   "view/DropArea-view"
   "model/DropArea-model"
-  "text!../../templates/formView.html"
-],($,Backbone,_,DropAreaView, DropAreaModel, templateHtml)->
+],($,Backbone,_,DropAreaView, DropAreaModel)->
   FormView = Backbone.View.extend
     events:
       "click [data-js-add-drop-area]": "event_addDropArea"
@@ -20,7 +19,7 @@ define [
         @render()  
 
     render:->
-      @$el.html templateHtml
+      @$el.html @options.service.getTemplateFormView()
       $placeholder = @getPlaceholder()
       _.chain(@collection.models)
         .groupBy (model)->

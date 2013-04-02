@@ -156,4 +156,7 @@ define [
       templateHtml = $("#formItemTemplate").html() or "<%= content %>"
       _.template templateHtml, content:html
 
+    getTemplateFormView:->
+      $("#formView").html()
+
   Service
