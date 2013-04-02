@@ -104,7 +104,9 @@ define [
       @getData(type)?.meta
 
     getTemplateData:(type)->
-      @getData(type)?.data
+      data = @getData(type)?.data
+      data.id = @nextID()
+      data
       
     getTemplate:(type)->
       @getData(type)?.template    
@@ -121,7 +123,7 @@ define [
 
     nextID:->
       @__nextID = if @__nextID? then @__nextID + 1 else 0
-      "$genid#{@__nextID}"
+      "_genid#{@__nextID}"
 
     renderAreaItem:(data)->
       htmlTemplate = $("#areaTemplateItem").html()
