@@ -32,7 +32,6 @@ define [
       content = _.template templateHtml, @model.attributes
       html = @options.service.renderFormItemTemplate content
       @$el.html html
-      @$el.find(".debug-show").html "row:#{@model.get('row')} position:#{@model.get('position')}"
       @updateSize()
       APIView::render.apply this, arguments
 
@@ -57,7 +56,6 @@ define [
         if /^span\d+/.test(className) then className else ""
       if @model.get("direction") is "vertical"
         @$el.addClass "span#{size}"
-
 
     reduceNElement:($item, move)->
       view = $item.data DATA_VIEW

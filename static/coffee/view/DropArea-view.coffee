@@ -136,8 +136,8 @@ define [
         model?.set {
           position: position
           row: @model.get "row"
+          direction: @model.get("direction")
         }, validation: true
-          
         position + 1
       ),0
 
@@ -152,10 +152,12 @@ define [
     handle_sortable_update:(ev,ui)->
       LOG "DropAreaView","handle_sortable_update"
       view = ui.item.data DATA_VIEW
-      view?.model.set "row", model.get("row"), {validate:true}
+      view?.model?.set "row", @model.get("row"), {validate:true}
       setTimeout (=>
         @reindex()
       ), 0
+      @initArea @get$Area()
+      @changeDirection @model
 
     handle_droppable_drop:(ev,ui)->
       LOG "DropAreaView","handle_droppable_drop"
@@ -169,8 +171,7 @@ define [
         model.set data
         @collection.push model
         view = @options.service.getOrAddFormItemView model, {
-          el:ui
-          draggable
+          el:ui.draggable
         }
         view.render()
         ui.helper.data DATA_VIEW, view

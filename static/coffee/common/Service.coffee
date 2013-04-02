@@ -91,6 +91,9 @@ define [
     bindSettingsContainer:(options)->
       @settings.bindContainer options
 
+    bindForm:(options)->
+      @settings.bindForm options
+
     getData:(type)->
       @toolData[type]
 

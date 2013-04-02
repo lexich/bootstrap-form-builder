@@ -8,12 +8,13 @@ define [
 ],($,Backbone,_,DropAreaView, DropAreaModel, templateHtml)->
   FormView = Backbone.View.extend
     events:
-      "click [data-js-submit-form]": "event_submitForm"
       "click [data-js-add-drop-area]": "event_addDropArea"
-      "click [data-js-show-debug]": "event_showDebug"
+
     dropAreas:{}
 
-    initialize:->            
+    initialize:->
+      @options.service.bindForm
+        saveForm: => @collection.updateAll()
       @collection.on "reset", => 
         @dropAreas = {}
         @render()  
@@ -72,9 +73,6 @@ define [
       @dropAreas = newDropAreas
       true
 
-    event_submitForm:(e)->
-      @collection.updateAll()
-
     event_addDropArea:(e)->
       if _.size(@dropAreas) is 0
         max_key = -1
@@ -82,12 +80,5 @@ define [
         max_key = _.chain(@dropAreas).keys().map((key)->parseInt key).max().value();
       @getOrAddDropArea max_key + 1, @getPlaceholder()
       window.scrollTo 0, $(document).height();
-
-    event_showDebug:(e)->
-      $("body").toggleClass("debug")
-      $(e.target).toggleClass("btn-link")
-
-
-
 
   FormView

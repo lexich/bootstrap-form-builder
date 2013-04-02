@@ -10,6 +10,7 @@ define [
       type:"input"
       name:""
       help:""
+      direction:"horizontal"
       position:0
       row:0,
       size:3
@@ -43,6 +44,8 @@ define [
         "help mustn't be null"
       else if not _.isNumber(attrs.row)
         "row must be integer"
+      else if attrs.direction not in ["horizontal","vertical"]
+        "direction must be [horizontal,vertical]"
       else if attrs.row < 0
         "row must be >= 0"      
       else if not _.isNumber(attrs.position)

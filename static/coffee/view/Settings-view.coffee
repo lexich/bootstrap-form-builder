@@ -12,6 +12,7 @@ define [
       "click [data-html-settings-container] [data-js-save]":"event_saveContainer"
       "click [data-html-settings-container] [data-js-remove]":"event_removeContainer"
       "click [data-html-settings-container] [data-js-position]":"event_changePosition"
+      "click [data-js-submit-form]" : "event_submitForm"
 
     holder: null
     holderContainer: null
@@ -33,6 +34,9 @@ define [
       @$body = @$el.find("[data-html-settings-loader]")
       @render()
       true
+
+    bindForm:(options)->
+      @callback_saveForm = => options?.saveForm()
 
     bindContainer:(options)->
       return false if @holderContainer and options.holder==null
@@ -73,6 +77,7 @@ define [
     callback_changePosition:->
     callback_hideContainer:->
     callback_saveContainer:(data)->
+    callback_saveForm:->
 
     event_saveItem:->
       @callback_postSave @$el, @$body
@@ -101,5 +106,8 @@ define [
           memo
       ),{}
       @callback_saveContainer(data)
+
+    event_submitForm:->
+      @callback_saveForm()
 
   SettingsView
