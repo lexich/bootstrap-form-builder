@@ -7,18 +7,45 @@ define [
   "common/BackboneCustomView"
 ],($,Backbone,_,RowView,RowModel)->
   FieldsetView = Backbone.CustomView.extend
+    ###
+    Variables Backbone.View
+    ###
+    tagName:"fieldset"
+    events:
+      "click [data-js-remove-fieldset]": "event_remove"
+    ###
+    Variables Backbone.CustomView
+    ###
     ChildType: RowView
     templatePath:"#FieldsetViewTemplate"
     itemsSelectors:
       loader:"[data-html-fieldset-loader]"
 
-    events:
-      "click [data-js-remove-fieldset]": "event_remove"
-
+    ###
+    @overwrite Backbone.View
+    ###
     initialize:->
       @getOrAddRowView(0)
       @bindEvents()
 
+    ###
+    @overwrite Backbone.View
+    ###
+    render:->
+      Backbone.CustomView::render.apply this, arguments
+      connector = @itemsSelectors.loader
+      @getItem("loader").sortable
+        helper:"original"
+        handle:"[data-js-row-move]"
+        tolerance:"pointer"
+        dropOnEmpty:"true"
+        connectWith: connector
+      this
+
+
+    ###
+    @overwrite Backbone.CustomView
+    ###
     reinitialize:->
       childrenCID = _.chain(@options.models)
         .groupBy (model)=>

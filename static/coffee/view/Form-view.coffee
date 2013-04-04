@@ -11,6 +11,7 @@ define [
     ###
     Variables Backbone.View
     ###
+    className:"ui_formview"
     events:
       "click [data-js-add-drop-area]":"event_clickAddFieldset"
       "customdragstart":"event_customstart"

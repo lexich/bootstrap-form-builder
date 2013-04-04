@@ -1,25 +1,26 @@
-{# FormViewTemplate #}
+{# FormViewTemplate class="ui_formview" #}
 <script type="text/template" id="FormViewTemplate">
-    <div class="ui_formview">
-        <form data-html-formloader>
-        </form>
-        {# Просто кнопка #}
-        <div class="row-fluid ui_add_drop_area">
-            <button class="btn icon-plus ui_add_drop_area-button" type="button" data-js-add-drop-area>Добавить площадку</button>
-        </div>
+    <form data-html-formloader>
+    </form>
+    {# Просто кнопка #}
+    <div class="row-fluid ui_add_drop_area">
+        <button class="btn icon-plus ui_add_drop_area-button" type="button" data-js-add-drop-area>Добавить площадку</button>
     </div>
 </script>
 
-{# FieldsetViewTemplate #}
+{# FieldsetViewTemplate tagName="fieldset" #}
 <script type="text/template" id="FieldsetViewTemplate">
-    <fieldset>
-        <legend><%= title %></legend>
-        <div data-html-fieldset-loader class="ui_fieldset__loader"></div>
-    </fieldset>
+    <legend><%= title %></legend>
+    <div data-html-fieldset-loader class="ui_fieldset__loader"></div>
 </script>
 
-{# RowViewTemplate #}
+{# RowViewTemplate class="ui_row" #}
 <script type="text/template" id="RowViewTemplate">
+    <span class="icon-check-empty ui_row__move" data-js-row-move></span>
+    <p>
+        <a href="javascript:void(0)" data-js-row-disable>Enabled</a>
+        <a href="javascript:void(0)" data-js-row-position>Horizontal</a>
+    </p>
     <div data-drop-accept class="ui_row__loader row-fluid"></div>
 </script>
 

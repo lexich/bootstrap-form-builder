@@ -24,6 +24,7 @@ define [
       @bindEvents()
 
     bindEvents: ->
+      LOG "FormItemView","bindEvents"
       @events["click [data-js-right-size]"] = => @handle_Inc (=>@$el.next()), 1
       @events["click [data-js-left-size]"] =  => @handle_Inc (=>@$el.prev()), 1
 
@@ -43,11 +44,13 @@ define [
       Backbone.View.prototype.remove.apply this, arguments
 
     getSizeFromClass:($el)->
+      LOG "FormItemView","getSizeFromClass"
       clazz = $el.attr("class")
       res = /span(\d+)/.exec clazz
       if res and res.length >= 2 then parseInt(res[1]) else 1
 
     getSizeOfRow:->
+      LOG "FormItemView","getSizeOfRow"
       _.reduce @$el.parent().children(),((memo,el)=>
         memo + @getSizeFromClass $(el)
       ),0

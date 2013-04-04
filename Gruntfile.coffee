@@ -335,25 +335,33 @@ module.exports = (grunt) ->
       placeholder: "Input your name"
       name: "name"
       type: "input"
-      position: 1
-      row: 0
       fieldset:0
+      row: 0
+      position: 1
     ,
       label: "Name1"
       placeholder: "Input your name1"
       name: "name1"
       type: "input"
-      position: 0
-      row: 0
       fieldset:0
+      row: 0
+      position: 0
+    ,
+      label: "Name1"
+      placeholder: "Input your name1"
+      name: "name1"
+      type: "input"
+      fieldset:0
+      row:1
+      position: 0
     ,
       label: "Comment"
       placeholder: "Your comment"
       name: "comment"
       type: "textarea"
-      position: 0
       fieldset:1
       row: 0
+      position: 0
     ]
     dataArea = {}
 

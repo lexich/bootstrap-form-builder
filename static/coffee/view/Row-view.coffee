@@ -15,14 +15,16 @@ define [
     Constants
     ###
     HOVER_CLASS: "hover-container"
-
+    DISABLE_DRAG: "data-js-row-disable-drag"
     ###
     Variables Backbone.View
     ###
-    events: {}
+    events:
+      "click [data-js-row-disable]":"event_disable"
+      "click [data-js-row-position]":"event_position"
 
 
-    className:"ui_workarea__placeholder form-horizontal"
+    className:"ui_row form-horizontal"
 
     ###
     Variables Backbone.CustomView
@@ -34,25 +36,65 @@ define [
       area:"[data-drop-accept]"
       areaChildren:"[data-drop-accept] >"
 
+    initialize:->
+      @model.on "change", _.bind(@on_model_change,this)
 
     ###
     @overwrite Backbone.View
     ###
-    initialize:->
-      LOG "RowView","initialize"
-
-
     render:->
+      LOG "RowView","render"
       Backbone.CustomView::render.apply this, arguments
-      connector = @itemsSelectors.area
+
       @getItem("area").sortable
         helper:"original"
         tolerance:"pointer"
         dropOnEmpty:"true"
-        connectWith: connector
+        connectWith: "#{@itemsSelectors.area}:not([#{@DISABLE_DRAG}])"
         start:_.bind(@handle_sortable_start, this)
         stop: _.bind(@handle_sortable_stop, this)
         update: _.bind(@handle_sortable_update,this)
+
+      bVertical = @model.get('position') == "vertical"
+      @setVertical bVertical
+
+
+    on_model_change:(model,options)->
+      changed = _.pick model.changed, "row","fieldset","position"
+      _.each @models,(model)->
+        #silent mode freeze changing beause render call
+        model.set changed,{validate:true, silent:true}
+      @render()
+
+
+    event_disable:(e)->
+      @_disable = false unless @_disable?
+      @_disable = !@_disable
+      $(e.target).text if @_disable then "Disabled" else "Enabled"
+      @setDisable @_disable
+
+    event_position:(e)->
+      value = if @model.get('position') == 'vertical' then "horizontal" else "vertical"
+      @model.set "position", value,{validate:true}
+
+
+    setVertical:(flag)->
+      if flag
+        @getItem("areaChildren").addClass("span4")
+        @$el.removeClass "form-horizontal"
+      else
+        @getItem("areaChildren").removeClass("span4")
+        @$el.addClass "form-horizontal"
+
+
+
+    setDisable:(flag)->
+      flag = true unless flag?
+      $area = @getItem("area")
+      if flag
+        $area.attr(@DISABLE_DRAG,"")
+      else
+        $area.removeAttr(@DISABLE_DRAG)
 
     ###
     @overwrite Backbone.CustomView
