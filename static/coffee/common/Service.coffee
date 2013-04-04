@@ -91,7 +91,7 @@ define [
     bindSettingsContainer:(options)->
       @settings.bindContainer options
 
-    bindForm:(options)->
+    bindSettingsForm:(options)->
       @settings.bindForm options
 
     getData:(type)->
@@ -155,8 +155,5 @@ define [
     renderFormItemTemplate:(html)->
       templateHtml = $("#formItemTemplate").html() or "<%= content %>"
       _.template templateHtml, content:html
-
-    getTemplateFormView:->
-      $("#formView").html()
 
   Service

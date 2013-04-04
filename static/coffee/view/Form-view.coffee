@@ -2,82 +2,94 @@ define [
   "jquery"
   "backbone"
   "underscore"
-  "view/DropArea-view"
-  "model/DropArea-model"
-],($,Backbone,_,DropAreaView, DropAreaModel)->
-  FormView = Backbone.View.extend
+  "view/Fieldset-view"
+  "model/Fieldset-model"
+  "common/BackboneCustomView"
+],($,Backbone,_,FieldsetView, FieldsetModel)->
+  FormView = Backbone.CustomView.extend
+    ###
+    Variables Backbone.View
+    ###
     events:
-      "click [data-js-add-drop-area]": "event_addDropArea"
+      "click [data-js-add-drop-area]":"event_clickAddFieldset"
 
-    dropAreas:{}
+    ###
+    Variables Backbone.CustomView
+    ###
+    ChildType: FieldsetView
+    templatePath:"#FormViewTemplate"
+    itemsSelectors:
+      placeholder:"[data-html-formloader]:first"
+      fieldsets: "form  fieldset"
 
+    ###
+    @overwrite Backbone.View
+    ###
     initialize:->
-      @options.service.bindForm
-        saveForm: => @collection.updateAll()
-      @collection.on "reset", => 
-        @dropAreas = {}
-        @render()  
+      @options.settings.connect "form:save", => @collection.updateAll()
 
-    render:->
-      @$el.html @options.service.getTemplateFormView()
-      $placeholder = @getPlaceholder()
-      _.chain(@collection.models)
-        .groupBy (model)->
-          model.get("row")
-        .map (models,row)=>
-          row = toInt row
-          @renderRow row, $placeholder      
+      @collection.on "reset", _.bind(@on_collection_reset,this)
 
-    getPlaceholder:-> @$el.find("[data-html-formloader]:first")
+    ###
+    bind to event 'reset' for current collection
+    ###
+    on_collection_reset:->
+      @reinitialize()
+      @render()
 
-    renderRow:(row,$placeholder)->
-      row = toInt row
-      area = @getOrAddDropArea(row, $placeholder)
-      area.render()
-      area
+    ###
+    @overwrite Backbone.CustomView
+    ###
+    reinitialize:->
+      childrenCID = _.chain(@collection.models)
+        .groupBy (model)=>
+          model.get("fieldset")
+        .map (models,fieldset)=>
+          fieldset = toInt fieldset
+          view = @getOrAddFieldsetView(fieldset, models)
+          view.reinitialize?()
+          view.cid
+        .value()
 
-    getOrAddDropArea:(row, $placeholder)->
-      unless row? then row = _.size(@dropAreas)
-      area = @dropAreas[row]
-      unless area?
-        model = new DropAreaModel row:row
+      _.each _.omit(@childrenViews,childrenCID),(view,cid)=>
+        @removeChild view
 
-        area = new DropAreaView
+    ###
+    @overwrite Backbone.CustomView
+    ###
+    childrenConnect:(self,view)->
+      $placeholder = self.getItem("placeholder")
+      $placeholder.append view.$el
+      $placeholder.append "<hr>"
+
+
+    ###
+    Find view by fieldset index or add New
+    ###
+    getOrAddFieldsetView:(fieldset, models)->
+      models = [] unless models?
+      filterViews = _.filter @childrenViews,(view)->
+        view.model.get("fieldset") is fieldset
+
+      if filterViews.length > 0
+        view = filterViews[0]
+      else
+        view = @createChild
           service: @options.service
-          model: model
+          models: models
+          model: new FieldsetModel(fieldset:fieldset)
           collection: @collection
-          removeDropArea: _.bind(@removeDropArea,this)
           accept:($el)->
             $el.hasClass "ui-draggable"
+      view.models = models
+      view
 
-        model.fetch data: {row:row}
-        area.$el.append "<hr/>"
-        area.$el.appendTo $placeholder
-        @dropAreas[row] = area
+    ###
 
-      area
-
-    removeDropArea:(row)->
-      return false if _.isUndefined(@dropAreas[row])
-      delete @dropAreas[row]
-      newDropAreas = {}
-      _.chain(@dropAreas)
-        .sortBy((area,k)->area.row)
-        .reduce((
-          (memo,area)->
-            newDropAreas[memo] = area
-            area.setRow memo
-            memo + 1
-        ),0)
-      @dropAreas = newDropAreas
-      true
-
-    event_addDropArea:(e)->
-      if _.size(@dropAreas) is 0
-        max_key = -1
-      else
-        max_key = _.chain(@dropAreas).keys().map((key)->parseInt key).max().value();
-      @getOrAddDropArea max_key + 1, @getPlaceholder()
-      window.scrollTo 0, $(document).height();
+    ###
+    event_clickAddFieldset:->
+      fieldset = _.size( @getItem("fieldsets"))
+      view = @getOrAddFieldsetView(fieldset)
+      @render()
 
   FormView

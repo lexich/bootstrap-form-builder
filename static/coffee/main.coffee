@@ -1,5 +1,6 @@
 require [  
   "jquery"
+  "backbone"
   "view/Modal-view"
   "common/Service"
   "collection/FormItem-collection"
@@ -7,7 +8,7 @@ require [
   "view/ToolItem-view"
   "view/Settings-view"
   "bootstrap"
-],($,
+],($, Backbone,
    ModalView,
    Service,
    FormItemCollection,
@@ -16,8 +17,6 @@ require [
    SettingsView
 )->
   $(document).ready ->
-    modal = new ModalView
-      html:$("#modalTemplate").html()
 
     settings = new SettingsView
       el: $("[data-html-settings]:first")
@@ -26,19 +25,18 @@ require [
       url:"/forms.json"
 
     createFormView = (service)-> 
-      new FormView
-        className:"ui_workarea"
-        el: $("[data-html-form]:first")
-        collection: collection
-        service: service
-        dataDropAccept: "drop-accept"
+      new FormView {
+         className:"ui_workarea"
+         el: $("[data-html-form]:first")
+         dataDropAccept: "drop-accept"
+         collection, service, settings
+      }
 
     createToolItemView = (service,type,data)->
       new ToolItemView
           type: type
           service:service
           template:service.renderAreaItem(data) 
-
 
     service = new Service
       dataToolBinder: "ui-jsrender"
@@ -47,7 +45,6 @@ require [
       createToolItemView:createToolItemView
       areaTemplateItem: ""      
       dataPostfixModalType:"modal-type"
-      modal: modal
       settings: settings
       
     collection.fetch()

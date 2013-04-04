@@ -1,12 +1,13 @@
 define [
-         "jquery",
-         "backbone",
-         "underscore",
-         "select2",
-         "datepicker",
-         "fuelux/all"
+   "jquery",
+   "backbone",
+   "underscore",
+   "select2",
+   "datepicker",
+   "fuelux/all"
+   "common/BackboneCustomView"
 ], ($, Backbone, _)->
-  APIView = Backbone.View.extend
+  APIView = Backbone.CustomView.extend
     init_select2: ->
       $el = $("input,select", @$el)
       more = parseInt $el.data("js-more") ? 20

@@ -1,13 +1,32 @@
+{# FormViewTemplate #}
+<script type="text/template" id="FormViewTemplate">
+    <div class="ui_workarea">
+        <form data-html-formloader></form>
+        <div class="row-fluid ui_add_drop_area">
+            <button class="btn icon-plus ui_add_drop_area-button" type="button" data-js-add-drop-area>Добавить площадку</button>
+        </div>
+    </div>
+</script>
+
+{# FieldsetViewTemplate #}
+<script type="text/template" id="FieldsetViewTemplate">
+    <fieldset>
+            <legend><%= title %></legend>
+            <div data-html-fieldset-placeholder=""></div>
+    </fieldset>
+</script>
+
+{# RowViewTemplate #}
+<script type="text/template" id="RowViewTemplate">
+    <div data-drop-accept="data-drop-accept" class="workarea__drop"></div>
+</script>
+
 {# Обертка для контролов #}
 <script type="text/template" id="formItemTemplate">
 <%= content %>
 </script>
 
-{# Контейнер для оберток контролов #}
-<script type="text/template" id="formViewTemplate">
-  <legend><%= title %></legend>
-  <div data-drop-accept="data-drop-accept" class="workarea__drop"></div>
-</script>
+
 
 {# Значек для схематичного отображения контролов #}
 <script type="text/template" id="areaTemplateItem">
@@ -48,12 +67,3 @@
 
 <script type="text/template" data-modal-type="hidden"><input id="__id_<%= name %>" type="hidden" name="<%= name %>" value="<%= value %>"></script>
 
-<script type="text/javascript" id="formView">
-<br/>
-<form class="ui_workarea">
-    <div data-html-formloader></div>
-    <div class="row-fluid ui_add_drop_area">
-        <button class="btn icon-plus ui_add_drop_area-button" type="button" data-js-add-drop-area>Добавить площадку</button>
-    </div>
-</form>
-</script>

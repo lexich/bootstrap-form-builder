@@ -166,14 +166,8 @@ module.exports = (grunt) ->
           cwd: "static/templates/"
           dest: "<%= resource.templates %>/"
         ]
-      common:
+      backbone:
         files:[
-          flattern: true
-          expand: true
-          src: "jquery.js"
-          cwd: "<%= components %>/jquery/"
-          dest: "<%= resource.js %>/jquery/"
-        ,
           flattern: true
           expand: true
           src: "backbone.js"
@@ -185,6 +179,14 @@ module.exports = (grunt) ->
           src: "underscore.js"
           cwd: "<%= components %>/underscore"
           dest: "<%= resource.js %>/underscore"
+        ]
+      common:
+        files:[
+          flattern: true
+          expand: true
+          src: "jquery.js"
+          cwd: "<%= components %>/jquery/"
+          dest: "<%= resource.js %>/jquery/"
         ,
           flattern: true
           expand: true
