@@ -34,24 +34,100 @@ define [
       area:"[data-drop-accept]"
       areaChildren:"[data-drop-accept] >"
 
+
     ###
-    @overwrite Backbone.CustomView
+    @overwrite Backbone.View
     ###
-    childrenConnect:(self,view)->
-      view.$el.appendTo self?.getItem("area")
+    initialize:->
+      LOG "RowView","initialize"
+
+
+    render:->
+      Backbone.CustomView::render.apply this, arguments
+      connector = @itemsSelectors.area
+      @getItem("area").sortable
+        helper:"original"
+        tolerance:"pointer"
+        dropOnEmpty:"true"
+        connectWith: connector
+        start:_.bind(@handle_sortable_start, this)
+        stop: _.bind(@handle_sortable_stop, this)
+        update: _.bind(@handle_sortable_update,this)
 
     ###
     @overwrite Backbone.CustomView
     ###
     reinitialize:->
-      _.each @models, (model)=> @getOrAddChildTypeByModel(model).reinitialize()
+      LOG "RowView","reinitialize"
+      _.each @models, (model)=>
+        view = @getOrAddChildTypeByModel(model)
+        view.reinitialize()
+
+    ###
+    Handle to jQuery.UI.sortable - start
+    ###
+    handle_sortable_start:->
+      LOG "RowView","handle_sortable_start"
+      #@parentView?.handle_draggable_start()
+
+    ###
+    Handle to jQuery.UI.sortable - stop
+    ###
+    handle_sortable_stop:->
+      LOG "RowView","handle_sortable_stop"
+
+    ###
+    Handle to jQuery.UI.sortable - update
+    ###
+    handle_sortable_update:(event,ui)->
+      LOG "RowView","handle_sortable_update"
+      #unless Backbone.CustomView::staticViewFromEl(ui.helper)
+      #  @createChild
+      #    model: @createFormItemModel()
+      #    service: @options.service
+      #@reindex()
+
+    ###
+    create new model FormItemModel
+    @return FormItemModel
+    ###
+    createFormItemModel:(data)->
+      LOG "RowView","createFormItemModel"
+      data = _.extend data or {}, {row:@model.get("row"), fieldset:@model.get("fieldset")}
+      model = new FormItemModel data
+      @collection.add model
+      @models.push model
+      model
+
+    ###
+    reindex all items in current row
+    ###
+    reindex:->
+      LOG "RowView","reindex"
+      _.reduce @getItem("areaChildren"), ((position,el)=>
+        if(view = Backbone.CustomView::staticViewFromEl el)
+          view.model?.set {
+             position
+             row: @model.get "row"
+             fieldset: @model.get "fieldset"
+             direction: @model.get "direction"
+          }, validate: true
+
+        position + 1
+      ),0
+
+    ###
+    @overwrite Backbone.CustomView
+    ###
+    childrenConnect:(self,view)->
+      LOG "RowView","childrenConnect"
+      view.$el.appendTo self?.getItem("area")
 
 
     getOrAddChildTypeByModel:(model)->
-      views = _.filter @childrenViews, (view, cid)->
-        view.model = model
-      if views.length > 0
-        view = views[0]
+      views = _.filter @childrenViews, (view, cid)-> view.model == model
+
+      if views.length > 0 then view = views[0]
       else
         view = @createChild
           model: model
@@ -89,18 +165,6 @@ define [
     setDirection:(direction)->
       @model.set "direction", direction, {validate:true}
 
-    reindex:->
-      LOG "RowView","reindex"
-      _.reduce @getItem("areaChildren"), ((position,el)=>
-        view = Backbone.CustomView::staticViewFromEl el
-        model = view?.model
-        model?.set {
-          position: position
-          row: @model.get "row"
-          fieldset: @model.get "fieldset"
-          direction: @model.get "direction"
-        }, validate: true
-        position + 1
-      ),0
+
 
   RowView

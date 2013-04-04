@@ -28,6 +28,7 @@ define [
       @events["click [data-js-left-size]"] =  => @handle_Inc (=>@$el.prev()), 1
 
     render:->
+      LOG "FormItemView","render"
       templateHtml = @options.service.getTemplate @model.get("type")
       data = _.extend id:@options.service.nextID(), @model.attributes
       content = _.template templateHtml, data

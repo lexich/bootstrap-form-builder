@@ -5,6 +5,7 @@ define [
   "view/Fieldset-view"
   "model/Fieldset-model"
   "common/BackboneCustomView"
+  "jquery-ui/jquery.ui.droppable"
 ],($,Backbone,_,FieldsetView, FieldsetModel)->
   FormView = Backbone.CustomView.extend
     ###
@@ -12,14 +13,15 @@ define [
     ###
     events:
       "click [data-js-add-drop-area]":"event_clickAddFieldset"
-
+      "customdragstart":"event_customstart"
+      "customdragstop":"event_customdragstop"
     ###
     Variables Backbone.CustomView
     ###
     ChildType: FieldsetView
     templatePath:"#FormViewTemplate"
     itemsSelectors:
-      placeholder:"[data-html-formloader]:first"
+      loader:"[data-html-formloader]:first"
       fieldsets: "form  fieldset"
 
     ###
@@ -27,7 +29,6 @@ define [
     ###
     initialize:->
       @options.settings.connect "form:save", => @collection.updateAll()
-
       @collection.on "reset", _.bind(@on_collection_reset,this)
 
     ###
@@ -58,10 +59,9 @@ define [
     @overwrite Backbone.CustomView
     ###
     childrenConnect:(self,view)->
-      $placeholder = self.getItem("placeholder")
-      $placeholder.append view.$el
-      $placeholder.append "<hr>"
-
+      $loader = self.getItem("loader")
+      $loader.append view.$el
+      $loader.append "<hr>"
 
     ###
     Find view by fieldset index or add New
@@ -88,8 +88,43 @@ define [
 
     ###
     event_clickAddFieldset:->
-      fieldset = _.size( @getItem("fieldsets"))
-      view = @getOrAddFieldsetView(fieldset)
+
+
+    event_customstart:->
+      LOG "FormView","event_customstart"
+      unless @placeholder?
+        @placeholder = $("<div>")
+        @placeholder.attr
+          "data-html-form-placeholder":""
+          "data-drop-accept":""
+        @placeholder.css
+          width:"100%"
+          height:"100px"
+          "background-color":"red"
+
+        @placeholder.droppable()
+      @placeholder.appendTo @getItem("loader")
+
+    event_customdragstop:(e,data)->
+      LOG "FormView", "event_customdragstop"
+
+      @getItem("placeholder").hide()
+
+      ###
+      Если элемент оказалксе в placeholder, то создаем
+      FieldsetView -> RowView -> FormItemView
+      ###
+      if @placeholder.children().lenght > 0
+        fieldset = _.size( @getItem("fieldsets"))
+        viewFieldset = @getOrAddFieldsetView(fieldset)
+        viewRow = viewFieldset.childrenViews[0]
+        model = viewRow.createFormItemModel(data)
+        view = viewRow.getOrAddChildTypeByModel model
+        #Удаляем placeholder
+        @placeholder.remove()
+
       @render()
+
+
 
   FormView

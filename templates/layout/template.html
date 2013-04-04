@@ -1,7 +1,9 @@
 {# FormViewTemplate #}
 <script type="text/template" id="FormViewTemplate">
-    <div class="ui_workarea">
-        <form data-html-formloader></form>
+    <div class="ui_formview">
+        <form data-html-formloader>
+        </form>
+        {# Просто кнопка #}
         <div class="row-fluid ui_add_drop_area">
             <button class="btn icon-plus ui_add_drop_area-button" type="button" data-js-add-drop-area>Добавить площадку</button>
         </div>
@@ -11,14 +13,14 @@
 {# FieldsetViewTemplate #}
 <script type="text/template" id="FieldsetViewTemplate">
     <fieldset>
-            <legend><%= title %></legend>
-            <div data-html-fieldset-placeholder=""></div>
+        <legend><%= title %></legend>
+        <div data-html-fieldset-loader class="ui_fieldset__loader"></div>
     </fieldset>
 </script>
 
 {# RowViewTemplate #}
 <script type="text/template" id="RowViewTemplate">
-    <div data-drop-accept="data-drop-accept" class="workarea__drop"></div>
+    <div data-drop-accept class="ui_row__loader row-fluid"></div>
 </script>
 
 {# Обертка для контролов #}

@@ -10,12 +10,13 @@ define [
     ChildType: RowView
     templatePath:"#FieldsetViewTemplate"
     itemsSelectors:
-      placeholder:"[data-html-fieldset-placeholder]"
+      loader:"[data-html-fieldset-loader]"
 
     events:
       "click [data-js-remove-fieldset]": "event_remove"
 
     initialize:->
+      @getOrAddRowView(0)
       @bindEvents()
 
     reinitialize:->
@@ -25,29 +26,33 @@ define [
         .map (models,row)=>
           row = toInt row
           view = @getOrAddRowView(row, models)
+          view.reinitialize()
           view.cid
         .value()
       _.each _.omit(@childrenViews,childrenCID),(view,cid)=>
         @removeChild view
 
     getOrAddRowView:(row,models)->
-      unless (view=@findChildViewByRow(row))
+      filterRowView = _.filter @childrenViews, (view)->
+        view.model.get("row") == row
+
+      if filterRowView.length > 0
+        view = filterRowView[0]
+      else
         view = @createChild
           collection:@collection
           model: new RowModel {row, fieldset:@model.get("fieldset")}
           models: models
+          service: @options.service
+
       view.models = models
       view
-
-    findChildViewByRow:(row)->
-
 
     bindEvents:->
       #bind events
 
     childrenConnect:(self,view)->
-      $placeholder = self.getItem("placeholder")
-      $placeholder.append view.$el
+      self.getItem("loader").append view.$el
 
     event_remove:(e)->
       @destroy()

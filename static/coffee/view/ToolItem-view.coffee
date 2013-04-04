@@ -2,9 +2,14 @@ define [
   "jquery",
   "backbone",
   "underscore",
+  "view/FormItem-view"
+  "model/FormItem-model"
   "jquery-ui/jquery.ui.draggable"
-],($,Backbone,_)-> 
+],($,Backbone,_,FormItemView, FormItemModel)->
   ToolItemView = Backbone.View.extend
+    CONTAINER_SELECTOR:"[data-html-form]"
+    dataHolder:{}
+    placeholder:{}
     ###
     @param data    -  function which return {Object} for underscore template  
     ###
@@ -13,15 +18,22 @@ define [
         appendTo:"body"
         clone:true
         opacity: 0.7
+        cursor: "pointer"
         connectToSortable:"[data-drop-accept]"
         helper:_.bind( @handle_draggable_helper, this)
-        cursor: "pointer"
+        start:_.bind(@handle_draggable_start, this)
+        stop:_.bind(@handle_draggable_stop, this)
 
-    handle_draggable_helper:(event)->
-      $el = $(event.target)
-      templateHtml = @options.service.getTemplate @options.type
-      data = @options.service.getTemplateData(@options.type)
-      _.template templateHtml, data
+    handle_draggable_helper:->
+      template = @options.service.getTemplate @options.type
+      @dataHolder = @options.service.getTemplateData(@options.type)
+      _.template template, @dataHolder
+
+    handle_draggable_start:->
+      $(@CONTAINER_SELECTOR).trigger("customdragstart")
+
+    handle_draggable_stop:->
+      $(@CONTAINER_SELECTOR).trigger("customdragstop",@dataHolder)
 
     render:-> 
       data = @options.service.getData(@options.type)
