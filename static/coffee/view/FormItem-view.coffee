@@ -5,17 +5,28 @@ define [
   "view/API-view"
 ],($,Backbone,_, APIView)-> 
   FormItemView = APIView.extend
+    ###
+    Constants
+    ###
     HOVER_CLASS: "hover"
 
+    ###
+    Variables Backbone.CustomView
+    ###
+    templatePath:"#FormItemViewTemplate"
+
+    ###
+    Variables Backbone.CustomView
+    ###
+    className:"ui_formitem"
     events:
       "click [data-js-min-size]":"event_Min"
       "mouseenter": "event_mouseenter"
       "mouseleave": "event_mouseleave"
       "click":  "event_click"
+
     ###
-    @param service
-    @param type
-    @param size
+    @overwrite Backbone.View
     ###
     initialize:->
       LOG "FormItemView","initialize"
@@ -23,20 +34,25 @@ define [
       @model.on "change", => @render()
       @bindEvents()
 
+    ###
+    @overwrite Backbone.CustomView
+    ###
+    templateData:->
+      templateHtml = @options.service.getTemplate @model.get("type")
+      data = _.extend id:@options.service.nextID(), @model.attributes
+      content : _.template templateHtml, data
+
     bindEvents: ->
       LOG "FormItemView","bindEvents"
       @events["click [data-js-right-size]"] = => @handle_Inc (=>@$el.next()), 1
       @events["click [data-js-left-size]"] =  => @handle_Inc (=>@$el.prev()), 1
 
+
     render:->
       LOG "FormItemView","render"
-      templateHtml = @options.service.getTemplate @model.get("type")
-      data = _.extend id:@options.service.nextID(), @model.attributes
-      content = _.template templateHtml, data
-      html = @options.service.renderFormItemTemplate content
-      @$el.html html
-      @updateSize()
       APIView::render.apply this, arguments
+      @updateSize()
+
 
     remove:->
       LOG "FormItemView","remove"

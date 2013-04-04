@@ -36,19 +36,6 @@ define [
           memo
       ),{}
 
-    getOrAddFormItemView:(model, options)->
-      options = options ? {}
-      filterItem = _.filter @formItemViews, (view)->
-        view.model is model
-
-      if filterItem.length > 1
-        filterItem[0]
-      else
-        options = _.extend(options, {model, service: this})
-        item = new FormItemView options
-        @formItemViews.push item
-        item
-
     renderModalForm:(name,data)->
       @_renderModalFormCache = {} if _.isUndefined(@_renderModalFormCache) 
       return @_renderModalFormCache[name] if @_renderModalFormCache[name]?
@@ -71,13 +58,6 @@ define [
       if not templateHtml or templateHtml == ""
         templateHtml = @modalTemplates["input"]
       _.template templateHtml, data
-
-    renderFormViewElement:(params)->
-      params = _.extend {
-        row:0
-      }, params || {}
-      $item = $ _.template $("#formViewTemplate").html(), params or {}
-      
 
     showModal:(options)-> 
       @modal.show options
@@ -109,7 +89,8 @@ define [
       data
       
     getTemplate:(type)->
-      @getData(type)?.template    
+      @getData(type)?.template
+
       
 
     parceModalItemData:($body)->
@@ -151,9 +132,5 @@ define [
           $el: $el
         memo
       ),{}
-
-    renderFormItemTemplate:(html)->
-      templateHtml = $("#formItemTemplate").html() or "<%= content %>"
-      _.template templateHtml, content:html
 
   Service

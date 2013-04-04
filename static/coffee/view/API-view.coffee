@@ -33,6 +33,7 @@ define [
       $el.checkbox()
 
     render: ->
+      Backbone.CustomView::render.apply this, arguments
       type = @model.get("type")
       method = @["init_#{type}"]
       if _.isFunction(method)

@@ -44,11 +44,15 @@ define [
     ###
     render:->
       LOG "RowView","render"
+      if(sortable = @getItem("area").data("sortable"))
+        sortable.destroy()
+
       Backbone.CustomView::render.apply this, arguments
 
       @getItem("area").sortable
         helper:"original"
         tolerance:"pointer"
+        handle:"[data-js-formitem-move]"
         dropOnEmpty:"true"
         connectWith: "#{@itemsSelectors.area}:not([#{@DISABLE_DRAG}])"
         start:_.bind(@handle_sortable_start, this)
@@ -123,11 +127,20 @@ define [
     ###
     handle_sortable_update:(event,ui)->
       LOG "RowView","handle_sortable_update"
-      #unless Backbone.CustomView::staticViewFromEl(ui.helper)
-      #  @createChild
-      #    model: @createFormItemModel()
-      #    service: @options.service
-      #@reindex()
+      ###
+      unless(formItemView = Backbone.CustomView::staticViewFromEl(ui.helper))
+        formItemView = @createChild
+          el: ui.helper
+          model: @createFormItemModel()
+          service: @options.service
+
+      parentView = formItemView.parentView
+      unless parentView == this
+        @addChild formItemView
+        parentView.render()
+      @reindex()
+      @render()
+      ###
 
     ###
     create new model FormItemModel
