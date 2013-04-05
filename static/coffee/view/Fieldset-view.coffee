@@ -32,6 +32,8 @@ define [
     @overwrite Backbone.View
     ###
     render:->
+      if (sortable = @getItem("loader").data("sortable"))
+        sortable.destroy()
       Backbone.CustomView::render.apply this, arguments
       connector = @itemsSelectors.loader
       @getItem("loader").sortable
@@ -40,8 +42,44 @@ define [
         tolerance:"pointer"
         dropOnEmpty:"true"
         connectWith: connector
+        #update: _.bind(@handle_sortable_update,this)
       this
 
+
+
+    reindex:->
+
+
+    ###
+    Handle to jQuery.UI.sortable - update
+    ###
+    handle_sortable_update:(event,ui)->
+      LOG "FieldsetView","handle_sortable_update"
+      if ui.sender?
+        LOG "FieldsetView","handle_sortable_update ui.sender != null"
+        formItemView = Backbone.CustomView::staticViewFromEl(ui.item)
+        #Если View найден, создаем дочерний
+        if formItemView?
+          parentView = formItemView.parentView
+          #Если произошло перемещение между RowView, устанавливаем текуший
+          if parentView != this
+            formItemView.setParent this
+            parentView.reindex()
+            parentView.render()
+        else #Иначе создаем новый
+          formItemView = @createChild
+            el: ui.helper
+            model: @createFormItemModel()
+            service: @options.service
+      @reindex()
+      @render()
+
+
+    ###
+    @overwrite Backbone.CustomView
+    ###
+    childrenViewsOrdered:->
+      _.sortBy @childrenViews, (view,cid)-> view.model.get("row")
 
     ###
     @overwrite Backbone.CustomView

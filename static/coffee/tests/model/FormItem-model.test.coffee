@@ -1,10 +1,10 @@
 define [
-  "model/DropArea-model"
-],(DropAreaModel)->
+  "model/FormItem-model"
+],(FormItemModel)->
 
-  describe "DropAreaModel",->
+  describe "FormItemModel",->
     beforeEach ->
-      @model = new DropAreaModel
+      @model = new FormItemModel
     
     it "default init",->
       expect(@model.get("position")).toEqual(0)

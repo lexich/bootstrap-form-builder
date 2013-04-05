@@ -1,10 +1,11 @@
 require [
-  "tests/model/DropArea-model.test"
-  "tests/collection/DropArea-collection.test"
-  "tests/view/DropArea-view.test"
+  "tests/model/FormItem-model.test"
+  "tests/collection/FormItem-collection.test"
+
   "tests/view/Form-view.test"
   "tests/view/Modal-view.test"
   "tests/view/FormItem-view.test"
+  "tests/common/BackboneCustomView.test"
 ],->
   jasmineEnv = jasmine.getEnv();
   jasmineEnv.updateInterval = 1000;

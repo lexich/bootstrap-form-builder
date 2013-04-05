@@ -39,8 +39,9 @@ define [
     ###
     templateData:->
       templateHtml = @options.service.getTemplate @model.get("type")
-      data = _.extend id:@options.service.nextID(), @model.attributes
-      content : _.template templateHtml, data
+      data = _.extend id:_.uniqueId("tmpl_"), @model.attributes
+      content = _.template templateHtml, data
+      {content, model:@model.attributes}
 
     bindEvents: ->
       LOG "FormItemView","bindEvents"

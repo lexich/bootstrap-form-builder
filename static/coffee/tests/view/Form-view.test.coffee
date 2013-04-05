@@ -1,7 +1,7 @@
 define [
   "view/Form-view"
-  "collection/DropArea-collection"
-],(FormView, DropAreaCollection)->
+  "collection/FormItem-collection"
+],(FormView, FormItemCollection)->
 
   describe "FormView",->
     respond = [{
@@ -28,7 +28,7 @@ define [
         200,{"Content-Type":"application/json"}, JSON.stringify respond
       ]
       
-      @collection = new DropAreaCollection
+      @collection = new FormItemCollection
         url:"/form.json"        
       @view = new FormView
         collection:@collection

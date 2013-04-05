@@ -13,7 +13,6 @@ define [
     ###
     className:"ui_formview"
     events:
-      "click [data-js-add-drop-area]":"event_clickAddFieldset"
       "customdragstart":"event_customstart"
       "customdragstop":"event_customdragstop"
     ###
@@ -85,12 +84,6 @@ define [
       view.models = models
       view
 
-    ###
-
-    ###
-    event_clickAddFieldset:->
-
-
     event_customstart:->
       LOG "FormView","event_customstart"
       unless @placeholder?
@@ -115,7 +108,7 @@ define [
       Если элемент оказалксе в placeholder, то создаем
       FieldsetView -> RowView -> FormItemView
       ###
-      if @placeholder.children().lenght > 0
+      if @placeholder.children().length > 0
         fieldset = _.size( @getItem("fieldsets"))
         viewFieldset = @getOrAddFieldsetView(fieldset)
         viewRow = viewFieldset.childrenViews[0]

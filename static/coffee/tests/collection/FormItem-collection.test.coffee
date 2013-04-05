@@ -1,7 +1,7 @@
 define [
-  "model/DropArea-model",
-  "collection/DropArea-collection"
-],(DropAreaModel,DropAreaCollection)->
+  "model/FormItem-model",
+  "collection/FormItem-collection"
+],(FormItemModel,FormItemCollection)->
   respond = [{
     label:"one"
     placeholder:"two"
@@ -37,7 +37,7 @@ define [
       @server.respondWith "GET","/forms1.json",[
         200,{"Content-Type":"application/json"}, JSON.stringify respond
       ]
-      @collection = new DropAreaCollection
+      @collection = new FormItemCollection
         url:"/forms1.json"
     
     afterEach ->
@@ -63,7 +63,7 @@ define [
 
     it "Collection updateAll",->
       sinon.spy()   
-      model = new DropAreaModel
+      model = new FormItemModel
         label:"one"
         placeholder:"two"
         type:"input1"

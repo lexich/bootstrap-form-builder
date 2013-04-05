@@ -347,7 +347,7 @@ module.exports = (grunt) ->
       row: 0
       position: 0
     ,
-      label: "Name1"
+      label: "Name2"
       placeholder: "Input your name1"
       name: "name1"
       type: "input"

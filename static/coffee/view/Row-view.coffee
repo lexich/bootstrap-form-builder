@@ -39,11 +39,14 @@ define [
     initialize:->
       @model.on "change", _.bind(@on_model_change,this)
 
+    templateData:->
+      _.extend @model.toJSON(),cid:@cid
+
     ###
     @overwrite Backbone.View
     ###
     render:->
-      LOG "RowView","render"
+      LOG "RowView","render #{@cid}"
       if(sortable = @getItem("area").data("sortable"))
         sortable.destroy()
 
@@ -90,8 +93,6 @@ define [
         @getItem("areaChildren").removeClass("span4")
         @$el.addClass "form-horizontal"
 
-
-
     setDisable:(flag)->
       flag = true unless flag?
       $area = @getItem("area")
@@ -99,6 +100,13 @@ define [
         $area.attr(@DISABLE_DRAG,"")
       else
         $area.removeAttr(@DISABLE_DRAG)
+
+    ###
+    @overwrite Backbone.CustomView
+    ###
+    childrenViewsOrdered:->
+      _.sortBy @childrenViews, (view,cid)-> view.model.get("position")
+
 
     ###
     @overwrite Backbone.CustomView
@@ -113,41 +121,45 @@ define [
     Handle to jQuery.UI.sortable - start
     ###
     handle_sortable_start:->
-      LOG "RowView","handle_sortable_start"
+      LOG "RowView","handle_sortable_start #{@cid}"
       #@parentView?.handle_draggable_start()
 
     ###
     Handle to jQuery.UI.sortable - stop
     ###
-    handle_sortable_stop:->
-      LOG "RowView","handle_sortable_stop"
+    handle_sortable_stop:(event,ui)->
+      LOG "RowView","handle_sortable_stop #{@cid}"
+      @reindex()
+      @render()
 
     ###
     Handle to jQuery.UI.sortable - update
     ###
     handle_sortable_update:(event,ui)->
-      LOG "RowView","handle_sortable_update"
-      ###
-      unless(formItemView = Backbone.CustomView::staticViewFromEl(ui.helper))
-        formItemView = @createChild
-          el: ui.helper
-          model: @createFormItemModel()
-          service: @options.service
-
-      parentView = formItemView.parentView
-      unless parentView == this
-        @addChild formItemView
-        parentView.render()
-      @reindex()
-      @render()
-      ###
+      LOG "RowView","handle_sortable_update #{@cid}"
+      formItemView = Backbone.CustomView::staticViewFromEl(ui.item)
+      if ui.sender?
+        LOG "RowView","handle_sortable_update #{@cid} ui.sender != null"
+        #Если View найден, создаем дочерний
+        if formItemView?
+          parentView = formItemView.parentView
+          #Если произошло перемещение между RowView, устанавливаем текуший
+          if parentView != this
+            formItemView.setParent this
+            @reindex()
+            @render()
+        else #Иначе создаем новый
+          formItemView = @createChild
+            el: ui.helper
+            model: @createFormItemModel()
+            service: @options.service
 
     ###
     create new model FormItemModel
     @return FormItemModel
     ###
     createFormItemModel:(data)->
-      LOG "RowView","createFormItemModel"
+      LOG "RowView","createFormItemModel #{@cid}"
       data = _.extend data or {}, {row:@model.get("row"), fieldset:@model.get("fieldset")}
       model = new FormItemModel data
       @collection.add model
@@ -158,7 +170,7 @@ define [
     reindex all items in current row
     ###
     reindex:->
-      LOG "RowView","reindex"
+      LOG "RowView","reindex #{@cid}"
       _.reduce @getItem("areaChildren"), ((position,el)=>
         if(view = Backbone.CustomView::staticViewFromEl el)
           view.model?.set {
@@ -166,7 +178,7 @@ define [
              row: @model.get "row"
              fieldset: @model.get "fieldset"
              direction: @model.get "direction"
-          }, validate: true
+          }, { validate: true, silent:true }
 
         position + 1
       ),0
@@ -175,7 +187,7 @@ define [
     @overwrite Backbone.CustomView
     ###
     childrenConnect:(self,view)->
-      LOG "RowView","childrenConnect"
+      LOG "RowView","childrenConnect #{@cid}"
       view.$el.appendTo self?.getItem("area")
 
 

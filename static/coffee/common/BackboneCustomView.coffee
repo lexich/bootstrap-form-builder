@@ -33,7 +33,7 @@ define [
         models:[]
         ChildType:Backbone.CustomView
 
-      options = _.pick(options, _.keys(mixin))
+      options = _.pick(options or {}, _.keys(mixin))
       _.extend this, options
       _.defaults this, mixin
 
@@ -51,7 +51,7 @@ define [
       selector = @itemsSelectors[name]
       if selector? then $(selector,@$el) else @$el
 
-    childrenViewsOrdered:-> @childrenViews
+    childrenViewsOrdered:-> _.values(@childrenViews)
 
     render:->
       @$el.empty()
@@ -60,7 +60,7 @@ define [
       data = _.result(this,"templateData")
       html = _.template htmlTemplate, data
       @$el.html html
-      _.each @childrenViewsOrdered(),(view,cid)=>
+      _.each @childrenViewsOrdered(),(view)=>
         @childrenConnect this, view
         view.render()
 
@@ -91,7 +91,7 @@ define [
 
     setParent:(view)->
       if @parentView?
-        delete @parentView[this.cid]
+        @parentView.removeChild this
       @parentView = view
       view?.childrenViews[this.cid] = this
       view

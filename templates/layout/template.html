@@ -1,11 +1,7 @@
 {# FormViewTemplate class="ui_formview" #}
 <script type="text/template" id="FormViewTemplate">
-    <form data-html-formloader>
-    </form>
+    <form data-html-formloader></form>
     {# Просто кнопка #}
-    <div class="row-fluid ui_add_drop_area">
-        <button class="btn icon-plus ui_add_drop_area-button" type="button" data-js-add-drop-area>Добавить площадку</button>
-    </div>
 </script>
 
 {# FieldsetViewTemplate tagName="fieldset" #}
@@ -20,13 +16,17 @@
     <p>
         <a href="javascript:void(0)" data-js-row-disable>Enabled</a>
         <a href="javascript:void(0)" data-js-row-position>Horizontal</a>
+        fieldset : <%= fieldset %> row: <%= row %> cid: <%= cid %>
     </p>
     <div data-drop-accept class="ui_row__loader row-fluid"></div>
 </script>
 
 {# FormItemViewTemplate class="ui_formitem" #}
 <script type="text/template" id="FormItemViewTemplate">
-    <span data-js-formitem-move class='icon-circle-blank ui_formitem__move'/>
+    <p>
+        fieldset : <%= model.fieldset %> row: <%= model.row %> position:<%= model.position %>
+        <span data-js-formitem-move class='icon-circle-blank ui_formitem__move'/>
+    </p>
     <%= content %>
 </script>
 
