@@ -48,4 +48,16 @@ define [
           }
       models
 
+    getRow:(fieldset, row)->
+      _.filter @models,(model)->
+        (model.get("fieldset") is fieldset) and (model.get("row") is row)
+
+    getFieldset:(fieldset)->
+      _.filter @models,(model)->
+        (model.get("fieldset") is fieldset)
+
+    getFieldsetGroupByRow:(fieldset)->
+      _.groupBy @getFieldset(fieldset), (model)-> model.get("row")
+
+
   FormItemCollection

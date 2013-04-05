@@ -68,7 +68,8 @@ define [
 
     on_model_change:(model,options)->
       changed = _.pick model.changed, "row","fieldset","position"
-      _.each @models,(model)->
+      models = @collection.getRow model.get("fielset"), model.get("row")
+      _.each models,(model)->
         #silent mode freeze changing beause render call
         model.set changed,{validate:true, silent:true}
       @render()
@@ -113,7 +114,8 @@ define [
     ###
     reinitialize:->
       LOG "RowView","reinitialize"
-      _.each @models, (model)=>
+      models = @collection.getRow @model.get("fieldset"), @model.get("row")
+      _.each models, (model)=>
         view = @getOrAddChildTypeByModel(model)
         view.reinitialize()
 
@@ -163,7 +165,6 @@ define [
       data = _.extend data or {}, {row:@model.get("row"), fieldset:@model.get("fieldset")}
       model = new FormItemModel data
       @collection.add model
-      @models.push model
       model
 
     ###

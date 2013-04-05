@@ -30,7 +30,6 @@ define [
         _getTemplateHtml_Cache:""
         parentView:null
         childrenViews:{}
-        models:[]
         ChildType:Backbone.CustomView
 
       options = _.pick(options or {}, _.keys(mixin))

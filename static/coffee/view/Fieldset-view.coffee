@@ -85,19 +85,19 @@ define [
     @overwrite Backbone.CustomView
     ###
     reinitialize:->
-      childrenCID = _.chain(@options.models)
-        .groupBy (model)=>
-          model.get("row")
-        .map (models,row)=>
-          row = toInt row
-          view = @getOrAddRowView(row, models)
-          view.reinitialize()
-          view.cid
-        .value()
-      _.each _.omit(@childrenViews,childrenCID),(view,cid)=>
-        @removeChild view
+      fieldset = @model.get("fieldset")
+      rows = _.keys @collection.getFieldsetGroupByRow(fieldset)
+      childrenCID = _.map rows, (row)=>
+        row = toInt row
+        view = @getOrAddRowView(row)
+        view.reinitialize()
+        view.cid
 
-    getOrAddRowView:(row,models)->
+      _.chain(@childrenViews)
+        .omit(childrenCID)
+        .each (view,cid)=> @removeChild view
+
+    getOrAddRowView:(row)->
       filterRowView = _.filter @childrenViews, (view)->
         view.model.get("row") == row
 
@@ -107,10 +107,7 @@ define [
         view = @createChild
           collection:@collection
           model: new RowModel {row, fieldset:@model.get("fieldset")}
-          models: models
           service: @options.service
-
-      view.models = models
       view
 
     bindEvents:->

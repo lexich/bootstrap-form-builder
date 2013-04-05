@@ -47,7 +47,7 @@ define [
           model.get("fieldset")
         .map (models,fieldset)=>
           fieldset = toInt fieldset
-          view = @getOrAddFieldsetView(fieldset, models)
+          view = @getOrAddFieldsetView(fieldset)
           view.reinitialize?()
           view.cid
         .value()
@@ -66,8 +66,7 @@ define [
     ###
     Find view by fieldset index or add New
     ###
-    getOrAddFieldsetView:(fieldset, models)->
-      models = [] unless models?
+    getOrAddFieldsetView:(fieldset)->
       filterViews = _.filter @childrenViews,(view)->
         view.model.get("fieldset") is fieldset
 
@@ -76,12 +75,10 @@ define [
       else
         view = @createChild
           service: @options.service
-          models: models
           model: new FieldsetModel(fieldset:fieldset)
           collection: @collection
           accept:($el)->
             $el.hasClass "ui-draggable"
-      view.models = models
       view
 
     event_customstart:->
