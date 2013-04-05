@@ -67,12 +67,10 @@ define [
 
 
     on_model_change:(model,options)->
-      changed = _.pick model.changed, "row","fieldset","position"
-      models = @collection.getRow model.get("fielset"), model.get("row")
-      _.each models,(model)->
+      changed = _.pick model.changed, _.keys(model.defaults)
+      _.each @childrenViews,(view,cid)->
         #silent mode freeze changing beause render call
-        model.set changed,{validate:true, silent:true}
-      @render()
+        view.model.set changed,{validate:true}
 
 
     event_disable:(e)->
@@ -179,7 +177,7 @@ define [
              row: @model.get "row"
              fieldset: @model.get "fieldset"
              direction: @model.get "direction"
-          }, { validate: true, silent:true }
+          }, { validate: true }
 
         position + 1
       ),0

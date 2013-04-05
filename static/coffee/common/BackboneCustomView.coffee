@@ -53,7 +53,9 @@ define [
     childrenViewsOrdered:-> _.values(@childrenViews)
 
     render:->
-      @$el.empty()
+      $holder = $(document.createDocumentFragment())
+      $holder.append @$el.children()
+
       result = Backbone.View::render.apply(this, arguments)
       htmlTemplate = @_getTemplateHtml()
       data = _.result(this,"templateData")
@@ -62,7 +64,7 @@ define [
       _.each @childrenViewsOrdered(),(view)=>
         @childrenConnect this, view
         view.render()
-
+      $holder.remove()
       result
 
     destroy:->

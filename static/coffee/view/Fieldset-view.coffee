@@ -20,6 +20,7 @@ define [
     templatePath:"#FieldsetViewTemplate"
     itemsSelectors:
       loader:"[data-html-fieldset-loader]"
+      loaderChildren:"[data-html-fieldset-loader] >"
 
     ###
     @overwrite Backbone.View
@@ -27,11 +28,19 @@ define [
     initialize:->
       @getOrAddRowView(0)
       @bindEvents()
+      @model.on "change", _.bind(@on_model_change,this)
+
+    on_model_change:(model,options)->
+      changed = _.pick model.changed, _.keys(model.defaults)
+      _.each @childrenViews,(view,cid)->
+        #silent mode freeze changing beause render call
+        view.model.set changed,{validate:true}
 
     ###
     @overwrite Backbone.View
     ###
     render:->
+      LOG "Fieldset", "render #{@cid}"
       if (sortable = @getItem("loader").data("sortable"))
         sortable.destroy()
       Backbone.CustomView::render.apply this, arguments
@@ -42,38 +51,58 @@ define [
         tolerance:"pointer"
         dropOnEmpty:"true"
         connectWith: connector
-        #update: _.bind(@handle_sortable_update,this)
+        start:_.bind(@handle_sortable_start, this)
+        stop: _.bind(@handle_sortable_stop, this)
+        update: _.bind(@handle_sortable_update,this)
       this
 
-
-
     reindex:->
+      LOG "RowView","reindex #{@cid}"
+      _.reduce @getItem("loaderChildren"), ((row,el)=>
+        if(view = Backbone.CustomView::staticViewFromEl el)
+          view.model?.set {
+            row: row
+            fieldset: @model.get "fieldset"
+            direction: @model.get "direction"
+          }, {validate: true}
+        row + 1
+      ),0
 
+      ###
+      Handle to jQuery.UI.sortable - start
+      ###
+    handle_sortable_start:->
+      LOG "FieldsetView","handle_sortable_start #{@cid}"
+
+    ###
+    Handle to jQuery.UI.sortable - stop
+    ###
+    handle_sortable_stop:(event,ui)->
+      LOG "FieldsetView","handle_sortable_stop #{@cid}"
+      @reindex()
+      @render()
 
     ###
     Handle to jQuery.UI.sortable - update
     ###
     handle_sortable_update:(event,ui)->
-      LOG "FieldsetView","handle_sortable_update"
+      LOG "FieldsetView","handle_sortable_update #{@cid}"
+      rowView = Backbone.CustomView::staticViewFromEl(ui.item)
       if ui.sender?
-        LOG "FieldsetView","handle_sortable_update ui.sender != null"
-        formItemView = Backbone.CustomView::staticViewFromEl(ui.item)
+        LOG "RowView","handle_sortable_update #{@cid} ui.sender != null"
         #Если View найден, создаем дочерний
-        if formItemView?
-          parentView = formItemView.parentView
-          #Если произошло перемещение между RowView, устанавливаем текуший
+        if rowView
+          parentView = rowView.parentView
+          #Если произошло перемещение между FieldsetView, устанавливаем текуший
           if parentView != this
-            formItemView.setParent this
-            parentView.reindex()
-            parentView.render()
+            rowView.setParent this
+            @reindex()
+            @render()
         else #Иначе создаем новый
-          formItemView = @createChild
+          rowView = @createChild
             el: ui.helper
-            model: @createFormItemModel()
+            model: new RowModel {fieldset:@model.get("fieldset")}
             service: @options.service
-      @reindex()
-      @render()
-
 
     ###
     @overwrite Backbone.CustomView
