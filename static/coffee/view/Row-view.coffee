@@ -57,6 +57,7 @@ define [
         tolerance:"pointer"
         handle:"[data-js-formitem-move]"
         dropOnEmpty:"true"
+        placeholder:"ui_formitem__placeholder"
         connectWith: "#{@itemsSelectors.area}:not([#{@DISABLE_DRAG}])"
         start:_.bind(@handle_sortable_start, this)
         stop: _.bind(@handle_sortable_stop, this)

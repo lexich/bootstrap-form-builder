@@ -83,38 +83,10 @@ define [
 
     event_customstart:->
       LOG "FormView","event_customstart"
-      unless @placeholder?
-        @placeholder = $("<div>")
-        @placeholder.attr
-          "data-html-form-placeholder":""
-          "data-drop-accept":""
-        @placeholder.css
-          width:"100%"
-          height:"100px"
-          "background-color":"red"
-
-        @placeholder.droppable()
-      @placeholder.appendTo @getItem("loader")
 
     event_customdragstop:(e,data)->
       LOG "FormView", "event_customdragstop"
 
-      @getItem("placeholder").hide()
-
-      ###
-      Если элемент оказалксе в placeholder, то создаем
-      FieldsetView -> RowView -> FormItemView
-      ###
-      if @placeholder.children().length > 0
-        fieldset = _.size( @getItem("fieldsets"))
-        viewFieldset = @getOrAddFieldsetView(fieldset)
-        viewRow = viewFieldset.childrenViews[0]
-        model = viewRow.createFormItemModel(data)
-        view = viewRow.getOrAddChildTypeByModel model
-        #Удаляем placeholder
-        @placeholder.remove()
-
-      @render()
 
 
 

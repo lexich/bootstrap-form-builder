@@ -48,7 +48,7 @@ define [
 
     getItem:(name)->
       selector = @itemsSelectors[name]
-      if selector? then $(selector,@$el) else @$el
+      if selector? then $(selector,@$el)
 
     childrenViewsOrdered:-> _.values(@childrenViews)
 
