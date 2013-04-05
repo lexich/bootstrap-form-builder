@@ -29,7 +29,7 @@ define [
     @overwrite Backbone.View
     ###
     initialize:->
-      LOG "FormItemView","initialize"
+      LOG "FormItemView","initialize #{@cid}"
       @$el.data DATA_VIEW, this
       @model.on "change", => @render()
       @bindEvents()
@@ -50,7 +50,7 @@ define [
 
 
     render:->
-      LOG "FormItemView","render"
+      LOG "FormItemView","render #{@cid}"
       APIView::render.apply this, arguments
       @updateSize()
 

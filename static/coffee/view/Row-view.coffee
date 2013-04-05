@@ -130,7 +130,6 @@ define [
     handle_sortable_stop:(event,ui)->
       LOG "RowView","handle_sortable_stop #{@cid}"
       @reindex()
-      @render()
 
     ###
     Handle to jQuery.UI.sortable - update
@@ -147,7 +146,6 @@ define [
           if parentView != this
             formItemView.setParent this
             @reindex()
-            @render()
         else #Иначе создаем новый
           formItemView = @createChild
             el: ui.helper

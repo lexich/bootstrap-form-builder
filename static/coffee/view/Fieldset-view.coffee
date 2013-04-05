@@ -80,7 +80,6 @@ define [
     handle_sortable_stop:(event,ui)->
       LOG "FieldsetView","handle_sortable_stop #{@cid}"
       @reindex()
-      @render()
 
     ###
     Handle to jQuery.UI.sortable - update
@@ -97,7 +96,6 @@ define [
           if parentView != this
             rowView.setParent this
             @reindex()
-            @render()
         else #Иначе создаем новый
           rowView = @createChild
             el: ui.helper
