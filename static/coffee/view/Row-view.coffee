@@ -147,11 +147,15 @@ define [
           if parentView != this
             formItemView.setParent this
             @reindex()
-        else #Иначе создаем новый
-          formItemView = @createChild
-            el: ui.helper
-            model: @createFormItemModel()
-            service: @options.service
+      unless formItemView?
+        componentType = $(ui.item).data("componentType")
+        data = @options.service.getTemplateData(componentType)
+        formItemView = @createChild
+          model: @createFormItemModel(data)
+          service: @options.service
+        ui.item.replaceWith formItemView.$el
+        @reindex()
+        @render()
 
     ###
     create new model FormItemModel
