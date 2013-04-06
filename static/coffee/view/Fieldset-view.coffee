@@ -19,6 +19,7 @@ define [
     ###
     ChildType: RowView
     templatePath:"#FieldsetViewTemplate"
+    placeholderSelector:"[data-drop-accept-placeholder='form']"
     itemsSelectors:
       loader:"[data-html-fieldset-loader]"
       loaderChildren:"[data-html-fieldset-loader] >"
@@ -67,19 +68,6 @@ define [
           }, {validate: true}
         row + 1
       ),0
-
-      ###
-      Handle to jQuery.UI.sortable - start
-      ###
-    handle_sortable_start:->
-      LOG "FieldsetView","handle_sortable_start #{@cid}"
-
-    ###
-    Handle to jQuery.UI.sortable - stop
-    ###
-    handle_sortable_stop:(event,ui)->
-      LOG "FieldsetView","handle_sortable_stop #{@cid}"
-      @reindex()
 
     handle_create_new:(event,ui)->
       LOG "FieldsetView","handle_create_new"

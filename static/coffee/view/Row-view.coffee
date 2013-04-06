@@ -119,20 +119,6 @@ define [
         view = @getOrAddChildTypeByModel(model)
         view.reinitialize()
 
-    ###
-    Handle to jQuery.UI.sortable - start
-    ###
-    handle_sortable_start:->
-      LOG "RowView","handle_sortable_start #{@cid}"
-      #@parentView?.handle_draggable_start()
-
-    ###
-    Handle to jQuery.UI.sortable - stop
-    ###
-    handle_sortable_stop:(event,ui)->
-      LOG "RowView","handle_sortable_stop #{@cid}"
-      @reindex()
-
     handle_create_new:(event,ui)->
       LOG "RowView","handle_create_new"
       componentType = $(ui.item).data("componentType")

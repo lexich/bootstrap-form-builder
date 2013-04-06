@@ -13,9 +13,6 @@ define [
     ###
     viewname:"form"
     className:"ui_formview"
-    events:
-      "customdragstart":"event_customstart"
-      "customdragstop":"event_customdragstop"
     ###
     Variables Backbone.CustomView
     ###
@@ -88,12 +85,6 @@ define [
       view = @getOrAddFieldsetView fieldset
       view.handle_create_new(event,ui).render()
       this
-
-    event_customstart:->
-      LOG "FormView","event_customstart"
-
-    event_customdragstop:(e,data)->
-      LOG "FormView", "event_customdragstop"
 
 
 

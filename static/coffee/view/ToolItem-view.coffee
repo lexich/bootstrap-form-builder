@@ -7,7 +7,6 @@ define [
   "jquery-ui/jquery.ui.draggable"
 ],($,Backbone,_,FormItemView, FormItemModel)->
   ToolItemView = Backbone.View.extend
-    CONTAINER_SELECTOR:"[data-html-form]"
     placeholder:{}
     ###
     @param data    -  function which return {Object} for underscore template  
@@ -29,11 +28,9 @@ define [
       _.template template, dataHolder
 
     handle_draggable_start:->
-      $(@CONTAINER_SELECTOR).trigger("customdragstart")
       $("[data-drop-accept-placeholder]").show()
 
     handle_draggable_stop:->
-      $(@CONTAINER_SELECTOR).trigger("customdragstop")
       $("[data-drop-accept-placeholder]").hide()
 
     render:-> 

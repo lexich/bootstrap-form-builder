@@ -26,6 +26,7 @@ define [
         templateData:-> @model?.toJSON() ? {}
         itemsSelectors:{}
         viewname:""
+        placeholderSelector:"[data-drop-accept-placeholder]"
         _itemsSelectorsCache:{}
         _getTemplateHtml_Cache:""
         parentView:null
@@ -80,6 +81,15 @@ define [
         view.render()
       $holder.remove()
       result
+
+    reindex:->
+
+    handle_sortable_start:->
+      $(@placeholderSelector).show()
+
+    handle_sortable_stop:(event,ui)->
+      $(@placeholderSelector).hide()
+      @reindex()
 
     remove:->
       @parentView?.removeChild this
