@@ -81,14 +81,13 @@ define [
       $holder.remove()
       result
 
-    destroy:->
-      result = Backbone.View::destroy.apply(this, arguments)
+    remove:->
       @parentView?.removeChild this
       _.each @childrenViews, (view,k)->
         @removeChild view
-        view.destroy()
-
-      result
+        view.remove()
+      @model?.destroy()
+      Backbone.View::remove.apply(this, arguments)
 
     createChild:(options)->
       item = new @ChildType(options)
@@ -102,6 +101,8 @@ define [
     removeChild:(view)->
       delete @childrenViews[view.cid]
       delete view?.parentView
+      if _.size(@childrenViews) is 0
+        @remove()
       view
 
     setParent:(view)->
