@@ -1,13 +1,14 @@
 {# FormViewTemplate class="ui_formview" #}
 <script type="text/template" id="FormViewTemplate">
     <form data-html-formloader></form>
-    {# Просто кнопка #}
+    <div data-drop-accept-placeholder="form" class="ui_global_placeholder row-fluid"></div>
 </script>
 
 {# FieldsetViewTemplate tagName="fieldset" #}
 <script type="text/template" id="FieldsetViewTemplate">
     <legend><%= title %></legend>
     <div data-html-fieldset-loader class="ui_fieldset__loader"></div>
+    <div data-drop-accept-placeholder="fieldset" class="ui_global_placeholder row-fluid"></div>
 </script>
 
 {# RowViewTemplate class="ui_row" #}

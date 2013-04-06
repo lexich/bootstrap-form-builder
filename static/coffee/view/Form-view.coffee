@@ -11,6 +11,7 @@ define [
     ###
     Variables Backbone.View
     ###
+    viewname:"form"
     className:"ui_formview"
     events:
       "customdragstart":"event_customstart"
@@ -80,6 +81,13 @@ define [
           accept:($el)->
             $el.hasClass "ui-draggable"
       view
+
+    handle_create_new:(event,ui)->
+      LOG "FormView","handle_create_new"
+      fieldset = _.size(@childrenViews)
+      view = @getOrAddFieldsetView fieldset
+      view.handle_create_new(event,ui).render()
+      this
 
     event_customstart:->
       LOG "FormView","event_customstart"

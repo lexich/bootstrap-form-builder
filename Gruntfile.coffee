@@ -330,6 +330,8 @@ module.exports = (grunt) ->
     app = express()
     app.use express.bodyParser()
     app.use express.static(base)
+    data = []
+    ###
     data = [
       label: "Name"
       placeholder: "Input your name"
@@ -339,14 +341,6 @@ module.exports = (grunt) ->
       row: 0
       position: 1
     ,
-      label: "Name1"
-      placeholder: "Input your name1"
-      name: "name1"
-      type: "input"
-      fieldset:0
-      row: 0
-      position: 0
-    ,
       label: "Name2"
       placeholder: "Input your name1"
       name: "name1"
@@ -354,15 +348,8 @@ module.exports = (grunt) ->
       fieldset:0
       row:1
       position: 0
-    ,
-      label: "Comment"
-      placeholder: "Your comment"
-      name: "comment"
-      type: "textarea"
-      fieldset:1
-      row: 0
-      position: 0
     ]
+    ###
     dataArea = {}
 
     app.get "/area.json", (req, res)->

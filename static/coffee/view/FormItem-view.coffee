@@ -14,7 +14,7 @@ define [
     Variables Backbone.CustomView
     ###
     templatePath:"#FormItemViewTemplate"
-
+    viewname:"formitem"
     ###
     Variables Backbone.CustomView
     ###

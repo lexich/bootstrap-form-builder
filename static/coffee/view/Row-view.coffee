@@ -29,6 +29,7 @@ define [
     ###
     Variables Backbone.CustomView
     ###
+    viewname:"row"
     templatePath:"#RowViewTemplate"
     ChildType:FormItemView
     itemsSelectorsCache:false
@@ -58,7 +59,7 @@ define [
         handle:"[data-js-formitem-move]"
         dropOnEmpty:"true"
         placeholder:"ui_formitem__placeholder"
-        connectWith: "#{@itemsSelectors.area}:not([#{@DISABLE_DRAG}])"
+        connectWith: "[data-drop-accept]:not([#{@DISABLE_DRAG}]),[data-drop-accept-placeholder]"
         start:_.bind(@handle_sortable_start, this)
         stop: _.bind(@handle_sortable_stop, this)
         update: _.bind(@handle_sortable_update,this)
@@ -131,6 +132,15 @@ define [
     handle_sortable_stop:(event,ui)->
       LOG "RowView","handle_sortable_stop #{@cid}"
       @reindex()
+
+    handle_create_new:(event,ui)->
+      LOG "RowView","handle_create_new"
+      componentType = $(ui.item).data("componentType")
+      data = @options.service.getTemplateData(componentType)
+      formItemView = @createChild
+        model: @createFormItemModel(data)
+        service: @options.service
+      this
 
     ###
     Handle to jQuery.UI.sortable - update

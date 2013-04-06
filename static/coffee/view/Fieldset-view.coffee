@@ -10,6 +10,7 @@ define [
     ###
     Variables Backbone.View
     ###
+    viewname:"fieldset"
     tagName:"fieldset"
     events:
       "click [data-js-remove-fieldset]": "event_remove"
@@ -26,7 +27,6 @@ define [
     @overwrite Backbone.View
     ###
     initialize:->
-      @getOrAddRowView(0)
       @bindEvents()
       @model.on "change", _.bind(@on_model_change,this)
 
@@ -80,6 +80,13 @@ define [
     handle_sortable_stop:(event,ui)->
       LOG "FieldsetView","handle_sortable_stop #{@cid}"
       @reindex()
+
+    handle_create_new:(event,ui)->
+      LOG "FieldsetView","handle_create_new"
+      row = _.size(@childrenViews)
+      view = @getOrAddRowView row
+      view.handle_create_new(event,ui).render()
+      this
 
     ###
     Handle to jQuery.UI.sortable - update

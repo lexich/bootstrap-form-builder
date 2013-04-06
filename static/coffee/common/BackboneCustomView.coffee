@@ -2,7 +2,6 @@ define [
   "jquery"
   "underscore",
   "backbone",
-
 ],(
   $, _, Backbone
 )->
@@ -13,6 +12,7 @@ define [
 
     constructor: (options)->
       @configureOptions.apply(this,arguments)
+      LOG "CustomView","constructor viewname:#{@viewname}"
       Backbone.View.call(this, options);
       @$el.data Backbone.CustomView::BIND_VIEW, this
       this
@@ -25,7 +25,7 @@ define [
         templatePathCache:true
         templateData:-> @model?.toJSON() ? {}
         itemsSelectors:{}
-
+        viewname:""
         _itemsSelectorsCache:{}
         _getTemplateHtml_Cache:""
         parentView:null
@@ -52,6 +52,19 @@ define [
 
     childrenViewsOrdered:-> _.values(@childrenViews)
 
+    handle_create_new:(event,ui)->
+
+    __initPlaceholder:->
+      LOG "CustomView","__initPlaceholder"
+      $placeholder = $("> [data-drop-accept-placeholder]", @$el)
+      if _.isUndefined($placeholder.data("sortable"))
+        $placeholder.sortable
+          helper:"original"
+          tolerance:"pointer"
+          dropOnEmpty:"true"
+          update: (event,ui)=>@handle_create_new(event,ui).render()
+      $placeholder
+
     render:->
       $holder = $(document.createDocumentFragment())
       $holder.append @$el.children()
@@ -61,6 +74,7 @@ define [
       data = _.result(this,"templateData")
       html = _.template htmlTemplate, data
       @$el.html html
+      @__initPlaceholder()
       _.each @childrenViewsOrdered(),(view)=>
         @childrenConnect this, view
         view.render()

@@ -8,6 +8,7 @@ define [
    "common/BackboneCustomView"
 ], ($, Backbone, _)->
   APIView = Backbone.CustomView.extend
+    viewname:"api"
     init_select2: ->
       $el = $("input,select", @$el)
       more = parseInt $el.data("js-more") ? 20
