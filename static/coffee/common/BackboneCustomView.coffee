@@ -1,10 +1,10 @@
 define [
   "jquery"
-  "underscore",
-  "backbone",
-],(
-  $, _, Backbone
-)->
+  "underscore"
+  "backbone"
+  "common/Log"
+],($, _, Backbone, Log)->
+  log = Log.getLogger("common/CustomView")
   Backbone.CustomView = Backbone.View.extend
     BIND_VIEW:"_$$CustomViewBinder"
 
@@ -12,7 +12,7 @@ define [
 
     constructor: (options)->
       @configureOptions.apply(this,arguments)
-      LOG "CustomView","constructor viewname:#{@viewname}"
+      log.info "constructor viewname:#{@viewname}"
       Backbone.View.call(this, options);
       @$el.data Backbone.CustomView::BIND_VIEW, this
       this
@@ -53,17 +53,21 @@ define [
 
     childrenViewsOrdered:-> _.values(@childrenViews)
 
-    handle_create_new:(event,ui)->
+    handle_create_new:(event,ui)-> this
 
     __initPlaceholder:->
-      LOG "CustomView","__initPlaceholder"
+      log.info "__initPlaceholder"
       $placeholder = $("> [data-drop-accept-placeholder]", @$el)
       if _.isUndefined($placeholder.data("sortable"))
         $placeholder.sortable
           helper:"original"
           tolerance:"pointer"
           dropOnEmpty:"true"
-          update: (event,ui)=>@handle_create_new(event,ui).render()
+          placeholder:"ui_global_placeholder-active"
+          update: (event,ui)=>
+            view = @handle_create_new(event,ui)
+            view.reindex()
+            view.render()
       $placeholder
 
     render:->
@@ -105,7 +109,8 @@ define [
 
     addChild:(view)->
       @childrenViews[view.cid] = view
-      view?.parentView = this
+      view.parentView?.removeChild view
+      view.parentView = this
       view
 
     removeChild:(view)->

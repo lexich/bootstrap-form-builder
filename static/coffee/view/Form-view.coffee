@@ -4,9 +4,13 @@ define [
   "underscore"
   "view/Fieldset-view"
   "model/Fieldset-model"
+  "common/Log"
+
   "common/BackboneCustomView"
   "jquery-ui/jquery.ui.droppable"
-],($,Backbone,_,FieldsetView, FieldsetModel)->
+],($,Backbone,_,FieldsetView, FieldsetModel, Log)->
+  log = Log.getLogger("view/FormView")
+
   FormView = Backbone.CustomView.extend
     ###
     Variables Backbone.View
@@ -26,6 +30,7 @@ define [
     @overwrite Backbone.View
     ###
     initialize:->
+      log.info "initialize #{@cid}"
       @options.settings.connect "form:save", => @collection.updateAll()
       @collection.on "reset", _.bind(@on_collection_reset,this)
 
@@ -33,13 +38,28 @@ define [
     bind to event 'reset' for current collection
     ###
     on_collection_reset:->
+      log.info  "on_collection_reset #{@cid}"
       @reinitialize()
       @render()
 
     ###
     @overwrite Backbone.CustomView
     ###
+    reindex:->
+      log.info "reindex #{@cid}"
+      _.reduce @getItem("fieldsets"), ((fieldset,el)=>
+        if(view = Backbone.CustomView::staticViewFromEl el)
+          view.model?.set
+            fieldset: fieldset
+            ,{validate: true}
+          fieldset + 1
+      ),0
+
+    ###
+    @overwrite Backbone.CustomView
+    ###
     reinitialize:->
+      log.info "reinitialize #{@cid}"
       childrenCID = _.chain(@collection.models)
         .groupBy (model)=>
           model.get("fieldset")
@@ -57,6 +77,7 @@ define [
     @overwrite Backbone.CustomView
     ###
     childrenConnect:(self,view)->
+      log.info "childrenConnect #{@cid}"
       $loader = self.getItem("loader")
       $loader.append view.$el
       $loader.append "<hr>"
@@ -79,14 +100,20 @@ define [
             $el.hasClass "ui-draggable"
       view
 
+    ###
+    @overwrite Backbone.CustomView
+    ###
     handle_create_new:(event,ui)->
-      LOG "FormView","handle_create_new"
+      log.info "handle_create_new"
+      view = Backbone.CustomView::staticViewFromEl(ui.item)
       fieldset = _.size(@childrenViews)
-      view = @getOrAddFieldsetView fieldset
-      view.handle_create_new(event,ui).render()
+      if view? and view.viewname is "fieldset"
+        @addChild view
+        view.model.set "fieldset",fieldset,{validate:true}
+      else
+        view = @getOrAddFieldsetView fieldset
+
+      view.handle_create_new(event,ui).reindex()
       this
-
-
-
 
   FormView

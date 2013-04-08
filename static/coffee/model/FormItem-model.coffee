@@ -1,7 +1,9 @@
 define [
   "backbone",
   "underscore"
-],(Backbone,_)->
+  "common/Log"
+],(Backbone,_, Log)->
+  log = Log.getLogger("model/FormItemModel")
   
   FormItemModel = Backbone.Model.extend
     defaults:
@@ -17,10 +19,10 @@ define [
       size:3
 
     initialize:->
-      LOG "FormItemModel","initialize"
+      log.info "initialize"
 
     parse:(attrs, options)->
-      LOG "FormItemModel","parse"
+      log.info "parse"
       intParams = _.reduce @defaults, (
         (memo,v,k)->
           if isPositiveInt(v) then memo.push k

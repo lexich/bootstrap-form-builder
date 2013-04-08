@@ -3,7 +3,10 @@ define [
   "backbone",
   "underscore",
   "view/API-view"
-],($,Backbone,_, APIView)-> 
+  "common/Log"
+],($,Backbone,_, APIView, Log)->
+  log = Log.getLogger("view/FormItemView")
+
   FormItemView = APIView.extend
     ###
     Constants
@@ -29,7 +32,7 @@ define [
     @overwrite Backbone.View
     ###
     initialize:->
-      LOG "FormItemView","initialize #{@cid}"
+      log.info "initialize #{@cid}"
       @$el.data DATA_VIEW, this
       @model.on "change", => @render()
       @bindEvents()
@@ -44,30 +47,30 @@ define [
       {content, model:@model.attributes}
 
     bindEvents: ->
-      LOG "FormItemView","bindEvents"
+      log.info "bindEvents"
       @events["click [data-js-right-size]"] = => @handle_Inc (=>@$el.next()), 1
       @events["click [data-js-left-size]"] =  => @handle_Inc (=>@$el.prev()), 1
 
 
     render:->
-      LOG "FormItemView","render #{@cid}"
+      log.info "render #{@cid}"
       APIView::render.apply this, arguments
       @updateSize()
 
 
     remove:->
-      LOG "FormItemView","remove"
+      log.info "remove"
       @model.destroy()
       Backbone.View.prototype.remove.apply this, arguments
 
     getSizeFromClass:($el)->
-      LOG "FormItemView","getSizeFromClass"
+      log.info "getSizeFromClass"
       clazz = $el.attr("class")
       res = /span(\d+)/.exec clazz
       if res and res.length >= 2 then parseInt(res[1]) else 1
 
     getSizeOfRow:->
-      LOG "FormItemView","getSizeOfRow"
+      log.info "getSizeOfRow"
       _.reduce @$el.parent().children(),((memo,el)=>
         memo + @getSizeFromClass $(el)
       ),0

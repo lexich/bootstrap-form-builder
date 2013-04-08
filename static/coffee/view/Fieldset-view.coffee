@@ -4,8 +4,11 @@ define [
   "underscore"
   "view/Row-view"
   "model/Row-model"
+  "common/Log"
   "common/BackboneCustomView"
-],($,Backbone,_,RowView,RowModel)->
+],($,Backbone,_,RowView,RowModel,Log)->
+  log = Log.getLogger("view/FieldsetView")
+
   FieldsetView = Backbone.CustomView.extend
     ###
     Variables Backbone.View
@@ -28,10 +31,12 @@ define [
     @overwrite Backbone.View
     ###
     initialize:->
+      log.info "initialize #{@cid}"
       @bindEvents()
       @model.on "change", _.bind(@on_model_change,this)
 
     on_model_change:(model,options)->
+      log.info "on_model_change #{@cid}"
       changed = _.pick model.changed, _.keys(model.defaults)
       _.each @childrenViews,(view,cid)->
         #silent mode freeze changing beause render call
@@ -41,7 +46,7 @@ define [
     @overwrite Backbone.View
     ###
     render:->
-      LOG "Fieldset", "render #{@cid}"
+      log.info "render #{@cid}"
       if (sortable = @getItem("loader").data("sortable"))
         sortable.destroy()
       Backbone.CustomView::render.apply this, arguments
@@ -58,7 +63,7 @@ define [
       this
 
     reindex:->
-      LOG "RowView","reindex #{@cid}"
+      log.info "reindex #{@cid}"
       _.reduce @getItem("loaderChildren"), ((row,el)=>
         if(view = Backbone.CustomView::staticViewFromEl el)
           view.model?.set {
@@ -70,20 +75,28 @@ define [
       ),0
 
     handle_create_new:(event,ui)->
-      LOG "FieldsetView","handle_create_new"
+      log.info "handle_create_new #{@cid}"
+      view = Backbone.CustomView::staticViewFromEl(ui.item)
       row = _.size(@childrenViews)
-      view = @getOrAddRowView row
-      view.handle_create_new(event,ui).render()
+      if view? and  view.viewname is "row"
+        @addChild view
+        view.model.set
+          fieldset:@model.get("fieldset")
+          row:row,
+          {validate:true}
+      else
+        view = @getOrAddRowView row
+      view.handle_create_new(event,ui).reindex()
       this
 
     ###
     Handle to jQuery.UI.sortable - update
     ###
     handle_sortable_update:(event,ui)->
-      LOG "FieldsetView","handle_sortable_update #{@cid}"
+      log.info "handle_sortable_update #{@cid}"
       rowView = Backbone.CustomView::staticViewFromEl(ui.item)
       if ui.sender?
-        LOG "RowView","handle_sortable_update #{@cid} ui.sender != null"
+        log.info "handle_sortable_update #{@cid} ui.sender != null"
         #Если View найден, создаем дочерний
         if rowView
           parentView = rowView.parentView
@@ -107,6 +120,7 @@ define [
     @overwrite Backbone.CustomView
     ###
     reinitialize:->
+      log.info "reinitialize #{@cid}"
       fieldset = @model.get("fieldset")
       rows = _.keys @collection.getFieldsetGroupByRow(fieldset)
       childrenCID = _.map rows, (row)=>
@@ -120,6 +134,7 @@ define [
         .each (view,cid)=> @removeChild view
 
     getOrAddRowView:(row)->
+      log.info "getOrAddRowView #{@cid}"
       filterRowView = _.filter @childrenViews, (view)->
         view.model.get("row") == row
 

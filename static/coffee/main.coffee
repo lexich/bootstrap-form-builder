@@ -7,6 +7,7 @@ require [
   "view/Form-view"
   "view/ToolItem-view"
   "view/Settings-view"
+  "common/Log"
   "bootstrap"
 ],($, Backbone,
    ModalView,
@@ -14,8 +15,26 @@ require [
    FormItemCollection,
    FormView,
    ToolItemView,
-   SettingsView
+   SettingsView,
+   Log
 )->
+  DEBUG = Log.LEVEL.DEBUG
+  INFO = Log.LEVEL.INFO
+  WARN = Log.LEVEL.WARN
+  ERROR = Log.LEVEL.ERROR
+  ALL = DEBUG | INFO | WARN | ERROR
+
+  Log.initConfig
+    "view/FormView": level: ALL
+    "view/FieldsetView": level: ALL
+    "view/APIView": level: ALL
+    "view/FormItemView": level: ALL
+    "view/ModalView": level: ALL
+    "view/RowView": level: ALL
+    "view/SettingsView": level: ALL
+    "view/TollItemView": level: ALL
+    "common/CustomView": level: ALL
+
   $(document).ready ->
 
     settings = new SettingsView
