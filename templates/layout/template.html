@@ -6,7 +6,7 @@
 
 {# FieldsetViewTemplate tagName="fieldset" #}
 <script type="text/template" id="FieldsetViewTemplate">
-    <legend><%= title %></legend>
+    <legend contenteditable data-bind="title" ><%= title %></legend>
     <div data-html-fieldset-loader class="ui_fieldset__loader"></div>
     <div data-drop-accept-placeholder="fieldset" class="ui_global_placeholder row-fluid"></div>
 </script>
