@@ -17,6 +17,11 @@ define [
     tagName:"fieldset"
     events:
       "click [data-js-remove-fieldset]": "event_remove"
+      "input [contenteditable][data-bind]":"event_inputDataBind"
+
+    event_inputDataBind:(e)->
+      @model.set "title", $(e.target).text(), {validate:true}
+
     ###
     Variables Backbone.CustomView
     ###
