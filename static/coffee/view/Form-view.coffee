@@ -15,11 +15,12 @@ define [
     ###
     Variables Backbone.View
     ###
-    viewname:"form"
+
     className:"ui_formview"
     ###
     Variables Backbone.CustomView
     ###
+    viewname:"form"
     ChildType: FieldsetView
     templatePath:"#FormViewTemplate"
     itemsSelectors:
