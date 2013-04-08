@@ -69,7 +69,6 @@ define [
           view.model?.set {
             row: row
             fieldset: @model.get "fieldset"
-            direction: @model.get "direction"
           }, {validate: true}
         row + 1
       ),0

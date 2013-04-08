@@ -34,8 +34,23 @@ define [
     initialize:->
       log.info "initialize #{@cid}"
       @$el.data DATA_VIEW, this
-      @model.on "change", => @render()
+      @model.on "change", _.bind(@on_model_change,this)
       @bindEvents()
+
+    on_model_change:(model,option)->
+      log.info "on_model_change #{@cid}"
+      changed = _.pick model.changed, _.keys(model.defaults)
+      if changed.direction?
+        @setVertical changed.direction is "vertical"
+      @render()
+
+    setVertical:(flag)->
+      @$el.removeClass (name)->
+        /span\d{1,2}$/.test name or /offset\d{1,2}/.test name
+      if flag
+        @$el.addClass("span3")
+      else
+        @$el.removeClass("span3")
 
     ###
     @overwrite Backbone.CustomView

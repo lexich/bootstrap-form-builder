@@ -17,7 +17,7 @@ define [
         clone:true
         opacity: 0.7
         cursor: "pointer"
-        connectToSortable:"[data-drop-accept],[data-drop-accept-placeholder]"
+        connectToSortable:"[data-drop-accept]:not([data-js-row-disable-drag]),[data-drop-accept-placeholder]"
         helper:_.bind( @handle_draggable_helper, this)
         start:_.bind(@handle_draggable_start, this)
         stop:_.bind(@handle_draggable_stop, this)

@@ -24,7 +24,7 @@ define [
     ###
     events:
       "click [data-js-row-disable]":"event_disable"
-      "click [data-js-row-position]":"event_position"
+      "click [data-js-row-position]":"event_direction"
 
 
     className:"ui_row form-horizontal"
@@ -39,6 +39,7 @@ define [
     itemsSelectors:
       area:"[data-drop-accept]"
       areaChildren:"[data-drop-accept] >"
+      placeholderItem:".ui_formitem__placeholder"
 
     initialize:->
       @model.on "change", _.bind(@on_model_change,this)
@@ -56,24 +57,48 @@ define [
 
       Backbone.CustomView::render.apply this, arguments
 
-      @getItem("area").sortable
-        helper:"original"
-        tolerance:"pointer"
-        handle:"[data-js-formitem-move]"
-        dropOnEmpty:"true"
-        placeholder:"ui_formitem__placeholder"
-        connectWith: "[data-drop-accept]:not([#{@DISABLE_DRAG}]),[data-drop-accept-placeholder]"
-        start:_.bind(@handle_sortable_start, this)
-        stop: _.bind(@handle_sortable_stop, this)
-        update: _.bind(@handle_sortable_update,this)
+      if _.isUndefined(@getItem("area").data("sortable"))
+        connectWith = "[data-drop-accept]:not([#{@DISABLE_DRAG}]),[data-drop-accept-placeholder]"
+        @getItem("area").sortable
+          helper:"original"
+          tolerance:"pointer"
+          handle:"[data-js-formitem-move]"
+          dropOnEmpty:"true"
+          placeholder: "ui_formitem__placeholder"
+          connectWith: connectWith
+          start:_.bind(@handle_sortable_start, this)
+          stop: _.bind(@handle_sortable_stop, this)
+          update: _.bind(@handle_sortable_update,this)
+      else
+        @getItem("area").sortable("refresh")
 
-      bVertical = @model.get('position') == "vertical"
+      bVertical = @model.get('direction') == "vertical"
       @setVertical bVertical
+      @checkItemsCount()
 
+    checkItemsCount:->
+      $area = @getItem("area")
+      if _.size(@childrenViews) >= 4 and @model.get('direction') == "vertical"
+        $area.attr(@DISABLE_DRAG,"")
+      else
+        $area.removeAttr(@DISABLE_DRAG)
+
+
+
+    updateSortablePlaceholder:->
+      placeholderClass = "ui_formitem__placeholder"
+      if @model.get("direction") == "vertical"
+        placeholderClass += " span3"
+      else
+        placeholderClass += " row-fluid"
+      @getItem("area").sortable("option","placeholder",placeholderClass)
 
     on_model_change:(model,options)->
       log.info "on_model_change #{@cid}"
       changed = _.pick model.changed, _.keys(model.defaults)
+      if changed.direction?
+        @setVertical changed.direction is "vertical"
+
       _.each @childrenViews,(view,cid)->
         #silent mode freeze changing beause render call
         view.model.set changed,{validate:true}
@@ -86,20 +111,19 @@ define [
       $(e.target).text if @_disable then "Disabled" else "Enabled"
       @setDisable @_disable
 
-    event_position:(e)->
-      log.info "event_position #{@cid}"
-      value = if @model.get('position') == 'vertical' then "horizontal" else "vertical"
-      @model.set "position", value,{validate:true}
+    event_direction:(e)->
+      log.info "event_direction #{@cid}"
+      value = if @model.get('direction') == 'vertical' then "horizontal" else "vertical"
+      @model.set "direction", value,{validate:true}
 
 
     setVertical:(flag)->
       log.info "setVertical #{@cid}"
       if flag
-        @getItem("areaChildren").addClass("span4")
         @$el.removeClass "form-horizontal"
       else
-        @getItem("areaChildren").removeClass("span4")
         @$el.addClass "form-horizontal"
+      @updateSortablePlaceholder()
 
     setDisable:(flag)->
       log.info "setDisable #{@cid}"
