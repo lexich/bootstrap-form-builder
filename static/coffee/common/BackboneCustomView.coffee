@@ -66,8 +66,8 @@ define [
           placeholder:"ui_global_placeholder-active"
           update: (event,ui)=>
             view = @handle_create_new(event,ui)
-            view.reindex()
             view.render()
+            view.reindex()
       $placeholder
 
     render:->
