@@ -80,7 +80,6 @@ define [
       log.info "childrenConnect #{@cid}"
       $loader = self.getItem("loader")
       $loader.append view.$el
-      $loader.append "<hr>"
 
     ###
     Find view by fieldset index or add New

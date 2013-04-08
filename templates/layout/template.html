@@ -13,21 +13,14 @@
 
 {# RowViewTemplate class="ui_row" #}
 <script type="text/template" id="RowViewTemplate">
-    <span class="icon-check-empty ui_row__move" data-js-row-move></span>
-    <p>
-        <a href="javascript:void(0)" data-js-row-disable>Enabled</a>
-        <a href="javascript:void(0)" data-js-row-position>Horizontal</a>
-    </p>
     <div data-drop-accept class="ui_row__loader row-fluid"></div>
+    <span class="icon-check-empty ui_row__move" data-js-row-move></span>
 </script>
 
 {# FormItemViewTemplate class="ui_formitem" #}
 <script type="text/template" id="FormItemViewTemplate">
-    <p>
-        fieldset : <%= model.fieldset %> row: <%= model.row %> position:<%= model.position %>
-        <span data-js-formitem-move class='icon-circle-blank ui_formitem__move'/>
-    </p>
     <%= content %>
+    <span data-js-formitem-move class='icon-circle-blank ui_formitem__move'/>
 </script>
 
 
