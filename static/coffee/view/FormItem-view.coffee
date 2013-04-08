@@ -40,15 +40,6 @@ define [
       log.info "initialize #{@cid}"
       @$el.data DATA_VIEW, this
       @model.on "change", _.bind(@on_model_change,this)
-      @bindEvents()
-
-    ###
-    binding events
-    ###
-    bindEvents: ->
-      log.info "bindEvents"
-      @events["click [data-js-right-size]"] = => @handle_Inc (=>@$el.next()), 1
-      @events["click [data-js-left-size]"] =  => @handle_Inc (=>@$el.prev()), 1
 
     ###
     handler receive after change this.model
@@ -201,13 +192,6 @@ define [
     ###############
     # handlers
     ###############
-
-    handle_Inc:(get$item, move)->
-      size = @model.get "size"
-      return unless 1 <= size + move <= 12
-      freeSpace = 12 - @getSizeOfRow()
-      if freeSpace >= move or (move = @reduceNElement get$item(), move)
-        @model.set "size", size + move, validate:true
 
     handle_preRender:($el, $body)->
       type = @model.get("type")
