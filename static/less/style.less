@@ -5,7 +5,7 @@
 @lightgray:#ccc;
 @img:"../img";
 @bodyOffset:120px;
-
+@hoverButtons: @blue;
 
 .lverticalline{
   border-left:1px solid @lightgray;
@@ -36,11 +36,24 @@
 
 .ui_row{
   border: 1px solid #000000;
+  .mixin_ui_row(@display){
+    .ui_row__move,
+    .ui_row__remove{
+      cursor: pointer;
+      float: right;
+      margin-left: 5px;
+      display: @display;
+      &:hover{
+        color: @hoverButtons;
+      }
+    }
+  }
+  .mixin_ui_row(none);
+  &:hover{
+    .mixin_ui_row(block);
+  }
 }
-.ui_row__move{
-  cursor: pointer;
-  float: right;
-}
+
 .ui_row__loader{
   min-height: 100px;
 }
@@ -69,12 +82,16 @@
   .mixin_formitem(@display){
     .ui_formitem__move,
     .ui_formitem__minus,
-    .ui_formitem__plus
+    .ui_formitem__plus,
+    .ui_formitem__remove
     {
       cursor: pointer;
       float: right;
       margin-left: 5px;
       display: @display;
+      &:hover{
+        color: @hoverButtons;
+      }
     }
   }
 

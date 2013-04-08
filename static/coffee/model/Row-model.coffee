@@ -2,6 +2,7 @@ define [
   "backbone"
 ],(Backbone)->
   RowModel = Backbone.Model.extend
+    modelname:"RowModel"
     defaults:
       row: 0
       fieldset:0

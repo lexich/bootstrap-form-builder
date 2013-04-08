@@ -2,6 +2,7 @@ define [
   "backbone"
 ],(Backbone)->
   FieldsetModel = Backbone.Model.extend
+    modelname:"FieldsetModel"
     defaults:
       fieldset:0
       title:"Default title"

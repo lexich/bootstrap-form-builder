@@ -6,6 +6,7 @@ define [
   log = Log.getLogger("model/FormItemModel")
   
   FormItemModel = Backbone.Model.extend
+    modelname:"FormItemModel"
     defaults:
       label:""
       placeholder:""

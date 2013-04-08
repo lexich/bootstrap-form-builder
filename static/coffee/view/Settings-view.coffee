@@ -27,22 +27,12 @@ define [
         "click [data-html-settings-item] [data-js-save]":         @_wrap("item:save")
         "click [data-html-settings-item] [data-js-remove]":       @_wrap("item:remove")
         "click [data-html-settings-item] [data-js-hide]":         @_wrap("item:hide")
-        "click [data-html-settings-container] [data-js-save]":    @_wrap("row:save")
-        "click [data-html-settings-container] [data-js-remove]":  @_wrap("row:remove")
-        "click [data-html-settings-container] [data-js-position]":@_wrap("row:position")
-        "click [data-js-submit-form]":                            @_wrap("form:save")
-
       @events = _.extend @events or {}, events
 
     callback_preRender:->       @_wrapTrigger "render"
     callback_postSave:->        @_wrapTrigger "form:postsave"
     callback_remove:->          @_wrapTrigger "item:remove"
     callback_hide:->            @_wrapTrigger "item:hide"
-    callback_removeContainer:-> @_wrapTrigger "row:remove"
-    callback_changePosition:->  @_wrapTrigger "row:position"
-    callback_hideContainer:->   @_wrapTrigger "row:hide"
-    callback_saveContainer:->   @_wrapTrigger "row:save"
-    callback_saveForm:->        @_wrapTrigger "saveform"
 
     ###
     @param options
@@ -69,7 +59,6 @@ define [
       $("[name='title']", @$el).val(options.data.title)
 
       @callback_removeContainer = -> options?.removeContainer()
-      @callback_hideContainer = -> options?.hideContainer()
       @callback_saveContainer = (data)-> options?.saveContainer data
       true
 
@@ -86,7 +75,6 @@ define [
       return false if @holder?
       @$el.addClass("hide")
       @callback_hide()
-      @callback_hideContainer()
       true
 
     render:->

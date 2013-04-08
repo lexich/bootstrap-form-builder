@@ -102,10 +102,10 @@ define [
 
     remove:->
       @parentView?.removeChild this
-      _.each @childrenViews, (view,k)->
+      _.each @childrenViews, (view,k)=>
         @removeChild view
         view.remove()
-      @model?.destroy()
+      if @model? then @collection?.remove @model
       Backbone.View::remove.apply(this, arguments)
 
     createChild:(options)->

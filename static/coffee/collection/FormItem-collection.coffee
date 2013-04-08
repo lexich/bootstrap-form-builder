@@ -66,6 +66,22 @@ define [
           }
       models
 
+    remove:(models, options)->
+      if _.isArray(models)
+        if models.length <= 0
+          return Backbone.Collection::remove.apply this, arguments
+        else
+          model = models[0]
+      else if _.isObject models
+        model = models
+
+      if model.modelname is @model::modelname
+        Backbone.Collection::remove.apply this, arguments
+      else if model.modelname is @fieldsetCollection.model::modelname
+        @fieldsetCollection.remove models, options
+      else if model.modelname is @rowCollection.model::modelname
+        @rowCollection.remove models, options
+
     getRow:(fieldset, row)->
       _.filter @models,(model)->
         (model.get("fieldset") is fieldset) and (model.get("row") is row)

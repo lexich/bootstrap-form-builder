@@ -26,6 +26,7 @@ define [
     events:
       "click [data-js-row-disable]":"event_disable"
       "click [data-js-row-position]":"event_direction"
+      "click [data-js-row-remove]": "event_remove"
 
 
     className:"ui_row"
@@ -123,6 +124,8 @@ define [
       value = if @model.get('direction') == 'vertical' then "horizontal" else "vertical"
       @model.set "direction", value,{validate:true}
 
+    event_remove:->
+      @remove()
 
     setVertical:(flag)->
       log.info "setVertical #{@cid}"

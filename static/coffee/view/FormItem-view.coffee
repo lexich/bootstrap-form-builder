@@ -25,9 +25,13 @@ define [
     events:
       "click [data-js-formitem-decsize]":"event_decsize"
       "click [data-js-formitem-incsize]":"event_incsize"
+      "click [data-js-formitem-remove]":"event_remove"
       "mouseenter": "event_mouseenter"
       "mouseleave": "event_mouseleave"
       "click":  "event_click"
+
+    event_remove:->
+      @remove()
 
     itemsSelectors:
       "controls":".controls"
@@ -97,14 +101,6 @@ define [
         size = @model.get("size")
         clazz += " span#{size}"
       @$el.attr "class", clazz
-
-    ###
-    @overwrite Backbone.View
-    ###
-    remove:->
-      log.info "remove"
-      @model.destroy()
-      Backbone.View.prototype.remove.apply this, arguments
 
     ###############
     # Events
