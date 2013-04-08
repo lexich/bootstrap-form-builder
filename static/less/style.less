@@ -56,17 +56,35 @@
   background-color: lightcoral;
 }
 
+//////////////////////////////////////////////////
+//  ui_formitem
+//////////////////////////////////////////////////
+
 .ui_formitem{
   list-style-type: none;
-  min-width: 200px;
   border-radius: 1em;
   cursor: pointer;
   border: 1px solid @lightgray;
+
+  .mixin_formitem(@display){
+    .ui_formitem__move,
+    .ui_formitem__minus,
+    .ui_formitem__plus
+    {
+      cursor: pointer;
+      float: right;
+      margin-left: 5px;
+      display: @display;
+    }
+  }
+
+  .mixin_formitem(none);
+  &:hover {
+    .mixin_formitem(block);
+  }
+
 }
-.ui_formitem__move{
-  cursor: pointer;
-  float: right;
-}
+
 
 .ui_formitem__placeholder{
   background-color: @grayDark;
@@ -189,17 +207,6 @@ table.form-item__tools{
 .navbar-fixed-top-back{
   z-index: 0;
 }
-
-.mixin-data-js(@display){
-  [data-js-right-size],
-  [data-js-left-size],
-  [data-js-min-size]{
-    display: @display;
-  }
-}
-
-.mixin-data-js(none);
-[data-direction='vertical']{.mixin-data-js(block);}
 
 .ui_global_placeholder{
   background-color: yellowgreen;

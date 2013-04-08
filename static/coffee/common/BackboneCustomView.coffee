@@ -55,6 +55,11 @@ define [
 
     handle_create_new:(event,ui)-> this
 
+
+    getPrevious:(view, factor)->
+
+    getNext:(view)->
+
     __initPlaceholder:->
       log.info "__initPlaceholder"
       $placeholder = $("> [data-drop-accept-placeholder]", @$el)

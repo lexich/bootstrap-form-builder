@@ -24,8 +24,10 @@
 {# FormItemViewTemplate class="ui_formitem" #}
 <script type="text/template" id="FormItemViewTemplate">
     <p>
-        fieldset : <%= model.fieldset %> row: <%= model.row %> position:<%= model.position %>
+        fieldset : <%= model.fieldset %> row: <%= model.row %> position:<%= model.position %> size: <%= model.size %>
         <span data-js-formitem-move class='icon-circle-blank ui_formitem__move'/>
+        <span data-js-formitem-decsize class="icon-minus ui_formitem__minus" ></span>
+        <span data-js-formitem-incsize class="icon-plus ui_formitem__plus" ></span>
     </p>
     <%= content %>
 </script>

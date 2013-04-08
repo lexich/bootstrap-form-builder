@@ -19,6 +19,7 @@ define [
     ###
     HOVER_CLASS: "hover-container"
     DISABLE_DRAG: "data-js-row-disable-drag"
+
     ###
     Variables Backbone.View
     ###
@@ -41,9 +42,18 @@ define [
       areaChildren:"[data-drop-accept] >"
       placeholderItem:".ui_formitem__placeholder"
 
+    on_child_model_change_size__handler:->
+
+    ###
+    @overwrite Backbone.View
+    ###
     initialize:->
       @model.on "change", _.bind(@on_model_change,this)
+      @on_child_model_change_size__handler = _.bind(@on_child_model_change_size,this)
 
+    ###
+    @overwrite Backbone.CustomView
+    ###
     templateData:->
       _.extend @model.toJSON(),cid:@cid
 
@@ -74,24 +84,49 @@ define [
 
       bVertical = @model.get('direction') == "vertical"
       @setVertical bVertical
-      @checkItemsCount()
+      @updateDisableDrag()
+      @updateSortablePlaceholder()
 
-    checkItemsCount:->
+    ###
+    Change current row (not) dragging depends of view's state
+    ###
+    updateDisableDrag:->
       $area = @getItem("area")
-      if _.size(@childrenViews) >= 4 and @model.get('direction') == "vertical"
-        $area.attr(@DISABLE_DRAG,"")
+      if @model.get('direction') == "vertical"
+        freeSize = 12 - @getCurrentRowSize()
+        if freeSize <= 0
+          $area.attr(@DISABLE_DRAG,"")
+        else
+          $area.removeAttr(@DISABLE_DRAG)
       else
         $area.removeAttr(@DISABLE_DRAG)
 
-
-
+    ###
+    Change placeholder view depenfs of view's state
+    ###
     updateSortablePlaceholder:->
+      log.info "updateSortablePlaceholder #{@cid}"
       placeholderClass = "ui_formitem__placeholder"
       if @model.get("direction") == "vertical"
-        placeholderClass += " span3"
+        freeSize = 12 - @getCurrentRowSize()
+        size = if freeSize > 2 then 3 else freeSize
+        placeholderClass += " span#{size}"
       else
         placeholderClass += " row-fluid"
       @getItem("area").sortable("option","placeholder",placeholderClass)
+
+    on_child_model_change_size:->
+      @updateSortablePlaceholder()
+
+    addChild:(view)->
+      result = Backbone.CustomView::addChild.apply this, arguments
+      view.model.on "change:size", @on_child_model_change_size__handler
+      result
+
+    removeChild:(view)->
+      result = Backbone.CustomView::removeChild.apply this, arguments
+      view.model.off "change:size", @on_child_model_change_size__handler
+      result
 
     on_model_change:(model,options)->
       log.info "on_model_change #{@cid}"
@@ -123,7 +158,6 @@ define [
         @$el.removeClass "form-horizontal"
       else
         @$el.addClass "form-horizontal"
-      @updateSortablePlaceholder()
 
     setDisable:(flag)->
       log.info "setDisable #{@cid}"
@@ -140,6 +174,24 @@ define [
     childrenViewsOrdered:->
       _.sortBy @childrenViews, (view,cid)-> view.model.get("position")
 
+    ###
+    Get child view by model value  position
+    ###
+    _getFormItemByPosition:(position)->
+      result = _.filter @childrenViews, (view)->
+        view.model.get("position") is position
+      result[0] if result.length > 0
+
+    ###
+    @overwrite Backbone.CustomView
+    ###
+    getPrevious:(view)-> @_getFormItemByPosition view.model.get("position") - 1
+
+    ###
+    @overwrite Backbone.CustomView
+    ###
+    getNext:(view)-> @_getFormItemByPosition view.model.get("position") + 1
+
 
     ###
     @overwrite Backbone.CustomView
@@ -151,20 +203,24 @@ define [
         view = @getOrAddChildTypeByModel(model)
         view.reinitialize()
 
+    getCurrentFreeRowSize:-> 12 - @getCurrentRowSize()
+
     handle_create_new:(event,ui)->
       log.info "handle_create_new #{@cid}"
       view = Backbone.CustomView::staticViewFromEl(ui.item)
+      size = @getCurrentFreeRowSize()
       if view? and view.viewname is "formitem"
         position = _.size(@childrenViews)
-        @addChild view
-        view.model.set
-          fieldset:@model.get('fieldset')
+        data = fieldset:@model.get('fieldset')
           row: @model.get('row')
-          position:position,
-          {validate:true}
+          position:position
+        if size < 3 then data.size = size
+        @addChild view
+        view.model.set data, {validate:true}
       else
         componentType = $(ui.item).data("componentType")
         data = @options.service.getTemplateData(componentType)
+        if size < 3 then data.size = size
         view = @createChild
           model: @createFormItemModel(data)
           service: @options.service
@@ -187,7 +243,9 @@ define [
             @reindex()
       unless formItemView?
         componentType = $(ui.item).data("componentType")
+        size = @getCurrentFreeRowSize()
         data = @options.service.getTemplateData(componentType)
+        if size < 3 then data.size = size
         formItemView = @createChild
           model: @createFormItemModel(data)
           service: @options.service
@@ -230,6 +288,10 @@ define [
       log.info "childrenConnect #{@cid}"
       view.$el.appendTo self?.getItem("area")
 
+    getCurrentRowSize:->
+      _.reduce @childrenViews, ((asize,view)->
+        view.model.get("size") + asize
+      ),0
 
     getOrAddChildTypeByModel:(model)->
       log.info "getOrAddChildTypeByModel #{@cid}"
