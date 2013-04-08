@@ -27,7 +27,7 @@ define [
       "click [data-js-row-position]":"event_direction"
 
 
-    className:"ui_row form-horizontal"
+    className:"ui_row"
 
     ###
     Variables Backbone.CustomView
