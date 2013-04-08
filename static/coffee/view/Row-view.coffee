@@ -42,14 +42,11 @@ define [
       areaChildren:"[data-drop-accept] >"
       placeholderItem:".ui_formitem__placeholder"
 
-    on_child_model_change_size__handler:->
-
     ###
     @overwrite Backbone.View
     ###
     initialize:->
       @model.on "change", _.bind(@on_model_change,this)
-      @on_child_model_change_size__handler = _.bind(@on_child_model_change_size,this)
 
     ###
     @overwrite Backbone.CustomView
@@ -85,7 +82,6 @@ define [
       bVertical = @model.get('direction') == "vertical"
       @setVertical bVertical
       @updateDisableDrag()
-      @updateSortablePlaceholder()
 
     ###
     Change current row (not) dragging depends of view's state
@@ -103,33 +99,6 @@ define [
         $area.attr(@DISABLE_DRAG,"")
       else
         $area.removeAttr(@DISABLE_DRAG)
-
-    ###
-    Change placeholder view depenfs of view's state
-    ###
-    updateSortablePlaceholder:->
-      log.info "updateSortablePlaceholder #{@cid}"
-      placeholderClass = "ui_formitem__placeholder"
-      if @model.get("direction") == "vertical"
-        freeSize = 12 - @getCurrentRowSize()
-        size = if freeSize > 2 then 3 else freeSize
-        placeholderClass += " span#{size}"
-      else
-        placeholderClass += " row-fluid"
-      @getItem("area").sortable("option","placeholder",placeholderClass)
-
-    on_child_model_change_size:->
-      @updateSortablePlaceholder()
-
-    addChild:(view)->
-      result = Backbone.CustomView::addChild.apply this, arguments
-      view.model.on "change:size", @on_child_model_change_size__handler
-      result
-
-    removeChild:(view)->
-      result = Backbone.CustomView::removeChild.apply this, arguments
-      view.model.off "change:size", @on_child_model_change_size__handler
-      result
 
     on_model_change:(model,options)->
       log.info "on_model_change #{@cid}"
@@ -228,6 +197,21 @@ define [
           model: @createFormItemModel(data)
           service: @options.service
       this
+
+    cleanSpan:($el)->
+      clazz = $el.attr("class").replace(/span\d{1,2}/g,"").replace(/offset\d{1,2}/g,"")
+      $el.addClass clazz
+      $el
+
+
+    handle_sortable_start:(event,ui)->
+      Backbone.CustomView::handle_sortable_start.apply this, arguments
+      if (view = Backbone.CustomView::staticViewFromEl(ui.item))
+        size = view.model.get("size")
+      else
+        size = @getCurrentFreeRowSize()
+      $item = $(".ui_formitem__placeholder", @$el)
+      @cleanSpan($item).addClass "span#{size}"
 
     ###
     Handle to jQuery.UI.sortable - update
