@@ -94,7 +94,7 @@ define [
       else
         view = @createChild
           service: @options.service
-          model: new FieldsetModel(fieldset:fieldset)
+          model: @collection.getOrAddFieldsetModel(fieldset)
           collection: @collection
           accept:($el)->
             $el.hasClass "ui-draggable"

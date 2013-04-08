@@ -2,7 +2,9 @@ define [
   "backbone"
   "underscore"
   "model/FormItem-model"
-],(Backbone,_, FormItemModel)->
+  "model/Fieldset-model"
+  "model/Row-model"
+],(Backbone,_, FormItemModel, FieldsetModel,RowModel)->
 
   FormItemCollection = Backbone.Collection.extend
     DEFAULT_URL:"/forms.json"
@@ -58,6 +60,13 @@ define [
 
     getFieldsetGroupByRow:(fieldset)->
       _.groupBy @getFieldset(fieldset), (model)-> model.get("row")
+
+    getOrAddFieldsetModel:(fieldset)->
+      new FieldsetModel(fieldset:fieldset)
+
+    getOrAddRowModel:(row,fieldset)->
+      new RowModel {row, fieldset:fieldset}
+
 
 
   FormItemCollection
