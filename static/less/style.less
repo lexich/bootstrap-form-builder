@@ -4,7 +4,7 @@
 
 @lightgray:#ccc;
 @img:"../img";
-@bodyOffset:105px;
+@bodyOffset:120px;
 
 
 .lverticalline{
@@ -193,12 +193,13 @@ table.form-item__tools{
 }
 
 .ui_settings_editor{
-  height: 200px;
-  min-height: 600px;
   overflow: hidden;
 }
 .ui_settings_editor__area{
   position: fixed;
+  height: 80%;
+  width: 100%;
+  overflow-y:auto;
   top: @bodyOffset;
 }
 
@@ -219,4 +220,18 @@ table.form-item__tools{
   border: 1px solid #000000;
   height: 100%;
   background-color: #ffff00;
+}
+
+.ui_editable {
+  -moz-appearance: textfield;
+  -webkit-appearance: textfield;
+  background-color: white;
+  background-color: -moz-field;
+  border: 1px solid darkgray;
+  box-shadow: 1px 1px 1px 0 lightgray inset;
+  font: -moz-field;
+  font: -webkit-small-control;
+  margin-top: 5px;
+  padding: 2px 3px;
+  width: 398px;
 }

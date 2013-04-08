@@ -67,3 +67,6 @@ require [
       settings: settings
       
     collection.fetch()
+
+    $("[data-js-global-form-save]").click ->
+      collection.updateAll()
