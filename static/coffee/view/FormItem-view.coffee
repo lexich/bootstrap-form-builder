@@ -23,10 +23,15 @@ define [
     ###
     className:"ui_formitem"
     events:
-      "click [data-js-min-size]":"event_Min"
+      "click [data-js-formitem-decsize]":"event_decsize"
+      "click [data-js-formitem-incsize]":"event_incsize"
       "mouseenter": "event_mouseenter"
       "mouseleave": "event_mouseleave"
       "click":  "event_click"
+
+    itemsSelectors:
+      "controls":".controls"
+      "input":"input,select,textarea"
 
     ###
     @overwrite Backbone.View
@@ -37,6 +42,17 @@ define [
       @model.on "change", _.bind(@on_model_change,this)
       @bindEvents()
 
+    ###
+    binding events
+    ###
+    bindEvents: ->
+      log.info "bindEvents"
+      @events["click [data-js-right-size]"] = => @handle_Inc (=>@$el.next()), 1
+      @events["click [data-js-left-size]"] =  => @handle_Inc (=>@$el.prev()), 1
+
+    ###
+    handler receive after change this.model
+    ###
     on_model_change:(model,option)->
       log.info "on_model_change #{@cid}"
       changed = _.pick model.changed, _.keys(model.defaults)
@@ -44,13 +60,24 @@ define [
         @setVertical changed.direction is "vertical"
       @render()
 
+    ###
+    change position of row direction
+    @param flag : true (vertical) false (horizontal)
+    ###
     setVertical:(flag)->
       @$el.removeClass (name)->
         /span\d{1,2}$/.test name or /offset\d{1,2}/.test name
+
+      $controls = @getItem("controls")
+      $item = @getItem("input")
       if flag
-        @$el.addClass("span3")
+        size = @model.get("size")
+        @$el.addClass("span#{size}")
+        $controls.addClass("row-fluid")
+        $item.addClass("span12")
       else
-        @$el.removeClass("span3")
+        $controls.removeClass("row-fluid")
+        $item.removeClass("span12")
 
     ###
     @overwrite Backbone.CustomView
@@ -61,25 +88,70 @@ define [
       content = _.template templateHtml, data
       {content, model:@model.attributes}
 
-    bindEvents: ->
-      log.info "bindEvents"
-      @events["click [data-js-right-size]"] = => @handle_Inc (=>@$el.next()), 1
-      @events["click [data-js-left-size]"] =  => @handle_Inc (=>@$el.prev()), 1
-
-
+    ###
+    @overwrite Backbone.View
+    ###
     render:->
       log.info "render #{@cid}"
       APIView::render.apply this, arguments
       @updateSize()
+      @setVertical @model.get("direction") is "vertical"
 
+    ###
+    Update component size
+    ###
+    updateSize:->
+      clazz = @$el.attr("class").replace(/span\d{1,2}/g,"")
+      if @model.get("direction") is "vertical"
+        size = @model.get("size")
+        clazz += " span#{size}"
+      @$el.attr "class", clazz
 
+    ###
+    @overwrite Backbone.View
+    ###
     remove:->
       log.info "remove"
       @model.destroy()
       Backbone.View.prototype.remove.apply this, arguments
 
+    ###############
+    # Events
+    ###############
+
+    ###
+    @event
+    ###
+    event_decsize:(e)->
+      size = @model.get "size"
+      if size > 1
+        @model.set "size", size - 1, validate: true
+
+    ###
+    @event
+    ###
+    event_incsize:(e)->
+      log.info "event_incsize #{@cid}"
+      rowSize = @parentView.getCurrentRowSize()
+      size = @model.get "size"
+      if rowSize < 12
+        @model.set "size", size+1, {validate:true}
+      else
+        for item in [@parentView.getPrevious(this), @parentView.getNext(this)]
+          if not (model = item?.model)
+            continue
+          itemSize = model.get("size")
+          if itemSize > 1 and model.set "size", itemSize - 1, {validate:true}
+            @model.set "size", size + 1, {validate:true}
+            break
+
+    #*****************************************************************************************#
+    #                                                                                         #
+    #                                                                                         #
+    #*****************************************************************************************#
+
     getSizeFromClass:($el)->
-      log.info "getSizeFromClass"
+      log.info "getSizeFromClass #{@cid}"
       clazz = $el.attr("class")
       res = /span(\d+)/.exec clazz
       if res and res.length >= 2 then parseInt(res[1]) else 1
@@ -90,13 +162,6 @@ define [
         memo + @getSizeFromClass $(el)
       ),0
 
-    updateSize:->
-      size = @model.get("size")
-      @$el.removeClass (item,className)->
-        if /^span\d+/.test(className) then className else ""
-      if @model.get("direction") is "vertical"
-        @$el.addClass "span#{size}"
-
     reduceNElement:($item, move)->
       view = $item.data DATA_VIEW
       size = view.model.get "size"
@@ -104,23 +169,12 @@ define [
       else if size > 0 and view.model.set("size", 1, validate: true)            then size - 1
       else                                                                      0
 
-    ###############
-    # Events
-    ###############
-
-    event_Min:(e)->
-      size = @model.get "size"
-      if size > 1
-        @model.set "size", size - 1, validate: true
-
-
     event_okPopover:(e)->
       data = _.reduce $(".popover input",@$el), ((memo,item)->
         memo[$(item).attr("name")] = $(item).val() and memo
       ),{}
       @model.set data
       @popover?.popover("hide")
-
 
     showSettings:(holder)->
       bShow = @options.service.showSettings

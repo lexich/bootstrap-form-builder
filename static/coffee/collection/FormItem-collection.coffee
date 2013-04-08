@@ -2,14 +2,29 @@ define [
   "backbone"
   "underscore"
   "model/FormItem-model"
-],(Backbone,_, FormItemModel)->
+  "collection/Fieldset-collection"
+  "collection/Row-collection"
+],(Backbone,_, FormItemModel, FieldsetCollection,RowCollection)->
 
   FormItemCollection = Backbone.Collection.extend
     DEFAULT_URL:"/forms.json"
     model : FormItemModel
+    fieldsetCollection:new FieldsetCollection
+    rowCollection: new RowCollection
 
-    parse:(response)-> 
-      itemsMap = _.groupBy response, (item)->item.row
+    initialize:(options)->
+      @url = if options.url then options.url else @DEFAULT_URL
+
+    parse:(response)->
+      @rowCollection.add if @rowCollection.parse?
+        @rowCollection.parse response.rows
+      else response.rows
+
+      @fieldsetCollection.add if @fieldsetCollection.parse?
+        @fieldsetCollection.parse response.fieldsets
+      else response.fieldsets
+
+      itemsMap = _.groupBy response.items, (item)->item.row
       keys = _.chain(itemsMap)
         .keys()
         .map (key)->
@@ -17,15 +32,18 @@ define [
         .value().sort()
       row = 0
       result = []
-      for key in keys        
-        _.each itemsMap[key],(item)->          
+      for key in keys
+        _.each itemsMap[key],(item)->
           item.row = row
           result.push item
         row++
       result
 
-    initialize:(options)->
-      @url = if options.url then options.url else @DEFAULT_URL
+    toJSON:->
+      items = Backbone.Collection::toJSON.apply(this,arguments)
+      rows = @rowCollection.toJSON()
+      fieldsets = @fieldsetCollection.toJSON()
+      {items,rows,fieldsets}
     
     comparator:(model)->
       model.get("row") * 1000 + model.get("position")
@@ -58,6 +76,12 @@ define [
 
     getFieldsetGroupByRow:(fieldset)->
       _.groupBy @getFieldset(fieldset), (model)-> model.get("row")
+
+    getOrAddFieldsetModel:(fieldset)->
+      @fieldsetCollection.getFieldset fieldset
+
+    getOrAddRowModel:(row,fieldset)->
+      @rowCollection.getRow row, fieldset
 
 
   FormItemCollection

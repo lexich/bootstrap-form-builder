@@ -62,6 +62,9 @@ define [
         update: _.bind(@handle_sortable_update,this)
       this
 
+    ###
+    @overwrite Backbone.CustomView
+    ###
     reindex:->
       log.info "reindex #{@cid}"
       _.reduce @getItem("loaderChildren"), ((row,el)=>
@@ -73,6 +76,9 @@ define [
         row + 1
       ),0
 
+    ###
+    @overwrite Backbone.CustomView
+    ###
     handle_create_new:(event,ui)->
       log.info "handle_create_new #{@cid}"
       view = Backbone.CustomView::staticViewFromEl(ui.item)
@@ -142,7 +148,7 @@ define [
       else
         view = @createChild
           collection:@collection
-          model: new RowModel {row, fieldset:@model.get("fieldset")}
+          model: @collection.getOrAddRowModel row, @model.get("fieldset")
           service: @options.service
       view
 
