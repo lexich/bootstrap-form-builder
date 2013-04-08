@@ -92,12 +92,15 @@ define [
     ###
     updateDisableDrag:->
       $area = @getItem("area")
+      bDisable = false
       if @model.get('direction') == "vertical"
         freeSize = 12 - @getCurrentRowSize()
-        if freeSize <= 0
-          $area.attr(@DISABLE_DRAG,"")
-        else
-          $area.removeAttr(@DISABLE_DRAG)
+        if freeSize <= 0 then bDisable = true
+      else
+        bDisable = true
+
+      if bDisable
+        $area.attr(@DISABLE_DRAG,"")
       else
         $area.removeAttr(@DISABLE_DRAG)
 
