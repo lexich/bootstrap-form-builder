@@ -34,8 +34,14 @@
   }
 }
 
-.ui_row{
-  border: 1px solid #000000;
+.ui_row {
+  border: 1px solid transparent;
+  position: relative;
+
+  &.ui-sortable-helper {
+    border: 1px solid #000;
+  }
+
   .mixin_ui_row(@display){
     .ui_row__move,
     .ui_row__remove{
@@ -53,6 +59,19 @@
     .mixin_ui_row(block);
   }
 }
+
+.ui_row__move {
+  cursor: pointer;
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  display: none;
+}
+
+.ui_row:hover .ui_row__move {
+  display: block;
+}
+
 
 .ui_row__loader{
   min-height: 100px;
@@ -109,6 +128,10 @@
   float: left;
 }
 
+.ui_row__loader .ui_formitem.ui-sortable-helper:first-child + .ui_formitem__placeholder,
+.ui_row__loader .ui_formitem.ui-sortable-helper:first-child + .ui_formitem {
+  margin-left: 0;
+}
 
 
 table.form-item__tools{
