@@ -4,7 +4,7 @@ module.exports = (grunt) ->
   grunt.initConfig
     pkg: grunt.file.readJSON('package.json')
     components: "components"
-    static_folder:"/resources/builder"
+    static_folder:"/resources/"
     resource:
       root: "../resources"
       path: "<%= resource.root %>/builder"
@@ -225,11 +225,13 @@ module.exports = (grunt) ->
       dev:
         port: 9090
         base: "<%= resource.path %>"
-        index: "freemarker/index.html"
+        resource: "resources"
+        index:"../freemarker/index.html"
       release:
         port: 9090
-        base: "<%= resource.path %>"
-        index: "../freemarker/index.html"
+        base: "<%= connect2.dev.base %>"
+        resource: "<%= connect2.dev.resource %>"
+        index:"<%= connect2.dev.index %>"
         keepalive: true
 
     livereload:
@@ -332,32 +334,21 @@ module.exports = (grunt) ->
     path = require("path")
     express = require("express")
     port = @data.port or 1337
-    base = @data.base or __dirname
+    base = path.normalize(@data.base or __dirname)
     keepalive = @data.keepalive ? false
+    indexfile = @data.index ? "index.html"
     if keepalive then @async()
     app = express()
+
     app.use express.bodyParser()
-    app.use express.static(base)
+    console.log base
+    app.use "/resources/", express.static(base)
+
     data = []
-    dataArea = {}
 
     app.get "/",(req, res)=>
-      console.log @data.index
-      res.render(@data.index)
-
-    app.get "/area.json", (req, res)->
-      row = parseInt(req.query.row or 0)
-      unless dataArea[row]?
-        dataArea[row] =
-          title: "Test Area"
-          row: row
-          direction: "horizontal"
-      res.send dataArea[row]
-
-    app.post "/area.json", (req, res)->
-      d = req.body
-      row = parseInt(d.row or 0)
-      dataArea[d.row] = d
+      filepath = path.normalize(path.join(__dirname, base, indexfile))
+      res.sendfile filepath
 
     app.get "/forms.json", (req, res) =>
       res.send data
