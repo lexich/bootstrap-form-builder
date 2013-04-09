@@ -4,20 +4,23 @@ module.exports = (grunt) ->
   grunt.initConfig
     pkg: grunt.file.readJSON('package.json')
     components: "components"
-
+    static_folder:"/resources/builder"
     resource:
-      path: "www/static"
+      root: "../resources"
+      path: "<%= resource.root %>/builder"
       js: "<%= resource.path %>/js"
-      css: "<%= resource.path %>/css/"
+      css: "<%= resource.path %>/css"
+      less: "<%= resource.path %>/less"
       img: "<%= resource.path %>/img"
       font: "<%= resource.path %>/font"
       templates: "<%= resource.path %>/templates"
       build: "<%= resource.path %>/build"
+      html: "<%= resource.root %>/freemarker"
 
     less:
       common:
         files:
-          "www/static/css/style.css": "static/less/style.less"
+          "<%= resource.css %>/style.css": "static/less/style.less"
 
     coffee:
       common:
@@ -216,15 +219,17 @@ module.exports = (grunt) ->
         ]
 
     clean:
-      folder: "www"
+      folder: "<%= resource.root %>"
 
     connect2:
       dev:
         port: 9090
-        base: "./www"
+        base: "<%= resource.path %>"
+        index: "freemarker/index.html"
       release:
         port: 9090
-        base: "./www"
+        base: "<%= resource.path %>"
+        index: "../freemarker/index.html"
         keepalive: true
 
     livereload:
@@ -287,22 +292,25 @@ module.exports = (grunt) ->
 
     swig:
       dev:
-        root: "www"
+        root: "<%= resource.root %>"
         livereload: false
+        static_folder:"<%= static_folder %>"
         files: [
-          src: ["index.html", "test.html", "dragndrop.html"]
+          src: ["index.html"]
           cwd: "templates"
-          dest: "www/"
+          dest: "<%= resource.html %>/"
         ]
+
       release:
-        root: "www"
+        root: "<%= resource.root %>"
         compress_css:"<%= cssmin.common.filename %>"
         compress_cssie7: "<%= cssmin.common_ie7.filename %>"
         compress_js: "<%= requirejs.common.options.out %>"
+        static_folder:"<%= static_folder %>"
         files: [
-          src: ["index.html", "test.html"]
+          src: ["index.html"]
           cwd: "templates"
-          dest: "www/"
+          dest: "<%= resource.html %>/"
         ]
 
 
@@ -331,26 +339,11 @@ module.exports = (grunt) ->
     app.use express.bodyParser()
     app.use express.static(base)
     data = []
-    ###
-    data = [
-      label: "Name"
-      placeholder: "Input your name"
-      name: "name"
-      type: "input"
-      fieldset:0
-      row: 0
-      position: 1
-    ,
-      label: "Name2"
-      placeholder: "Input your name1"
-      name: "name1"
-      type: "input"
-      fieldset:0
-      row:1
-      position: 0
-    ]
-    ###
     dataArea = {}
+
+    app.get "/",(req, res)=>
+      console.log @data.index
+      res.render(@data.index)
 
     app.get "/area.json", (req, res)->
       row = parseInt(req.query.row or 0)
@@ -366,7 +359,7 @@ module.exports = (grunt) ->
       row = parseInt(d.row or 0)
       dataArea[d.row] = d
 
-    app.get "/forms.json", (req, res) ->
+    app.get "/forms.json", (req, res) =>
       res.send data
 
     app.post "/forms.json", (req, res) ->
@@ -387,6 +380,7 @@ module.exports = (grunt) ->
 
   grunt.registerMultiTask "swig", "Run swig", ->
     html = require("html")
+    mkdirp = require('mkdirp')
     normalize = (filepath)=>
       if filepath then filepath.replace(@data.root,"") else false
     try
@@ -406,8 +400,12 @@ module.exports = (grunt) ->
               compress_css: normalize(@data.compress_css)
               compress_cssie7: normalize(@data.compress_cssie7)
               compress_js: normalize(@data.compress_js)
+            static_folder: @data.static_folder
 
           prettyData = html.prettyPrint(data, indent_size: 2)
+
+          unless fs.existsSync(files.dest)
+            mkdirp.sync(files.dest)
           outFile = path.join(files.dest, file)
           fs.writeFileSync outFile, prettyData
           console.log "write: " + outFile

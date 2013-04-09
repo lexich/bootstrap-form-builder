@@ -30,18 +30,18 @@
       {% if compile.compress_cssie7 %}<!--[if lt IE 7]><link href="{{ compile.compress_cssie7 }}" rel="stylesheet" media="screen"><![endif]-->{% endif %}
     {% else %}
       <!-- Bootstrap -->
-      <link href="static/css/bootstrap.css" rel="stylesheet" media="screen">
-      <link href="static/css/bootstrap-responsive.css" rel="stylesheet" media="screen">
+      <link href="{{ static_folder }}/css/bootstrap.css" rel="stylesheet" media="screen">
+      <link href="{{ static_folder }}/css/bootstrap-responsive.css" rel="stylesheet" media="screen">
       <!-- End Bootstrap-->
       <!-- Start Fuelux -->
-      <link href="static/css/fuelux.min.css" rel="stylesheet" media="screen">
-      <link href="static/css/fuelux-responsive.min.css" rel="stylesheet" media="screen">
+      <link href="{{ static_folder }}/css/fuelux.min.css" rel="stylesheet" media="screen">
+      <link href="{{ static_folder }}/css/fuelux-responsive.min.css" rel="stylesheet" media="screen">
       <!-- End FuelUX -->
-      <link href="static/css/font-awesome.min.css" rel="stylesheet" media="screen">
+      <link href="{{ static_folder }}/css/font-awesome.min.css" rel="stylesheet" media="screen">
       <!--[if IE 7]><link href="static/font-awesome/css/font-awesome-ie7.min.css" rel="stylesheet" media="screen"><!--[endif]-->
-      <link href="static/css/select2.css" rel="stylesheet" media="screen">
-      <link href="static/css/datepicker.css" rel="stylesheet" media="screen">
-      <link href="static/css/style.css" rel="stylesheet" media="screen">
+      <link href="{{ static_folder }}/css/select2.css" rel="stylesheet" media="screen">
+      <link href="{{ static_folder }}/css/datepicker.css" rel="stylesheet" media="screen">
+      <link href="{{ static_folder }}/css/style.css" rel="stylesheet" media="screen">
     {% endif %}
     {% endblock %}
   </head>
@@ -54,13 +54,13 @@
     <!-- end live reload-->
     {% endif %}
 
-    <script src="/static/js/common/base.js"></script>
-    <script src="/static/js/requirejs/require.js">     </script>
-    <script src="/static/js/config.js"></script>
+    <script src="{{ static_folder }}/js/common/base.js"></script>
+    <script src="{{ static_folder }}/js/requirejs/require.js">     </script>
+    <script src="{{ static_folder }}/js/config.js"></script>
     {% if compile and compile.compress_js %}
         <script src="{{compile.compress_js}}"></script>
     {% else %}
-        <script src="/static/js/main.js"></script>
+        <script src="{{ static_folder }}/js/main.js"></script>
     {% endif %}
 
     {% endblock %}

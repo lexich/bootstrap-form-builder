@@ -1,5 +1,5 @@
 require.config
-  baseUrl:"static/js"
+  baseUrl:"/resources/builder/js"
   paths:
     "jquery":"jquery/jquery"
     "underscore":"underscore/underscore"
