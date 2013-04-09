@@ -84,8 +84,8 @@ define [
       @getData(type)?.meta
 
     getTemplateData:(type)->
-      data = @getData(type)?.data
-      data.id = @nextID()
+      data = @getData(type)?.data ? {}
+      data.id = _.uniqueId('tmpl');
       data
       
     getTemplate:(type)->
