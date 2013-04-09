@@ -186,7 +186,8 @@ define [
       size = @getCurrentFreeRowSize()
       if view? and view.viewname is "formitem"
         position = _.size(@childrenViews)
-        data = fieldset:@model.get('fieldset')
+        data =
+          fieldset:@model.get('fieldset')
           row: @model.get('row')
           position:position
         if size < 3 then data.size = size

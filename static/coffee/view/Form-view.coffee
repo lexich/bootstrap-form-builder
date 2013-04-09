@@ -112,8 +112,7 @@ define [
         view.model.set "fieldset",fieldset,{validate:true}
       else
         view = @getOrAddFieldsetView fieldset
-
-      view.handle_create_new(event,ui).reindex()
+        view.handle_create_new(event,ui).reindex()
       this
 
   FormView

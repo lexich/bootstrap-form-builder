@@ -55,7 +55,7 @@ define [
       if (sortable = @getItem("loader").data("sortable"))
         sortable.destroy()
       Backbone.CustomView::render.apply this, arguments
-      connector = @itemsSelectors.loader
+      connector = "[data-html-fieldset-loader]:not([data-js-row-disable-drag]),[data-drop-accept-placeholder='form']"
       @getItem("loader").sortable
         helper:"original"
         handle:"[data-js-row-move]"
@@ -96,7 +96,7 @@ define [
           {validate:true}
       else
         view = @getOrAddRowView row
-      view.handle_create_new(event,ui).reindex()
+        view.handle_create_new(event,ui).reindex()
       this
 
     ###
