@@ -2,7 +2,11 @@ define [
   "jquery",  
   "underscore",
   "view/FormItem-view"
-],($,_,FormItemView)->
+  "common/Log"
+],($,_,FormItemView,Log)->
+
+  log = Log.getLogger("common/Service")
+
   Service=->
     @initialize.apply this, arguments
     this
@@ -11,7 +15,9 @@ define [
     formItemViews:[]
     constructor:Service
     toolData:{}
-    modalTemplates:{}  
+    modalTemplates:{}
+    editableModel:null
+    eventWire:{}
     ###
     --OPTIONS--
     @param dataToolBinder
@@ -19,13 +25,15 @@ define [
     @param dataPostfixModalType - data-* postfix for search modal-items templates
     @param modal - 
     ###
-    initialize:(options)->      
+    initialize:(options)->
+
+      @_bindWire()
       @toolData = @getToolData options.dataToolBinder
       toolPanelItem = _.map @toolData, (v,k)=>
         options.createToolItemView(this,k,v).render()
 
       @modal = options.modal
-      @settings = options.settings
+
       formView = options.createFormView(this)
 
       @modalTemplates = _.reduce $("[data-#{options.dataPostfixModalType}]"),(
@@ -36,7 +44,9 @@ define [
           memo
       ),{}
 
-    renderModalForm:(name,data)->
+
+
+    renderSettingsForm:(name,data)->
       @_renderModalFormCache = {} if _.isUndefined(@_renderModalFormCache) 
       return @_renderModalFormCache[name] if @_renderModalFormCache[name]?
       selector = "[data-ui-jsrender-modal-template='#{name}']:first" 
@@ -61,18 +71,6 @@ define [
 
     showModal:(options)-> 
       @modal.show options
-
-    showSettings:(options)->
-      @settings.show options
-
-    hideSettings:->
-      @settings.hide()
-
-    bindSettingsContainer:(options)->
-      @settings.bindContainer options
-
-    bindSettingsForm:(options)->
-      @settings.bindForm options
 
     getData:(type)->
       @toolData[type]
@@ -100,11 +98,7 @@ define [
         if name? and name != ""
           memo[name] = $(item).val()
         memo
-      ),{}  
-
-    nextID:->
-      @__nextID = if @__nextID? then @__nextID + 1 else 0
-      "_genid#{@__nextID}"
+      ),{}      
 
     renderAreaItem:(data)->
       htmlTemplate = $("#areaTemplateItem").html()
@@ -132,5 +126,26 @@ define [
           $el: $el
         memo
       ),{}
+
+    _bindWire:->
+      _.extend @eventWire, Backbone.Events
+      @eventWire.on "editableModel:change", _.bind(@on_editableModel_change,this)
+
+
+    on_editableModel_change:(model)->
+      log.info "on_editableModel_change"
+      @editableModel = model
+      @eventWire.trigger("editableModel:set",model)
+
+
+    setEditableModel:(model)->
+      log.info "setEditableModel"
+      unless @editableModel is model
+        @eventWire.trigger("editableModel:change",model)
+        true
+      else
+        false
+
+    getEditableModel:-> @editableModel
 
   Service

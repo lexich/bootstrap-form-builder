@@ -11,7 +11,7 @@ define [
     ###
     Constants
     ###
-    HOVER_CLASS: "hover"
+    HOVER_CLASS: "ui_formitem__editablemode"
 
     ###
     Variables Backbone.CustomView
@@ -26,9 +26,7 @@ define [
       "click [data-js-formitem-decsize]":"event_decsize"
       "click [data-js-formitem-incsize]":"event_incsize"
       "click [data-js-formitem-remove]":"event_remove"
-      "mouseenter": "event_mouseenter"
-      "mouseleave": "event_mouseleave"
-      "click":  "event_click"
+      "click":  "event_clickEditable"
 
     event_remove:->
       @remove()
@@ -163,54 +161,35 @@ define [
       @model.set data
       @popover?.popover("hide")
 
-    showSettings:(holder)->
-      bShow = @options.service.showSettings
-        preRender: _.bind(@handle_preRender, this)
-        postSave: _.bind(@handle_postSave, this)
-        remove: => @remove()
-        holder: holder
-        hide: => @$el.removeClass @HOVER_CLASS
-      if bShow then @$el.addClass @HOVER_CLASS
+    wireEvents:
+      "editableModel:change":"on_editableModel_change"
+      "editableModel:remove":"on_editableModel_remove"
 
-    hideSettings:->
-      if @options.service.hideSettings()
-        @$el.removeClass @HOVER_CLASS
+    bindWireEvents:->
+      @__saveWireEvents = _.reduce @wireEvents or {}, ((save, callback,action)=>
+        handler = _.bind(this[callback], this)
+        @options.service.eventWire.on action, handler
+        save[action] = handler
+        save),{}
 
-    event_click:(e)->
-      @showSettings(true)
+    unbindWireEvents:->
+      _.each @__saveWireEvents or {}, (handler, action)=>
+        @options.service.eventWire.off action, handler
 
-    event_mouseenter:(e)->
-      @showSettings(null)
 
-    event_mouseleave:(e)->
-      @hideSettings()
+    on_editableModel_change:->
+      @unbindWireEvents()
+      @$el.removeClass(@HOVER_CLASS)
 
-    ###############
-    # handlers
-    ###############
+    on_editableModel_remove:->
+      @unbindWireEvents()
+      @remove()
 
-    handle_preRender:($el, $body)->
-      type = @model.get("type")
-      data = @model.attributes
-      $item = @options.service.renderModalForm(type, data)
-      if $item.length is 1
-        $body.empty()
-        $item.appendTo $body
-        $item.show()
-      else 
-        meta = @options.service.getTemplateMetaData(type)
-        service = @options.service
-        content = _.map data, (v,k)->
-          itemType = meta[k] or ""
-          service.renderModalItemTemplate itemType,
-            name: k
-            value: v
-            data: service.getItemFormTypes()
-        $body.html content.join("")
-    
-    handle_postSave:($el,$body)->
-      data = @options.service.parceModalItemData $body
-      @model.set data
+    event_clickEditable:(e)->
+      log.info "event_clickEditable"
+      if @options.service.setEditableModel(@model)
+        @bindWireEvents()
+        @$el.addClass(@HOVER_CLASS)
 
 
   FormItemView

@@ -32,7 +32,6 @@ define [
     ###
     initialize:->
       log.info "initialize #{@cid}"
-      @options.settings.connect "form:save", => @collection.updateAll()
       @collection.on "reset", _.bind(@on_collection_reset,this)
 
     ###
