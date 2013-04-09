@@ -60,7 +60,8 @@ define [
         helper:"original"
         handle:"[data-js-row-move]"
         tolerance:"pointer"
-        dropOnEmpty:"true"
+        dropOnEmpty:true
+        placeholder:"ui_row__placeholder"
         connectWith: connector
         start:_.bind(@handle_sortable_start, this)
         stop: _.bind(@handle_sortable_stop, this)

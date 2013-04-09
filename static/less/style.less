@@ -6,6 +6,7 @@
 @img:"../img";
 @bodyOffset:120px;
 @hoverButtons: @blue;
+@colorPlaceholderBackground:@lightgray;
 
 .lverticalline{
   border-left:1px solid @lightgray;
@@ -34,6 +35,9 @@
   }
 }
 
+///////////////////////////////
+//  ui_row
+///////////////////////////////
 .ui_row {
   border: 1px solid transparent;
   position: relative;
@@ -57,6 +61,9 @@
   .mixin_ui_row(none);
   &:hover{
     .mixin_ui_row(block);
+    .ui_row__move {
+      display: block;
+    }
   }
 }
 
@@ -68,24 +75,31 @@
   display: none;
 }
 
-.ui_row:hover .ui_row__move {
-  display: block;
-}
-
-
 .ui_row__loader{
   min-height: 100px;
+  .ui_formitem.ui-sortable-helper:first-child + .ui_formitem__placeholder,
+  .ui_formitem.ui-sortable-helper:first-child + .ui_formitem {
+    margin-left: 0;
+  }
+}
+.ui_row__placeholder{
+  min-height: 150px;
+  background-color: @colorPlaceholderBackground;
+}
+.ui_row__tools{
+  overflow: hidden;
+  min-height: 20px;
 }
 
 .ui_placeholder{
-  background-color: #ff00ff;
+//  background-color: #ff00ff;
   min-height: 100px;
   width: 100%;
 }
 
 .ui_fieldset__loader{
   min-height: 100px;
-  background-color: lightcoral;
+//  background-color: lightcoral;
 }
 
 //////////////////////////////////////////////////
@@ -121,24 +135,14 @@
 
 }
 
-
 .ui_formitem__placeholder{
-  background-color: @grayDark;
+  background-color: @colorPlaceholderBackground;
   height: 100px;
   float: left;
 }
 
-.ui_row__loader .ui_formitem.ui-sortable-helper:first-child + .ui_formitem__placeholder,
-.ui_row__loader .ui_formitem.ui-sortable-helper:first-child + .ui_formitem {
-  margin-left: 0;
-}
-
-
-table.form-item__tools{
-  tr>td{
-    width: 28px;
-    height: 26px;
-  }
+.ui_formitem__tools{
+  min-height: 10px;
 }
 
 .ui_icons{    
@@ -201,10 +205,6 @@ table.form-item__tools{
   }
 }
 
-.tool-item{ 
-  border: 1px solid @lightgray;
-  border-radius: 1em;
-}
 
 .ui-droppable{
   padding: 5px;
@@ -251,7 +251,7 @@ table.form-item__tools{
 }
 
 .ui_global_placeholder{
-  background-color: yellowgreen;
+  border: 1px solid @lightgray;
   display: none;
   min-height: 100px;
 }
@@ -267,7 +267,6 @@ table.form-item__tools{
   -webkit-appearance: textfield;
   background-color: white;
   background-color: -moz-field;
-  border: 1px solid darkgray;
   box-shadow: 1px 1px 1px 0 lightgray inset;
   font: -moz-field;
   font: -webkit-small-control;
@@ -275,3 +274,7 @@ table.form-item__tools{
   padding: 2px 3px;
   width: 398px;
 }
+
+.ui_debug .ui_debug__item{ display: block; }
+.ui_debug__item{ display: none;}
+

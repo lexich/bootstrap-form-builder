@@ -70,3 +70,9 @@ require [
 
     $("[data-js-global-form-save]").click ->
       collection.updateAll()
+
+    $("[data-js-global-debug]")
+      .click ->
+        $(this).toggleClass "icon-bookmark-empty"
+        $(this).toggleClass "icon-bookmark"
+        $("body").toggleClass "ui_debug"

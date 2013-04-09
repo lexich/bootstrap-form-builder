@@ -13,19 +13,23 @@
 
 {# RowViewTemplate class="ui_row" #}
 <script type="text/template" id="RowViewTemplate">
-    <span class="icon-check-empty ui_row__move" data-js-row-move></span>
-    <span class="icon-remove ui_row__remove" data-js-row-remove></span>
-    <p style="padding-left:50px">
-        <a href="javascript:void(0)" data-js-row-disable>Enabled</a>
-        <a href="javascript:void(0)" data-js-row-position>Horizontal</a>
+    <p class="ui_row__tools">
+
+        <a href="javascript:void(0)" style="float:left" class="ui_debug__item" data-js-row-disable>Enabled</a>
+        <a href="javascript:void(0)" style="float:left" class="ui_debug__item" data-js-row-position>Horizontal</a>
+
+
+
+        <span class="icon-move ui_row__move" data-js-row-move></span>
+        <span class="icon-remove ui_row__remove" data-js-row-remove></span>
     </p>
     <div data-drop-accept class="ui_row__loader row-fluid"></div>
 </script>
 
 {# FormItemViewTemplate class="ui_formitem" #}
 <script type="text/template" id="FormItemViewTemplate">
-    <p>
-        fieldset : <%= model.fieldset %> row: <%= model.row %> position:<%= model.position %> size: <%= model.size %>
+    <p class="ui_formitem__tools">
+        <span class="ui_debug__item">fieldset : <%= model.fieldset %> row: <%= model.row %> position:<%= model.position %> size: <%= model.size %></span>
         <span data-js-formitem-move class='icon-circle-blank ui_formitem__move'/>
         <span data-js-formitem-decsize class="icon-minus ui_formitem__minus" ></span>
         <span data-js-formitem-incsize class="icon-plus ui_formitem__plus" ></span>
