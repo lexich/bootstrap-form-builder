@@ -80,22 +80,32 @@ define [
       else
         @getItem("area").sortable("refresh")
 
-      bVertical = @model.get('direction') == "vertical"
-      @setVertical bVertical
-      @updateDisableDrag()
+      @updateViewModes()
 
     ###
-    Change current row (not) dragging depends of view's state
+    Update view modes depends models
     ###
-    updateDisableDrag:->
+    updateViewModes:->
+      log.info "updateViewModes #{@cid}"
+
+      bVertical = @model.get('direction') == "vertical"
       $area = @getItem("area")
+
+      #direction mode check
+      if bVertical
+        @$el.removeClass "form-horizontal"
+      else
+        @$el.addClass "form-horizontal"
+
+      #disable mode
       bDisable = false
-      if @model.get('direction') == "vertical"
+      if bVertical
         freeSize = 12 - @getCurrentRowSize()
         if freeSize <= 0 then bDisable = true
       else
         bDisable = true
 
+      #apply disable mode
       if bDisable
         $area.attr(@DISABLE_DRAG,"")
       else
@@ -104,8 +114,8 @@ define [
     on_model_change:(model,options)->
       log.info "on_model_change #{@cid}"
       changed = _.pick model.changed, _.keys(model.defaults)
-      if changed.direction?
-        @setVertical changed.direction is "vertical"
+
+      @updateViewModes()
 
       _.each @childrenViews,(view,cid)->
         #silent mode freeze changing beause render call
@@ -126,13 +136,6 @@ define [
 
     event_remove:->
       @remove()
-
-    setVertical:(flag)->
-      log.info "setVertical #{@cid}"
-      if flag
-        @$el.removeClass "form-horizontal"
-      else
-        @$el.addClass "form-horizontal"
 
     setDisable:(flag)->
       log.info "setDisable #{@cid}"
