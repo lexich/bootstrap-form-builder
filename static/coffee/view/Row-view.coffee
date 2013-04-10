@@ -65,7 +65,20 @@ define [
       log.info "updateViewModes #{@viewname}:#{@cid}"
       Backbone.CustomView::updateViewModes.apply this, arguments
       $area = @getItem("area")
-      @updateViewModes__direction()
+      bVertical = @model.get('direction') is "vertical"
+      $el = @getItem("directionMode")
+      #direction mode check
+      if bVertical
+        @$el.removeClass "form-horizontal"
+        $el.addClass("icon-resize-horizontal").removeClass("icon-resize-vertical")
+        if _.size(@childrenViews) > 1
+          $el.addClass("hide")
+        else
+          $el.removeClass("hide")
+      else
+        @$el.addClass "form-horizontal"
+        $el.addClass("icon-resize-vertical").removeClass("icon-resize-horizontal")
+
       connectWith = "[data-drop-accept]:not([#{@DISABLE_DRAG}]),[data-drop-accept-placeholder]"
       if(sortable = $area.data("sortable"))
         sortable.destroy()
@@ -81,23 +94,6 @@ define [
         stop: _.bind(@handle_sortable_stop, this)
         update: _.bind(@handle_sortable_update,this)
 
-    updateViewModes__direction:->
-      log.info "updateViewModes__direction #{@viewname}:#{@cid}"
-      Backbone.CustomView::updateViewModes.apply this, arguments
-      bVertical = @model.get('direction') is "vertical"
-
-      $el = @getItem("directionMode")
-      #direction mode check
-      if bVertical
-        @$el.removeClass "form-horizontal"
-        $el.addClass("icon-resize-horizontal").removeClass("icon-resize-vertical")
-        if _.size(@childrenViews) > 1
-          $el.addClass("hide")
-        else
-          $el.removeClass("hide")
-      else
-        @$el.addClass "form-horizontal"
-        $el.addClass("icon-resize-vertical").removeClass("icon-resize-horizontal")
 
       #disable mode
       bDisable = false
@@ -260,7 +256,7 @@ define [
     ###
     on_child_model_changes_size:(model,size)->
       log.info "on_child_model_changes_size #{@viewname}:#{@cid}"
-      @updateViewModes__direction()
+      @updateViewModes()
 
     ###
     Bind to current model on "change" event
@@ -269,14 +265,13 @@ define [
       log.info "on_model_change #{@viewname}:#{@cid}"
       changed = _.pick model.changed, _.keys(model.defaults)
 
-      if changed.direction
-        @updateViewModes__direction()
-
       _.each @childrenViews,(view,cid)=>
         #silent mode freeze changing beause render call
         view.model.set changed,{validate:true}
         @checkModel(log,view.model)
 
+      if changed.direction
+        @updateViewModes()
 
     ###
     Handle to jQuery.UI.sortable - start
