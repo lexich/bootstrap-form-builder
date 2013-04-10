@@ -34,6 +34,14 @@ define [
       log.info "initialize #{@cid}"
       @collection.on "reset", _.bind(@on_collection_reset,this)
 
+    remove:->
+      @parentView?.removeChild this
+      @parentView?.updateViewModes()
+
+      _.each @childrenViews, (view,k)=>
+        @removeChild view
+        view.remove()
+
     ###
     bind to event 'reset' for current collection
     ###
