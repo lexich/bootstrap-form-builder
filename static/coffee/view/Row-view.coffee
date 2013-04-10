@@ -288,7 +288,8 @@ define [
       size = 3
       if (view = Backbone.CustomView::staticViewFromEl(ui.item))
         size = view.model.get("size")
-        if size > freesize then size = freesize
+        unless view.parentView is this
+          if size > freesize then size = freesize
       else
         if freesize <= 3 then size = freesize
 
