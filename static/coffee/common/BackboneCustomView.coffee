@@ -76,6 +76,7 @@ define [
       $placeholder
 
     render:->
+      log.info "render #{@viewname}:#{@cid}"
       $holder = $(document.createDocumentFragment())
       $holder.append @$el.children()
 
@@ -89,9 +90,12 @@ define [
         @childrenConnect this, view
         view.render()
       $holder.remove()
+      @updateViewModes()
       result
 
     reindex:->
+
+    updateViewModes:->
 
     handle_sortable_start:->
       $(@placeholderSelector).show()
@@ -101,7 +105,12 @@ define [
       @reindex()
 
     remove:->
-      @parentView?.removeChild this
+      if @parentView?
+        bUpdate = _.size(@parentView.childrenViews) > 1
+        @parentView.removeChild this
+        if bUpdate then @parentView.updateViewModes()
+
+      if bUpdate then
       _.each @childrenViews, (view,k)=>
         @removeChild view
         view.remove()

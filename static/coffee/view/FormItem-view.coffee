@@ -69,30 +69,26 @@ define [
     ###
     on_model_change:(model,option)->
       log.info "on_model_change #{@cid}"
-      changed = _.pick model.changed, _.keys(model.defaults)
-      if changed.direction?
-        @setVertical changed.direction is "vertical"
       @render()
-      @parentView?.updateViewModes?()
 
-    ###
-    change position of row direction
-    @param flag : true (vertical) false (horizontal)
-    ###
-    setVertical:(flag)->
-      @$el.removeClass (name)->
-        /span\d{1,2}$/.test name or /offset\d{1,2}/.test name
-
+    updateViewModes:->
+      APIView::updateViewModes.apply this, arguments
+      bVertical = @model.get("direction") is "vertical"
+      size = @model.get("size")
       $controls = @getItem("controls")
       $item = @getItem("input")
-      if flag
-        size = @model.get("size")
+
+      if bVertical
         @$el.addClass("span#{size}")
         $controls.addClass("row-fluid")
         $item.addClass("span12")
       else
         $controls.removeClass("row-fluid")
         $item.removeClass("span12")
+
+      clazz = @$el.attr("class").replace(/span\d{1,2}/g,"")
+      if bVertical then clazz += " span#{size}"
+      @$el.attr "class", clazz
 
     ###
     @overwrite Backbone.CustomView
@@ -101,26 +97,7 @@ define [
       templateHtml = @options.service.getTemplate @model.get("type")
       data = _.extend id:_.uniqueId("tmpl_"), @model.attributes
       content = _.template templateHtml, data
-      {content, model:@model.attributes}
-
-    ###
-    @overwrite Backbone.View
-    ###
-    render:->
-      log.info "render #{@cid}"
-      APIView::render.apply this, arguments
-      @updateSize()
-      @setVertical @model.get("direction") is "vertical"
-
-    ###
-    Update component size
-    ###
-    updateSize:->
-      clazz = @$el.attr("class").replace(/span\d{1,2}/g,"")
-      if @model.get("direction") is "vertical"
-        size = @model.get("size")
-        clazz += " span#{size}"
-      @$el.attr "class", clazz
+      {content, model:@model.attributes, cid:@cid}
 
     ###############
     # Events

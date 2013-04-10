@@ -19,6 +19,7 @@ define [
     ###
     HOVER_CLASS: "hover-container"
     DISABLE_DRAG: "data-js-row-disable-drag"
+    handlers:{}
 
     ###
     Variables Backbone.View
@@ -49,6 +50,7 @@ define [
     ###
     initialize:->
       @model.on "change", _.bind(@on_model_change,this)
+      @handlers['on_child_model_changes_size'] = _.bind(@on_child_model_changes_size,this)
 
     ###
     @overwrite Backbone.CustomView
@@ -57,38 +59,33 @@ define [
       _.extend @model.toJSON(),cid:@cid
 
     ###
-    @overwrite Backbone.View
-    ###
-    render:->
-      log.info "render #{@cid}"
-      if(sortable = @getItem("area").data("sortable"))
-        sortable.destroy()
-
-      Backbone.CustomView::render.apply this, arguments
-
-      if _.isUndefined(@getItem("area").data("sortable"))
-        connectWith = "[data-drop-accept]:not([#{@DISABLE_DRAG}]),[data-drop-accept-placeholder]"
-        @getItem("area").sortable
-          helper:"original"
-          tolerance:"pointer"
-          handle:"[data-js-formitem-move]"
-          dropOnEmpty:"true"
-          placeholder: "ui_formitem__placeholder"
-          connectWith: connectWith
-          start:_.bind(@handle_sortable_start, this)
-          stop: _.bind(@handle_sortable_stop, this)
-          update: _.bind(@handle_sortable_update,this)
-
-      @updateViewModes()
-
-    ###
     Update view modes depends models
     ###
     updateViewModes:->
-      log.info "updateViewModes #{@cid}"
-
-      bVertical = @model.get('direction') == "vertical"
+      log.info "updateViewModes #{@viewname}:#{@cid}"
+      Backbone.CustomView::updateViewModes.apply this, arguments
       $area = @getItem("area")
+      @updateViewModes__direction()
+      connectWith = "[data-drop-accept]:not([#{@DISABLE_DRAG}]),[data-drop-accept-placeholder]"
+      if(sortable = $area.data("sortable"))
+        sortable.destroy()
+
+      $area.sortable
+        helper:"original"
+        tolerance:"pointer"
+        handle:"[data-js-formitem-move]"
+        dropOnEmpty:"true"
+        placeholder: "ui_formitem__placeholder"
+        connectWith: connectWith
+        start:_.bind(@handle_sortable_start, this)
+        stop: _.bind(@handle_sortable_stop, this)
+        update: _.bind(@handle_sortable_update,this)
+
+    updateViewModes__direction:->
+      log.info "updateViewModes__direction #{@viewname}:#{@cid}"
+      Backbone.CustomView::updateViewModes.apply this, arguments
+      bVertical = @model.get('direction') == "vertical"
+
       $el = @getItem("directionMode")
       #direction mode check
       if bVertical
@@ -106,21 +103,9 @@ define [
       else
         bDisable = true
       @setDisable bDisable
-      $area.sortable("refresh")
-
-
-    on_model_change:(model,options)->
-      log.info "on_model_change #{@cid}"
-      changed = _.pick model.changed, _.keys(model.defaults)
-
-      @updateViewModes()
-
-      _.each @childrenViews,(view,cid)->
-        #silent mode freeze changing beause render call
-        view.model.set changed,{validate:true}
 
     setDisable:(flag)->
-      log.info "setDisable #{@cid}"
+      log.info "setDisable #{@viewname}:#{@cid}"
       flag = true unless flag?
       $area = @getItem("area")
       if flag
@@ -157,14 +142,17 @@ define [
     @overwrite Backbone.CustomView
     ###
     reinitialize:->
-      log.info "reinitialize #{@cid}"
+      log.info "reinitialize #{@viewname}:#{@cid}"
       models = @collection.getRow @model.get("fieldset"), @model.get("row")
       _.each models, (model)=>
         view = @getOrAddChildTypeByModel(model)
         view.reinitialize()
 
+    ###
+    @overwrite Backbone.CustomView
+    ###
     handle_create_new:(event,ui)->
-      log.info "handle_create_new #{@cid}"
+      log.info "handle_create_new #{@viewname}:#{@cid}"
       view = Backbone.CustomView::staticViewFromEl(ui.item)
       size = @getCurrentFreeRowSize()
       if view? and view.viewname is "formitem"
@@ -190,7 +178,106 @@ define [
       $el.addClass clazz
       $el
 
+    ###
+    create new model FormItemModel
+    @return FormItemModel
+    ###
+    createFormItemModel:(data)->
+      log.info "createFormItemModel #{@viewname}:#{@cid}"
+      data = _.extend data or {}, {row:@model.get("row"), fieldset:@model.get("fieldset")}
+      model = new FormItemModel data
+      @collection.add model
+      model
 
+    ###
+    @overwrite Backbone.CustomView
+    ###
+    reindex:->
+      log.info "reindex #{@viewname}:#{@cid}"
+      _.reduce @getItem("areaChildren"), ((position,el)=>
+        if(view = Backbone.CustomView::staticViewFromEl el)
+          view.model?.set {
+             position
+             row: @model.get "row"
+             fieldset: @model.get "fieldset"
+             direction: @model.get "direction"
+          }, { validate: true }
+
+        position + 1
+      ),0
+
+    ###
+    @overwrite Backbone.CustomView
+    ###
+    addChild:(view)->
+      log.info "addChild #{@viewname}:#{@cid}"
+      result = Backbone.CustomView::addChild.apply this, arguments
+      view?.model?.on "changes:size", @handlers['on_child_model_changes_size']
+      result
+
+    ###
+    @overwrite Backbone.CustomView
+    ###
+    removeChild:(view)->
+      log.info "removeChild #{@viewname}:#{@cid}"
+      result = Backbone.CustomView::removeChild.apply this, arguments
+      view?.model?.off "changes:size", @handlers['on_child_model_changes_size']
+      @updateViewModes__direction()
+      result
+
+    ###
+    @overwrite Backbone.CustomView
+    ###
+    childrenConnect:(self,view)->
+      log.info "childrenConnect #{@viewname}:#{@cid}"
+      view.$el.appendTo self?.getItem("area")
+
+    getCurrentRowSize:->
+      _.reduce @childrenViews, ((asize,view)->
+        view.model.get("size") + asize
+      ),0
+
+    getCurrentFreeRowSize:-> 12 - @getCurrentRowSize()
+
+    getOrAddChildTypeByModel:(model)->
+      log.info "getOrAddChildTypeByModel #{@viewname}:#{@cid}"
+      views = _.filter @childrenViews, (view, cid)-> view.model == model
+
+      if views.length > 0 then view = views[0]
+      else
+        view = @createChild
+          model: model
+          service:@options.service
+      view
+
+    #****************************
+    # Handlers
+    #****************************
+    ###
+    Bind to child models on "change:size" event
+    ###
+    on_child_model_changes_size:(model,size)->
+      log.info "on_child_model_changes_size #{@viewname}:#{@cid}"
+      @updateViewModes__direction()
+
+    ###
+    Bind to current model on "change" event
+    ###
+    on_model_change:(model,options)->
+      log.info "on_model_change #{@viewname}:#{@cid}"
+      changed = _.pick model.changed, _.keys(model.defaults)
+
+      if changed.direction
+        @updateViewModes__direction()
+
+      _.each @childrenViews,(view,cid)->
+        #silent mode freeze changing beause render call
+        view.model.set changed,{validate:true}
+
+
+    ###
+    Handle to jQuery.UI.sortable - start
+    ###
     handle_sortable_start:(event,ui)->
       Backbone.CustomView::handle_sortable_start.apply this, arguments
       if (view = Backbone.CustomView::staticViewFromEl(ui.item))
@@ -204,10 +291,10 @@ define [
     Handle to jQuery.UI.sortable - update
     ###
     handle_sortable_update:(event,ui)->
-      log.info "handle_sortable_update #{@cid}"
+      log.info "handle_sortable_update #{@viewname}:#{@cid}"
       formItemView = Backbone.CustomView::staticViewFromEl(ui.item)
       if ui.sender?
-        log.info "handle_sortable_update #{@cid} ui.sender != null"
+        log.info "handle_sortable_update #{@viewname}:#{@cid} ui.sender != null"
         #Если View найден, создаем дочерний
         if formItemView?
           parentView = formItemView.parentView
@@ -227,77 +314,25 @@ define [
         @reindex()
         @render()
 
-    ###
-    create new model FormItemModel
-    @return FormItemModel
-    ###
-    createFormItemModel:(data)->
-      log.info "createFormItemModel #{@cid}"
-      data = _.extend data or {}, {row:@model.get("row"), fieldset:@model.get("fieldset")}
-      model = new FormItemModel data
-      @collection.add model
-      model
 
-    ###
-    reindex all items in current row
-    ###
-    reindex:->
-      log.info "reindex #{@cid}"
-      _.reduce @getItem("areaChildren"), ((position,el)=>
-        if(view = Backbone.CustomView::staticViewFromEl el)
-          view.model?.set {
-             position
-             row: @model.get "row"
-             fieldset: @model.get "fieldset"
-             direction: @model.get "direction"
-          }, { validate: true }
-
-        position + 1
-      ),0
-
-    ###
-    @overwrite Backbone.CustomView
-    ###
-    childrenConnect:(self,view)->
-      log.info "childrenConnect #{@cid}"
-      view.$el.appendTo self?.getItem("area")
-
-    getCurrentRowSize:->
-      _.reduce @childrenViews, ((asize,view)->
-        view.model.get("size") + asize
-      ),0
-
-    getCurrentFreeRowSize:-> 12 - @getCurrentRowSize()
-
-    getOrAddChildTypeByModel:(model)->
-      log.info "getOrAddChildTypeByModel #{@cid}"
-      views = _.filter @childrenViews, (view, cid)-> view.model == model
-
-      if views.length > 0 then view = views[0]
-      else
-        view = @createChild
-          model: model
-          service:@options.service
-      view
-
-    #*****************************
+    #****************************
     # Events
     #****************************
     event_disable:(e)->
-      log.info "event_disable #{@cid}"
+      log.info "event_disable #{@viewname}:#{@cid}"
       @_disable = false unless @_disable?
       @_disable = !@_disable
       $(e.target).text if @_disable then "Disabled" else "Enabled"
       @setDisable @_disable
 
     event_direction:(e)->
-      log.info "event_direction #{@cid}"
+      log.info "event_direction #{@viewname}:#{@cid}"
       value = if @model.get('direction') == 'vertical' then "horizontal" else "vertical"
       @model.set "direction", value,{validate:true}
 
 
     event_remove:->
-      log.info "event_remove #{@cid}"
+      log.info "event_remove #{@viewname}:#{@cid}"
       @remove()
 
 
