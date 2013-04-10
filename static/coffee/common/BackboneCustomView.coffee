@@ -104,6 +104,10 @@ define [
       $(@placeholderSelector).hide()
       @reindex()
 
+    checkModel:(log,model)->
+      unless model.isValid()
+        log.error model.validationError
+
     remove:->
       @parentView?.removeChild this
       @parentView?.updateViewModes()
@@ -119,28 +123,36 @@ define [
       @addChild item
 
     addChild:(view)->
+      log.info "addChild #{@cid}"
       @childrenViews[view.cid] = view
       view.parentView?.removeChild view
       view.parentView = this
+      @updateViewModes()
       view
 
     removeChild:(view)->
+      log.info "removeChild #{@cid}"
       delete @childrenViews[view.cid]
       delete view?.parentView
       if _.size(@childrenViews) is 0
         @remove()
+      else
+        @updateViewModes()
       view
 
     setParent:(view)->
+      log.info "setParent #{@cid}"
       if @parentView?
         @parentView.removeChild this
       @parentView = view
       view?.childrenViews[this.cid] = this
+      view.updateViewModes()
       view
 
-    callChild:(action, args)->
-      _.each @childrenViews, (view,k)=>
-        if (func = view[action]) then func.apply view, args
+    cleanSpan:($el)->
+      clazz = $el.attr("class").replace(/span\d{1,2}/g,"").replace(/offset\d{1,2}/g,"")
+      $el.addClass clazz.trim()
+      $el
 
 
   Backbone

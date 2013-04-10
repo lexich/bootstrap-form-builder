@@ -43,7 +43,7 @@ define [
       area:"[data-drop-accept]"
       areaChildren:"[data-drop-accept] >"
       placeholderItem:".ui_formitem__placeholder"
-      directionMode:".ui_row__direction"
+      directionMode:"[data-js-row-position]"
 
     ###
     @overwrite Backbone.View
@@ -84,13 +84,17 @@ define [
     updateViewModes__direction:->
       log.info "updateViewModes__direction #{@viewname}:#{@cid}"
       Backbone.CustomView::updateViewModes.apply this, arguments
-      bVertical = @model.get('direction') == "vertical"
+      bVertical = @model.get('direction') is "vertical"
 
       $el = @getItem("directionMode")
       #direction mode check
       if bVertical
         @$el.removeClass "form-horizontal"
         $el.addClass("icon-resize-horizontal").removeClass("icon-resize-vertical")
+        if _.size(@childrenViews) > 1
+          $el.addClass("hide")
+        else
+          $el.removeClass("hide")
       else
         @$el.addClass "form-horizontal"
         $el.addClass("icon-resize-vertical").removeClass("icon-resize-horizontal")
@@ -164,6 +168,7 @@ define [
         if size < 3 then data.size = size
         @addChild view
         view.model.set data, {validate:true}
+        @checkModel(log,view.model)
       else
         componentType = $(ui.item).data("componentType")
         data = @options.service.getTemplateData(componentType)
@@ -172,11 +177,6 @@ define [
           model: @createFormItemModel(data)
           service: @options.service
       this
-
-    cleanSpan:($el)->
-      clazz = $el.attr("class").replace(/span\d{1,2}/g,"").replace(/offset\d{1,2}/g,"")
-      $el.addClass clazz
-      $el
 
     ###
     create new model FormItemModel
@@ -214,6 +214,7 @@ define [
       result = Backbone.CustomView::addChild.apply this, arguments
       if view.model
         view.model.set "direction", @model.get("direction"),{validate:true, silent:true}
+        @checkModel(log,view.model)
         view.model?.on "change:size", @handlers['on_child_model_changes_size']
       result
 
@@ -224,7 +225,6 @@ define [
       log.info "removeChild #{@viewname}:#{@cid}"
       result = Backbone.CustomView::removeChild.apply this, arguments
       view?.model?.off "change:size", @handlers['on_child_model_changes_size']
-      @updateViewModes__direction()
       result
 
     ###
@@ -272,9 +272,10 @@ define [
       if changed.direction
         @updateViewModes__direction()
 
-      _.each @childrenViews,(view,cid)->
+      _.each @childrenViews,(view,cid)=>
         #silent mode freeze changing beause render call
         view.model.set changed,{validate:true}
+        @checkModel(log,view.model)
 
 
     ###
@@ -303,7 +304,7 @@ define [
           parentView = formItemView.parentView
           #Если произошло перемещение между RowView, устанавливаем текуший
           if parentView != this
-            formItemView.setParent this
+            @addChild formItemView
             @reindex()
       unless formItemView?
         componentType = $(ui.item).data("componentType")
@@ -332,6 +333,7 @@ define [
       log.info "event_direction #{@viewname}:#{@cid}"
       value = if @model.get('direction') == 'vertical' then "horizontal" else "vertical"
       @model.set "direction", value,{validate:true}
+      @checkModel(log,@model)
 
 
     event_remove:->

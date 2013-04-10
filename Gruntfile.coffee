@@ -6,7 +6,7 @@ module.exports = (grunt) ->
     components: "components"
     static_folder:"/resources/"
     resource:
-      root: "../resources"
+      root: "resources"
       path: "<%= resource.root %>/builder"
       js: "<%= resource.path %>/js"
       css: "<%= resource.path %>/css"
