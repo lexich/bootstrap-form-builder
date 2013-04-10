@@ -282,12 +282,16 @@ define [
     Handle to jQuery.UI.sortable - start
     ###
     handle_sortable_start:(event,ui)->
+      log.info "handle_sortable_start #{@cid}"
       Backbone.CustomView::handle_sortable_start.apply this, arguments
+      freesize = @getCurrentFreeRowSize()
+      size = 3
       if (view = Backbone.CustomView::staticViewFromEl(ui.item))
         size = view.model.get("size")
+        if size > freesize then size = freesize
       else
-        size = @getCurrentFreeRowSize()
-        if size > 3 then size = 3
+        if freesize <= 3 then size = freesize
+
       $item = $(".ui_formitem__placeholder", @$el)
       @cleanSpan($item).addClass "span#{size}"
 
@@ -302,15 +306,21 @@ define [
         #Если View найден, создаем дочерний
         if formItemView?
           parentView = formItemView.parentView
+          #Проверим влезает ли элемент по размеру
+          if (model = formItemView.model)
+            freesize = @getCurrentFreeRowSize()
+            if model.get("size") > freesize
+              model.set "size", freesize, {validate:true, silent:true}
+              @checkModel log, model
           #Если произошло перемещение между RowView, устанавливаем текуший
           if parentView != this
             @addChild formItemView
             @reindex()
       unless formItemView?
         componentType = $(ui.item).data("componentType")
-        size = @getCurrentFreeRowSize()
+        freesize = @getCurrentFreeRowSize()
         data = @options.service.getTemplateData(componentType)
-        if size < 3 then data.size = size
+        if data.size > freesize then data.size = freesize
         formItemView = @createChild
           model: @createFormItemModel(data)
           service: @options.service
