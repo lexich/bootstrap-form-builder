@@ -101,17 +101,11 @@ define [
       #disable mode
       bDisable = false
       if bVertical
-        freeSize = 12 - @getCurrentRowSize()
+        freeSize = @getCurrentFreeRowSize()
         if freeSize <= 0 then bDisable = true
       else
         bDisable = true
-
-      #apply disable mode
-      if bDisable
-        $area.attr(@DISABLE_DRAG,"")
-      else
-        $area.removeAttr(@DISABLE_DRAG)
-
+      @setDisable bDisable
       $area.sortable("refresh")
 
 
@@ -124,23 +118,6 @@ define [
       _.each @childrenViews,(view,cid)->
         #silent mode freeze changing beause render call
         view.model.set changed,{validate:true}
-
-
-    event_disable:(e)->
-      log.info "event_disable #{@cid}"
-      @_disable = false unless @_disable?
-      @_disable = !@_disable
-      $(e.target).text if @_disable then "Disabled" else "Enabled"
-      @setDisable @_disable
-
-    event_direction:(e)->
-      log.info "event_direction #{@cid}"
-      value = if @model.get('direction') == 'vertical' then "horizontal" else "vertical"
-      @model.set "direction", value,{validate:true}
-
-
-    event_remove:->
-      @remove()
 
     setDisable:(flag)->
       log.info "setDisable #{@cid}"
@@ -185,8 +162,6 @@ define [
       _.each models, (model)=>
         view = @getOrAddChildTypeByModel(model)
         view.reinitialize()
-
-    getCurrentFreeRowSize:-> 12 - @getCurrentRowSize()
 
     handle_create_new:(event,ui)->
       log.info "handle_create_new #{@cid}"
@@ -292,6 +267,8 @@ define [
         view.model.get("size") + asize
       ),0
 
+    getCurrentFreeRowSize:-> 12 - @getCurrentRowSize()
+
     getOrAddChildTypeByModel:(model)->
       log.info "getOrAddChildTypeByModel #{@cid}"
       views = _.filter @childrenViews, (view, cid)-> view.model == model
@@ -303,40 +280,25 @@ define [
           service:@options.service
       view
 
-    changeDirection:(model)->
-      log.info "changeDirection #{@cid}"
-      direction = model.get("direction")
-      @$el.attr "data-direction", direction
-      $area = @getItem("area")
-      $children = $area.children()
-      return unless $children.length > 0
+    #*****************************
+    # Events
+    #****************************
+    event_disable:(e)->
+      log.info "event_disable #{@cid}"
+      @_disable = false unless @_disable?
+      @_disable = !@_disable
+      $(e.target).text if @_disable then "Disabled" else "Enabled"
+      @setDisable @_disable
 
-      models = @collection.smartSliceNormalize @model.get("row"), "direction", direction
-      _.each models,(model)=>
-        model.set "direction",direction,{validate:true}
-
-      if direction is DropAreaModel::VERTICAL
-        @$el.removeClass("form-horizontal")
-        $area.addClass("row-fluid")
-      else if direction is DropAreaModel::HORIZONTAL
-        @$el.addClass("form-horizontal")
-        $area.removeClass("row-fluid")
-
-    bindSettings:(holder)->
-      log.info "bindSettings #{@cid}"
-      @options.service.bindSettingsContainer
-        holder: holder
-        data: @model.toJSON()
-        changePosition:   (val)=> @setDirection val
-        hideContainer:    => @$el.removeClass @HOVER_CLASS
-        saveContainer:
-          (data)=> @model.set data, {validate:true}
+    event_direction:(e)->
+      log.info "event_direction #{@cid}"
+      value = if @model.get('direction') == 'vertical' then "horizontal" else "vertical"
+      @model.set "direction", value,{validate:true}
 
 
-    setDirection:(direction)->
-      log.info "setDirection #{@cid}"
-      @model.set "direction", direction, {validate:true}
-
+    event_remove:->
+      log.info "event_remove #{@cid}"
+      @remove()
 
 
   RowView

@@ -28,8 +28,9 @@ define [
       "click [data-js-formitem-remove]":"event_remove"
       "click":  "event_clickEditable"
 
-    event_remove:->
-      @remove()
+    wireEvents:
+      "editableModel:change":"on_editableModel_change"
+      "editableModel:remove":"on_editableModel_remove"
 
     itemsSelectors:
       "controls":".controls"
@@ -43,6 +44,26 @@ define [
       @$el.data DATA_VIEW, this
       @model.on "change", _.bind(@on_model_change,this)
 
+    bindWireEvents:->
+      @__saveWireEvents = _.reduce @wireEvents or {}, ((save, callback,action)=>
+        handler = _.bind(this[callback], this)
+        @options.service.eventWire.on action, handler
+        save[action] = handler
+        save),{}
+
+    unbindWireEvents:->
+      _.each @__saveWireEvents or {}, (handler, action)=>
+        @options.service.eventWire.off action, handler
+
+
+    on_editableModel_change:->
+      @unbindWireEvents()
+      @$el.removeClass(@HOVER_CLASS)
+
+    on_editableModel_remove:->
+      @unbindWireEvents()
+      @remove()
+
     ###
     handler receive after change this.model
     ###
@@ -52,6 +73,7 @@ define [
       if changed.direction?
         @setVertical changed.direction is "vertical"
       @render()
+      @parentView?.updateViewModes?()
 
     ###
     change position of row direction
@@ -130,6 +152,16 @@ define [
             @model.set "size", size + 1, {validate:true}
             break
 
+    event_remove:->
+      log.info "event_remove #{@cid}"
+      @remove()
+
+    event_clickEditable:(e)->
+      log.info "event_clickEditable"
+      if @options.service.setEditableModel(@model)
+        @bindWireEvents()
+        @$el.addClass(@HOVER_CLASS)
+
     #*****************************************************************************************#
     #                                                                                         #
     #                                                                                         #
@@ -146,50 +178,5 @@ define [
       _.reduce @$el.parent().children(),((memo,el)=>
         memo + @getSizeFromClass $(el)
       ),0
-
-    reduceNElement:($item, move)->
-      view = $item.data DATA_VIEW
-      size = view.model.get "size"
-      if 1 < size > move and view.model.set("size", size - move, validate:true) then move
-      else if size > 0 and view.model.set("size", 1, validate: true)            then size - 1
-      else                                                                      0
-
-    event_okPopover:(e)->
-      data = _.reduce $(".popover input",@$el), ((memo,item)->
-        memo[$(item).attr("name")] = $(item).val() and memo
-      ),{}
-      @model.set data
-      @popover?.popover("hide")
-
-    wireEvents:
-      "editableModel:change":"on_editableModel_change"
-      "editableModel:remove":"on_editableModel_remove"
-
-    bindWireEvents:->
-      @__saveWireEvents = _.reduce @wireEvents or {}, ((save, callback,action)=>
-        handler = _.bind(this[callback], this)
-        @options.service.eventWire.on action, handler
-        save[action] = handler
-        save),{}
-
-    unbindWireEvents:->
-      _.each @__saveWireEvents or {}, (handler, action)=>
-        @options.service.eventWire.off action, handler
-
-
-    on_editableModel_change:->
-      @unbindWireEvents()
-      @$el.removeClass(@HOVER_CLASS)
-
-    on_editableModel_remove:->
-      @unbindWireEvents()
-      @remove()
-
-    event_clickEditable:(e)->
-      log.info "event_clickEditable"
-      if @options.service.setEditableModel(@model)
-        @bindWireEvents()
-        @$el.addClass(@HOVER_CLASS)
-
 
   FormItemView
