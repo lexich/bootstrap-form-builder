@@ -150,8 +150,9 @@ define [
       view
 
     cleanSpan:($el)->
-      clazz = $el.attr("class").replace(/span\d{1,2}/g,"").replace(/offset\d{1,2}/g,"")
-      $el.addClass clazz.trim()
+      if(clazz = $el.attr("class"))
+        clazz = clazz.replace(/span\d{1,2}/g,"").replace(/offset\d{1,2}/g,"")
+        $el.attr "class", clazz.trim()
       $el
 
 

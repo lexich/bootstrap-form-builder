@@ -75,20 +75,19 @@ define [
       APIView::updateViewModes.apply this, arguments
       bVertical = @model.get("direction") is "vertical"
       size = @model.get("size")
-      $controls = @getItem("controls")
-      $item = @getItem("input")
 
+      $item = @getItem("input")
+      @getItem("controls").addClass("row-fluid")
+
+      @cleanSpan(@$el)
+      @cleanSpan($item)
       if bVertical
         @$el.addClass("span#{size}")
-        $controls.addClass("row-fluid")
         $item.addClass("span12")
       else
-        $controls.removeClass("row-fluid")
-        $item.removeClass("span12")
+        $item.addClass("span#{@model.get('size')}")
 
-      clazz = @$el.attr("class").replace(/span\d{1,2}/g,"")
-      if bVertical then clazz += " span#{size}"
-      @$el.attr "class", clazz
+
 
     ###
     @overwrite Backbone.CustomView
