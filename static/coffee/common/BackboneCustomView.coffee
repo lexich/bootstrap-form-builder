@@ -105,12 +105,9 @@ define [
       @reindex()
 
     remove:->
-      if @parentView?
-        bUpdate = _.size(@parentView.childrenViews) > 1
-        @parentView.removeChild this
-        if bUpdate then @parentView.updateViewModes()
+      @parentView?.removeChild this
+      @parentView?.updateViewModes()
 
-      if bUpdate then
       _.each @childrenViews, (view,k)=>
         @removeChild view
         view.remove()

@@ -212,7 +212,9 @@ define [
     addChild:(view)->
       log.info "addChild #{@viewname}:#{@cid}"
       result = Backbone.CustomView::addChild.apply this, arguments
-      view?.model?.on "changes:size", @handlers['on_child_model_changes_size']
+      if view.model
+        view.model.set "direction", @model.get("direction"),{validate:true, silent:true}
+        view.model?.on "change:size", @handlers['on_child_model_changes_size']
       result
 
     ###
@@ -221,7 +223,7 @@ define [
     removeChild:(view)->
       log.info "removeChild #{@viewname}:#{@cid}"
       result = Backbone.CustomView::removeChild.apply this, arguments
-      view?.model?.off "changes:size", @handlers['on_child_model_changes_size']
+      view?.model?.off "change:size", @handlers['on_child_model_changes_size']
       @updateViewModes__direction()
       result
 
@@ -284,6 +286,7 @@ define [
         size = view.model.get("size")
       else
         size = @getCurrentFreeRowSize()
+        if size > 3 then size = 3
       $item = $(".ui_formitem__placeholder", @$el)
       @cleanSpan($item).addClass "span#{size}"
 
