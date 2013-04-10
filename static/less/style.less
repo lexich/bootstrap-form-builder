@@ -5,6 +5,8 @@
 @lightgray:#ccc;
 @img:"../img";
 @bodyOffset:120px;
+@toolButtons: @white;
+@toolsBackground: #333;
 @hoverButtons: @blue;
 @colorPlaceholderBackground:@lightgray;
 
@@ -15,6 +17,9 @@
   border-right:1px solid @lightgray;
 }
 
+textarea {
+  resize: none;
+}
 
 .body{
   margin: auto;
@@ -39,45 +44,43 @@
 //  ui_row
 ///////////////////////////////
 .ui_row {
-  border: 1px solid transparent;
   position: relative;
 
   &.ui-sortable-helper {
-    border: 1px solid #000;
+    outline: 1px solid #000;
   }
 
-  .mixin_ui_row(@display){
+  .mixin_ui_row(){
     .ui_row__direction,
     .ui_row__move,
     .ui_row__remove{
       cursor: pointer;
-      float: right;
+      float: left;
       margin-left: 5px;
-      display: @display;
+      display: block;
+      color: @toolButtons;
       &:hover{
         color: @hoverButtons;
       }
     }
   }
-  .mixin_ui_row(none);
-  &:hover{
-    .mixin_ui_row(block);
-    .ui_row__move {
-      display: block;
+
+  .mixin_ui_row__tools(@display){
+    .ui_row__tools {
+      display: @display;
     }
+  }
+
+  .mixin_ui_row();
+  &:hover{
+    .mixin_ui_row__tools(block);
+
+    background: #EEE;
   }
 }
 
-.ui_row__move {
-  cursor: pointer;
-  position: absolute;
-  left: 10px;
-  top: 10px;
-  display: none;
-}
-
 .ui_row__loader{
-  min-height: 100px;
+  min-height: 80px;
   .ui_formitem.ui-sortable-helper:first-child + .ui_formitem__placeholder,
   .ui_formitem.ui-sortable-helper:first-child + .ui_formitem {
     margin-left: 0;
@@ -89,21 +92,26 @@
 }
 .ui_row__tools{
   overflow: hidden;
-  min-height: 20px;
-  .hide.hide{
-    display: none;
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 5px;
+  opacity: .7;
+  border-bottom-right-radius: 5px;
+  background: @toolsBackground;
+
+  &:hover {
+    opacity: 1;
   }
 }
 
 .ui_placeholder{
-//  background-color: #ff00ff;
-  min-height: 100px;
+  min-height: 80px;
   width: 100%;
 }
 
 .ui_fieldset__loader{
-  min-height: 100px;
-//  background-color: lightcoral;
 }
 
 //////////////////////////////////////////////////
@@ -112,9 +120,8 @@
 
 .ui_formitem{
   list-style-type: none;
-  border-radius: 1em;
   cursor: pointer;
-  border: 1px solid @lightgray;
+  position: relative;
 
   .mixin_formitem(@display){
     .ui_formitem__move,
@@ -125,16 +132,28 @@
       cursor: pointer;
       float: right;
       margin-left: 5px;
-      display: @display;
+      display: block;
+      color: @toolButtons;
       &:hover{
         color: @hoverButtons;
       }
     }
   }
 
+  .mixin_formitem__tools(@display) {
+    .ui_formitem__tools {
+      display: @display;
+    }
+  }
+
   .mixin_formitem(none);
   &:hover {
     .mixin_formitem(block);
+
+    .mixin_formitem__tools(block);
+
+    background: @lightgray;
+    //box-shadow: 0px 0px 5px 0px #666;
   }
 
 }
@@ -146,7 +165,18 @@
 }
 
 .ui_formitem__tools{
-  min-height: 10px;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 5px;
+  opacity: .7;
+  display: none;
+  background: @toolsBackground;
+  border-top-left-radius: 5px;
+
+  &:hover {
+    opacity: 1;
+  }
 }
 
 .ui_icons{    
@@ -158,7 +188,11 @@
 }
 
 .ui_formitem__editablemode{
-  .box-shadow(0 0 10px rgba(0,0,0,0.5))
+  //.box-shadow(0 0 10px rgba(82,168,236,1))
+  background: rgba(82,168,236,.3);
+  &:hover {
+    background: rgba(82,168,236,.5)!important;
+  }
 }
 
 
@@ -259,15 +293,16 @@
 }
 
 .ui_global_placeholder{
-  border: 1px solid @lightgray;
+  //border: 1px solid @lightgray;
   display: none;
   min-height: 100px;
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAASElEQVQYV4XQywkAMAgD0LqT+0/gTi3xIJj68aY8RCNmdg+VqgrPhGGFYBLsELYHnFDADTnko9FXD36wSyHBKaqAW54ONwTzALtHNPo9r6sPAAAAAElFTkSuQmCC) repeat;
 }
 
 .ui_global_placeholder-active{
-  border: 1px solid #000000;
-  height: 100%;
-  background-color: #ffff00;
+  //border: 1px solid #000000;
+  min-height: 100px;
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAARklEQVQYV4XQSw4AMAQE0DqtMzltm7GQmPrYkRdhxMzuoVJV4ZkwrBBMgh3C9oATCrghh3w0+urBD3YpJDhFFXDL0+GGYB5ncTH9nH87wgAAAABJRU5ErkJggg==) repeat;
 }
 
 .ui_editable {
@@ -275,7 +310,7 @@
   -webkit-appearance: textfield;
   background-color: white;
   background-color: -moz-field;
-  box-shadow: 1px 1px 1px 0 lightgray inset;
+  //box-shadow: 1px 1px 1px 0 lightgray inset;
   font: -moz-field;
   font: -webkit-small-control;
   margin-top: 5px;
