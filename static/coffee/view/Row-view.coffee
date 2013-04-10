@@ -250,6 +250,7 @@ define [
       else
         view = @createChild
           model: model
+          collection:@collection
           service:@options.service
       view
 
@@ -324,6 +325,7 @@ define [
         if data.size > freesize then data.size = freesize
         formItemView = @createChild
           model: @createFormItemModel(data)
+          collection:@collection
           service: @options.service
         ui.item.replaceWith formItemView.$el
         @reindex()

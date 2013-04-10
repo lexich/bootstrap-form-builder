@@ -28,9 +28,9 @@ require [
 #    "view/FormView": level: ALL
 #    "view/FieldsetView": level: ALL
 #    "view/APIView": level: ALL
-    "view/FormItemView": level: ALL
+#    "view/FormItemView": level: ALL
 #    "view/ModalView": level: ALL
-    "view/RowView": level: ALL
+#    "view/RowView": level: ALL
 #    "view/SettingsView": level: ALL
 #    "view/ToolItemView": level: ALL
 #    "common/CustomView": level: ALL

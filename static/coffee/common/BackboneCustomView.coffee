@@ -109,13 +109,14 @@ define [
         log.error model.validationError
 
     remove:->
+      log.info "remove #{@cid}"
+      if @model? then @collection?.remove @model
       @parentView?.removeChild this
       @parentView?.updateViewModes()
 
       _.each @childrenViews, (view,k)=>
         @removeChild view
         view.remove()
-      if @model? then @collection?.remove @model
       Backbone.View::remove.apply(this, arguments)
 
     createChild:(options)->
