@@ -168,7 +168,6 @@ define [
       else
         componentType = $(ui.item).data("componentType")
         data = @options.service.getTemplateData(componentType)
-        if size < 3 then data.size = size
         view = @createChild
           model: @createFormItemModel(data)
           service: @options.service
@@ -180,8 +179,14 @@ define [
     ###
     createFormItemModel:(data)->
       log.info "createFormItemModel #{@viewname}:#{@cid}"
-      data = _.extend data or {}, {row:@model.get("row"), fieldset:@model.get("fieldset")}
+      freesize = @getCurrentFreeRowSize()
+      data = _.extend data or {}, {
+        row:@model.get("row")
+        fieldset:@model.get("fieldset")
+      }
       model = new FormItemModel data
+      if model.get("size") > freesize
+        model.set "size", freesize, {validate:true,silence:true}
       @collection.add model
       model
 

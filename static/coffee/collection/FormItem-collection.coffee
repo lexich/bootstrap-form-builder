@@ -4,7 +4,10 @@ define [
   "model/FormItem-model"
   "collection/Fieldset-collection"
   "collection/Row-collection"
-],(Backbone,_, FormItemModel, FieldsetCollection,RowCollection)->
+  "common/Log"
+],(Backbone,_, FormItemModel, FieldsetCollection,RowCollection, Log)->
+
+  log = Log.getLogger("collection/FormItemCollection")
 
   FormItemCollection = Backbone.Collection.extend
     DEFAULT_URL:"/forms.json"
@@ -67,6 +70,7 @@ define [
       models
 
     remove:(models, options)->
+      log.info "remove"
       if _.isArray(models)
         if models.length <= 0
           return Backbone.Collection::remove.apply this, arguments

@@ -2,7 +2,10 @@ define [
   "backbone"
   "underscore"
   "model/Fieldset-model"
-],(Backbone,_, FieldsetModel)->
+  "common/Log"
+],(Backbone,_, FieldsetModel, Log)->
+
+  log = Log.getLogger("collection/FieldsetCollection")
 
   FieldsetCollection = Backbone.Collection.extend
     model:FieldsetModel
