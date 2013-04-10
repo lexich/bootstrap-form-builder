@@ -78,8 +78,6 @@ define [
           start:_.bind(@handle_sortable_start, this)
           stop: _.bind(@handle_sortable_stop, this)
           update: _.bind(@handle_sortable_update,this)
-      else
-        @getItem("area").sortable("refresh")
 
       @updateViewModes()
 
@@ -113,6 +111,9 @@ define [
         $area.attr(@DISABLE_DRAG,"")
       else
         $area.removeAttr(@DISABLE_DRAG)
+
+      $area.sortable("refresh")
+
 
     on_model_change:(model,options)->
       log.info "on_model_change #{@cid}"
