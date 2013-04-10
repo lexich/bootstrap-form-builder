@@ -42,6 +42,7 @@ define [
       area:"[data-drop-accept]"
       areaChildren:"[data-drop-accept] >"
       placeholderItem:".ui_formitem__placeholder"
+      directionMode:".ui_row__direction"
 
     ###
     @overwrite Backbone.View
@@ -90,12 +91,14 @@ define [
 
       bVertical = @model.get('direction') == "vertical"
       $area = @getItem("area")
-
+      $el = @getItem("directionMode")
       #direction mode check
       if bVertical
         @$el.removeClass "form-horizontal"
+        $el.addClass("icon-resize-horizontal").removeClass("icon-resize-vertical")
       else
         @$el.addClass "form-horizontal"
+        $el.addClass("icon-resize-vertical").removeClass("icon-resize-horizontal")
 
       #disable mode
       bDisable = false
@@ -133,6 +136,7 @@ define [
       log.info "event_direction #{@cid}"
       value = if @model.get('direction') == 'vertical' then "horizontal" else "vertical"
       @model.set "direction", value,{validate:true}
+
 
     event_remove:->
       @remove()
