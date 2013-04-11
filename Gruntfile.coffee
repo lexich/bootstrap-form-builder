@@ -9,11 +9,11 @@ module.exports = (grunt) ->
     gruntconfig: do ->
       cfg =
         static_folder:"/resources/"
-        root:"resources"
+        root:"www"
       try
         cfg = grunt.file.readJSON('gruntconfig.json')
       catch err
-        grunt.log.warn err
+        grunt.log.writeln err
       cfg
 
 
@@ -234,7 +234,10 @@ module.exports = (grunt) ->
         ]
 
     clean:
-      folder: "<%= resource.root %>"
+      files:
+        src:["<%= resource.path %>","<%= resource.html %>"]
+      options:
+        force: true
 
     connect2:
       dev:
