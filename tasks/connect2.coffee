@@ -8,9 +8,8 @@ module.exports = (grunt)->
     keepalive = @data.keepalive ? false
     if keepalive then @async()
     app = express()
-
     app.use express.bodyParser()
-    
+
     if @data.static_folder
       app.use @data.static_folder, express.static(base)
     else
