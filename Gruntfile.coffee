@@ -250,7 +250,8 @@ module.exports = (grunt) ->
           get:
             "/":(req, res)->
               htmlpath = grunt.config.get("resource.html")
-              filepath = path.normalize(path.join(__dirname, htmlpath, "formItem.ftl"))
+              index_file = grunt.config.get("gruntconfig.index_file")
+              filepath = path.normalize(path.join(__dirname, htmlpath, index_file))
               res.set('Content-Type', 'text/html');
               res.sendfile filepath
             "/forms.json":(req, res) -> res.send data
