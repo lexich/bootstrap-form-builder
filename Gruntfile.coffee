@@ -298,9 +298,14 @@ module.exports = (grunt) ->
         livereload: false
         static_folder:"<%= static_folder %>"
         files: [
+          expand: true
           src: ["index.html"]
           cwd: "templates"
           dest: "<%= resource.html %>/"
+          #rename: (dest, filename, orig)->
+          #  dest + filename.replace /\.html/g, ".ftl"
+          options:
+            bare: true
         ]
 
       release:
@@ -314,94 +319,6 @@ module.exports = (grunt) ->
           cwd: "templates"
           dest: "<%= resource.html %>/"
         ]
-
-
-  grunt.registerTask "bower", ->
-    done = @async()
-    input = process.argv
-    cwd = "install"
-    require("bower").commands[cwd].line(input).on("data", (data) ->
-      console.log data  if data
-    ).on("end", (data) ->
-      console.log data  if data
-      done()
-    ).on "error", (err) ->
-      console.error err.message
-      done()
-
-
-  grunt.registerMultiTask "connect2", "Run a simple static connect server till you shut it down", ->
-    path = require("path")
-    express = require("express")
-    port = @data.port or 1337
-    base = path.normalize(@data.base or __dirname)
-    keepalive = @data.keepalive ? false
-    indexfile = @data.index ? "index.html"
-    if keepalive then @async()
-    app = express()
-
-    app.use express.bodyParser()
-    console.log base
-    app.use "/resources/", express.static(base)
-
-    data = []
-
-    app.get "/",(req, res)=>
-      filepath = path.normalize(path.join(__dirname, base, indexfile))
-      res.sendfile filepath
-
-    app.get "/forms.json", (req, res) =>
-      res.send data
-
-    app.post "/forms.json", (req, res) ->
-      data = req.body
-
-    app.get "/select2.json", (req, res) ->
-      res.send
-        more: false
-        results: [
-          id: "CA"
-          text: "California"
-        ,
-          id: "AL"
-          text: "Alabama"
-        ]
-
-    app.listen port
-
-  grunt.registerMultiTask "swig", "Run swig", ->
-    html = require("html")
-    mkdirp = require('mkdirp')
-    normalize = (filepath)=>
-      if filepath then filepath.replace(@data.root,"") else false
-    try
-      @data.files.forEach (files) =>
-        swig = require("swig")
-        swig.init
-          root: files.cwd
-          autoescape: true
-          allowErrors: true
-          encoding: "utf8"
-
-        files.src.forEach (file)=>
-          tmpl = swig.compileFile(file)
-          data = tmpl.render
-            compile:
-              livereload: @data.livereload or false
-              compress_css: normalize(@data.compress_css)
-              compress_cssie7: normalize(@data.compress_cssie7)
-              compress_js: normalize(@data.compress_js)
-            static_folder: @data.static_folder
-
-          prettyData = html.prettyPrint(data, indent_size: 2)
-
-          unless fs.existsSync(files.dest)
-            mkdirp.sync(files.dest)
-          outFile = path.join(files.dest, file)
-          fs.writeFileSync outFile, prettyData
-          console.log "write: " + outFile
-    catch err
-      console.error err
 
 
   grunt.registerTask "css-gen", ["less:common", "concat"]
@@ -421,3 +338,4 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks "grunt-contrib-less"
   grunt.loadNpmTasks "grunt-contrib-requirejs"
   grunt.loadNpmTasks "grunt-contrib-watch"
+  grunt.loadTasks("tasks")
