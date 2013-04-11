@@ -6,35 +6,19 @@ module.exports = (grunt)->
     port = @data.port or 1337
     base = path.normalize(@data.base or __dirname)
     keepalive = @data.keepalive ? false
-    indexfile = @data.index ? "index.html"
     if keepalive then @async()
     app = express()
 
     app.use express.bodyParser()
-    console.log base
-    app.use "/resources/", express.static(base)
+    
+    if @data.static_folder
+      app.use @data.static_folder, express.static(base)
+    else
+      app.use express.static(base)
 
-    data = []
+    for query,handlers of @data.rest
+      for url,callback of handlers
+        app[query](url, callback)
 
-    app.get "/",(req, res)=>
-      filepath = path.normalize(path.join(__dirname, "..", base, indexfile))
-      res.sendfile filepath
-
-    app.get "/forms.json", (req, res) =>
-      res.send data
-
-    app.post "/forms.json", (req, res) ->
-      data = req.body
-
-    app.get "/select2.json", (req, res) ->
-      res.send
-        more: false
-        results: [
-          id: "CA"
-          text: "California"
-        ,
-          id: "AL"
-          text: "Alabama"
-        ]
 
     app.listen port

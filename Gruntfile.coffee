@@ -1,6 +1,9 @@
 module.exports = (grunt) ->
   path = require("path")
   fs = require("fs")
+
+  data = []
+
   grunt.initConfig
     pkg: grunt.file.readJSON('package.json')
     components: "components"
@@ -225,13 +228,26 @@ module.exports = (grunt) ->
       dev:
         port: 9090
         base: "<%= resource.path %>"
-        resource: "resources"
-        index:"../freemarker/index.html"
+        static_folder: "<%= static_folder %>"
+        rest:
+          get:
+            "/":(req, res)->
+              htmlpath = grunt.config.get("resource.html")
+              filepath = path.normalize(path.join(__dirname, htmlpath, "formItem.ftl"))
+              res.set('Content-Type', 'text/html');
+              res.sendfile filepath
+            "/forms.json":(req, res) -> res.send data
+            "/select2.json": (req, res) ->
+              res.send { more: false, results: [{id: "CA",text: "California"},{id: "AL", text: "Alabama"}]}
+
+          post:
+            "/forms.json":(req, res) -> data = req.body
+
       release:
         port: 9090
         base: "<%= connect2.dev.base %>"
-        resource: "<%= connect2.dev.resource %>"
-        index:"<%= connect2.dev.index %>"
+        static_folder: "<%= connect2.dev.static_folder %>"
+        rest: "<%= connect2.dev.rest %>"
         keepalive: true
 
     livereload:
@@ -302,23 +318,23 @@ module.exports = (grunt) ->
           src: ["index.html"]
           cwd: "templates"
           dest: "<%= resource.html %>/"
-          #rename: (dest, filename, orig)->
-          #  dest + filename.replace /\.html/g, ".ftl"
+          rename: (dest, filename, orig)->
+            if filename is "index.html"
+              filename = "formItem.ftl"
+            else
+              filename = filename.replace /\.html/g, ".ftl"
+            dest + filename
           options:
             bare: true
         ]
 
       release:
         root: "<%= resource.root %>"
-        compress_css:"<%= cssmin.common.filename %>"
-        compress_cssie7: "<%= cssmin.common_ie7.filename %>"
-        compress_js: "<%= requirejs.common.options.out %>"
+        compress_css:"build/style-<%= pkg.name %>-<%= pkg.version %>.min.css"
+        compress_cssie7: "build/style-<%= pkg.name %>-<%= pkg.version %>.ie7.min.css"
+        compress_js: "build/main-<%= pkg.name %>-<%= pkg.version %>.js"
         static_folder:"<%= static_folder %>"
-        files: [
-          src: ["index.html"]
-          cwd: "templates"
-          dest: "<%= resource.html %>/"
-        ]
+        files: "<%= swig.dev.files %>"
 
 
   grunt.registerTask "css-gen", ["less:common", "concat"]
