@@ -81,8 +81,12 @@ textarea {
 
 .ui_row__loader{
   min-height: 80px;
+  position: relative;
   .ui_formitem.ui-sortable-helper:first-child + .ui_formitem__placeholder,
   .ui_formitem.ui-sortable-helper:first-child + .ui_formitem {
+    margin-left: 0;
+  }
+  .ui_formitem.ui-sortable-helper {
     margin-left: 0;
   }
 }
@@ -122,6 +126,7 @@ textarea {
   list-style-type: none;
   cursor: pointer;
   position: relative;
+  overflow: hidden;
 
   .mixin_formitem(@display){
     .ui_formitem__move,
@@ -156,6 +161,10 @@ textarea {
     //box-shadow: 0px 0px 5px 0px #666;
   }
 
+}
+
+.ui_formitem.ui-sortable-helper .ui_formitem__tools {
+  display: block;
 }
 
 .ui_formitem__placeholder{
