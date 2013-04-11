@@ -6,10 +6,22 @@ module.exports = (grunt) ->
 
   grunt.initConfig
     pkg: grunt.file.readJSON('package.json')
+    gruntconfig: do ->
+      cfg =
+        static_folder:"/resources/"
+        root:"resources"
+      try
+        cfg = grunt.file.readJSON('gruntconfig.json')
+      catch err
+        grunt.log.warn err
+      cfg
+
+
+
     components: "components"
-    static_folder:"/resources/"
+    static_folder: "<%= gruntconfig.static_folder %>"
     resource:
-      root: "resources"
+      root: "<%= gruntconfig.root %>"
       path: "<%= resource.root %>/builder"
       js: "<%= resource.path %>/js"
       css: "<%= resource.path %>/css"
