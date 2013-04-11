@@ -7,8 +7,8 @@
     {{ tools.navigation_tabs_full() }}
     <script type="text/javascript">
         rootformconfig={};
-        {% if p.url %}rootformconfig.url = "/forms.json";{% endif %}
-        {% if p.param %}rootformconfig.param = "guid";{% endif %}
+        {% if p.url %}rootformconfig.url = "{{ p.url }}";{% endif %}
+        {% if p.param %}rootformconfig.param = "{{ p.param }}";{% endif %}
     </script>
 
     <div class="body container-fluid">

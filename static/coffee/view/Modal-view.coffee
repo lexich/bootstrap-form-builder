@@ -2,8 +2,7 @@ define [
   "jquery",
   "backbone",
   "underscore",
-  "text!../../templates/modalView.html"
-],($,Backbone,_, templateHTML)->
+],($,Backbone,_)->
   ModalView = Backbone.View.extend
     DEFAULT_MODAL_BODY:".modal-body"
     className:"modal-wrapper"
@@ -17,7 +16,7 @@ define [
     ###
     initialize:->
       @$el.hide()
-      @$el.html templateHTML
+      @$el.html ""
       @$el.appendTo $("body")
       @options.classModalBody = @options.classModalBody or @DEFAULT_MODAL_BODY
 

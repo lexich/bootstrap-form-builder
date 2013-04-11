@@ -20,8 +20,6 @@ module.exports = (grunt) ->
         grunt.log.writeln err
       cfg
 
-
-
     components: "components"
     static_folder: "<%= gruntconfig.static_folder %>"
     resource:
@@ -239,7 +237,7 @@ module.exports = (grunt) ->
 
     clean:
       files:
-        src:["<%= resource.path %>","<%= resource.html %>"]
+        src:["<%= resource.path %>"]
       options:
         force: true
 

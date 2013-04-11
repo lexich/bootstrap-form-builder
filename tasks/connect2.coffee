@@ -17,6 +17,7 @@ module.exports = (grunt)->
 
     for query,handlers of @data.rest
       for url,callback of handlers
+        grunt.log.writeln "resolve url [#{query}]: " + url.green
         app[query](url, callback)
 
 
