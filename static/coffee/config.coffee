@@ -10,6 +10,9 @@ require.config
     "jasmine":"jasmine/jasmine" 
     "select2":"select2/select2"
     "datepicker":"datepicker/bootstrap-datepicker"
+    "sortable":"jquery-ui/jquery.ui.sortable.patch"
+    "draggable":"jquery-ui/jquery.ui.draggable"
+    "droppable":"jquery-ui/jquery.ui.droppable"
 
   shim:
     "jasmine":
@@ -45,11 +48,14 @@ require.config
     "jquery-ui/jquery.ui.sortable":
       deps:["jquery-ui/jquery.ui.mouse"]
 
-    "jquery-ui/jquery.ui.droppable":
+    "droppable":
       deps:["jquery-ui/jquery.ui.mouse"]
 
-    "jquery-ui/jquery.ui.draggable":
+    "draggable":
       deps:["jquery-ui/jquery.ui.mouse"]
     
     "jquery-ui/jquery.ui.resizable":
       deps:["jquery-ui/jquery.ui.mouse"]
+
+    "sortable":
+      deps:["jquery-ui/jquery.ui.sortable"]

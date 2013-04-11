@@ -7,7 +7,7 @@ define [
   "common/Log"
 
   "common/BackboneCustomView"
-  "jquery-ui/jquery.ui.droppable"
+  "droppable"
 ],($,Backbone,_,FieldsetView, FieldsetModel, Log)->
   log = Log.getLogger("view/FormView")
 
