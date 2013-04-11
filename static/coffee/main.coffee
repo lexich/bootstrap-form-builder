@@ -41,8 +41,14 @@ require [
 
   $(document).ready ->
 
-    collection = new FormItemCollection
-      url:"/forms.json"
+    url = window.rootformconfig?.url ? "/forms.json"
+    if url.indexOf("?") is -1 then url += "?"
+
+    _.each window.location.search.replace("?","").split("&"),(param)->
+      if param.indexOf("id=") is 0 then url += "#{param}&"
+
+    collection = new FormItemCollection {url}
+
 
     createFormView = (service)-> 
       new FormView {
