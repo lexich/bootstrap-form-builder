@@ -2,5 +2,7 @@
   "static_folder":"/resources/",
   "root":"www",
   "url":"forms.json",
-  "param":"guid"
+  "param":"guid",
+  "index_file":"indexFile.ftl",
+  "html":"freemarker"
 }

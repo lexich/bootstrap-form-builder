@@ -10,6 +10,10 @@ module.exports = (grunt) ->
       cfg =
         static_folder:"/resources/"
         root:"www"
+        url:"forms.json"
+        param:"guid"
+        index_file:"index.html"
+        html:"freemarker"
       try
         cfg = grunt.file.readJSON('gruntconfig.json')
       catch err
@@ -30,7 +34,7 @@ module.exports = (grunt) ->
       font: "<%= resource.path %>/font"
       templates: "<%= resource.path %>/templates"
       build: "<%= resource.path %>/build"
-      html: "<%= resource.root %>/freemarker"
+      html: "<%= resource.root %>/<%= gruntconfig.html %>"
 
     less:
       common:
@@ -338,8 +342,11 @@ module.exports = (grunt) ->
           cwd: "templates"
           dest: "<%= resource.html %>/"
           rename: (dest, filename, orig)->
+
             if filename is "index.html"
-              filename = "formItem.ftl"
+              index_file = grunt.config.get("gruntconfig.index_file")
+              if index_file
+                filename = index_file
             else
               filename = filename.replace /\.html/g, ".ftl"
             dest + filename
