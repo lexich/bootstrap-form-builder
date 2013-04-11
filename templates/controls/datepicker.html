@@ -1,17 +1,6 @@
 {% macro component %}
 {% set name = "datepicker" %}
-{% set jsrender = {
-    label:"datepicker",
-    placeholder:"datepicker",
-    name: "datepicker",
-    help: "help",
-    type:{ value:"datepicker", type:"hidden"},
-    format: "dd-mm-yyyy",
-    value: "12-02-2013",
-    position:{ value:0, type:"hidden"},
-    row:{ value:0, type:"hidden"}
-}
-%}
+{% set jsrender = { label:"datepicker", placeholder:"datepicker", name: "datepicker", help: "help", type:{ value:"datepicker", type:"hidden"}, format: "dd-mm-yyyy", value: "12-02-2013", position:{ value:0, type:"hidden"}, row:{ value:0, type:"hidden"}, } %}
 <script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="{{ name }}">
 <div class="control-group">
     <label class="control-label" for="<%= id %>"><%= label %></label>
