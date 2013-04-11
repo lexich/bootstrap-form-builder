@@ -6,6 +6,7 @@ define [
   "model/Row-model"
   "common/Log"
   "common/BackboneCustomView"
+  "sortable"
 ],($,Backbone,_,RowView,RowModel,Log)->
   log = Log.getLogger("view/FieldsetView")
 

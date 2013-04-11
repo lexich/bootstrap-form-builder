@@ -6,9 +6,7 @@ define [
   "model/FormItem-model"
   "model/DropArea-model"
   "common/Log"
-  "jquery-ui/jquery.ui.draggable"
-  "jquery-ui/jquery.ui.droppable"
-  "jquery-ui/jquery.ui.sortable"
+  "sortable"
   "common/BackboneCustomView"
 ],($,Backbone,_,FormItemView,FormItemModel, DropAreaModel, Log)->
   log = Log.getLogger("view/RowView")

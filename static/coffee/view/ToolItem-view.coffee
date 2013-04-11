@@ -4,7 +4,7 @@ define [
   "underscore",
   "view/FormItem-view"
   "model/FormItem-model"
-  "jquery-ui/jquery.ui.draggable"
+  "draggable"
 ],($,Backbone,_,FormItemView, FormItemModel)->
   ToolItemView = Backbone.View.extend
     placeholder:{}
