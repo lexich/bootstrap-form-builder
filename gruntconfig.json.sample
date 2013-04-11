@@ -1,0 +1,6 @@
+{
+  "static_folder":"/resources/",
+  "root":"www",
+  "url":"forms.json",
+  "param":"guid"
+}

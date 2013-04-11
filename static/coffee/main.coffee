@@ -42,10 +42,11 @@ require [
   $(document).ready ->
 
     url = window.rootformconfig?.url ? "/forms.json"
+    param = window.rootformconfig?.param ? "id"
     if url.indexOf("?") is -1 then url += "?"
 
-    _.each window.location.search.replace("?","").split("&"),(param)->
-      if param.indexOf("id=") is 0 then url += "#{param}&"
+    _.each window.location.search.replace("?","").split("&"),(query)->
+      if query.indexOf("#{param}=") is 0 then url += "#{query}&"
 
     collection = new FormItemCollection {url}
 

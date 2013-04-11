@@ -5,7 +5,12 @@
 {% block content %}
     {% parent %}
     {{ tools.navigation_tabs_full() }}
-<script type="text/javascript">rootformconfig={url:"/forms.json"}</script>
+    <script type="text/javascript">
+        rootformconfig={};
+        {% if p.url %}rootformconfig.url = "/forms.json";{% endif %}
+        {% if p.param %}rootformconfig.param = "guid";{% endif %}
+    </script>
+
     <div class="body container-fluid">
         <div class="row-fluid">
             <div class="span8" data-html-form></div>

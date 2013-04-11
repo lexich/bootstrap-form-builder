@@ -5,9 +5,6 @@ swig = require("swig")
 
 module.exports = (grunt)->
   grunt.registerMultiTask "swig", "Run swig", ->
-    normalize = (filepath)=>
-      if filepath then filepath.replace(@data.root,"") else false
-
     @files.forEach (filePair) =>
       try
         swig.init
@@ -17,13 +14,9 @@ module.exports = (grunt)->
           encoding: "utf8"
         src = filePair.orig.src[0]
         tmpl = swig.compileFile(src)
+        params = grunt.util._.defaults @data.params,{livereload:false}
         data = tmpl.render
-          compile:
-            livereload: @data.livereload or false
-            compress_css: normalize(@data.compress_css)
-            compress_cssie7: normalize(@data.compress_cssie7)
-            compress_js: normalize(@data.compress_js)
-          static_folder: @data.static_folder
+          p:params
 
         prettyData = html.prettyPrint(data, indent_size: 2)
         grunt.file.write(filePair.dest, prettyData)

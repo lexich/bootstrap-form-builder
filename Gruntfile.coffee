@@ -243,7 +243,7 @@ module.exports = (grunt) ->
       dev:
         port: 9090
         base: "<%= resource.path %>"
-        static_folder: "<%= static_folder %>"
+        static_folder: "<%= gruntconfig.static_folder %>"
         rest:
           get:
             "/":(req, res)->
@@ -261,7 +261,7 @@ module.exports = (grunt) ->
       release:
         port: 9090
         base: "<%= connect2.dev.base %>"
-        static_folder: "<%= connect2.dev.static_folder %>"
+        static_folder: "<%= gruntconfig.static_folder %>"
         rest: "<%= connect2.dev.rest %>"
         keepalive: true
 
@@ -327,7 +327,11 @@ module.exports = (grunt) ->
       dev:
         root: "<%= resource.root %>"
         livereload: false
-        static_folder:"<%= static_folder %>"
+        params:
+          static_folder:"<%= gruntconfig.static_folder %>"
+          url:"<%= gruntconfig.url %>"
+          param:"<%= gruntconfig.param %>"
+
         files: [
           expand: true
           src: ["index.html"]
@@ -345,10 +349,14 @@ module.exports = (grunt) ->
 
       release:
         root: "<%= resource.root %>"
-        compress_css:"build/style-<%= pkg.name %>-<%= pkg.version %>.min.css"
-        compress_cssie7: "build/style-<%= pkg.name %>-<%= pkg.version %>.ie7.min.css"
-        compress_js: "build/main-<%= pkg.name %>-<%= pkg.version %>.js"
-        static_folder:"<%= static_folder %>"
+        params:
+          static_folder:"<%= gruntconfig.static_folder %>"
+          url:"<%= gruntconfig.url %>"
+          param:"<%= gruntconfig.param %>"
+          compress_css:"build/style-<%= pkg.name %>-<%= pkg.version %>.min.css"
+          compress_cssie7: "build/style-<%= pkg.name %>-<%= pkg.version %>.ie7.min.css"
+          compress_js: "build/main-<%= pkg.name %>-<%= pkg.version %>.js"
+
         files: "<%= swig.dev.files %>"
 
 

@@ -25,42 +25,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% endblock %}
     {% block stylesheet %}
-    {% if compile and compile.compress_css %}
-      {% if compile.compress_css %}<link href="{{ static_folder }}/{{ compile.compress_css }}" rel="stylesheet" media="screen">{% endif %}
-      {% if compile.compress_cssie7 %}<!--[if lt IE 7]><link href="{{ static_folder }}/{{ compile.compress_cssie7 }}" rel="stylesheet" media="screen"><![endif]-->{% endif %}
+    {% if p.compress_css %}
+      {% if p.compress_css %}<link href="{{ p.static_folder }}/{{ p.compress_css }}" rel="stylesheet" media="screen">{% endif %}
+      {% if p.compress_cssie7 %}<!--[if lt IE 7]><link href="{{ p.static_folder }}/{{ p.compress_cssie7 }}" rel="stylesheet" media="screen"><![endif]-->{% endif %}
     {% else %}
       <!-- Bootstrap -->
-      <link href="{{ static_folder }}/css/bootstrap.css" rel="stylesheet" media="screen">
-      <link href="{{ static_folder }}/css/bootstrap-responsive.css" rel="stylesheet" media="screen">
+      <link href="{{ p.static_folder }}/css/bootstrap.css" rel="stylesheet" media="screen">
+      <link href="{{ p.static_folder }}/css/bootstrap-responsive.css" rel="stylesheet" media="screen">
       <!-- End Bootstrap-->
       <!-- Start Fuelux -->
-      <link href="{{ static_folder }}/css/fuelux.min.css" rel="stylesheet" media="screen">
-      <link href="{{ static_folder }}/css/fuelux-responsive.min.css" rel="stylesheet" media="screen">
+      <link href="{{ p.static_folder }}/css/fuelux.min.css" rel="stylesheet" media="screen">
+      <link href="{{ p.static_folder }}/css/fuelux-responsive.min.css" rel="stylesheet" media="screen">
       <!-- End FuelUX -->
-      <link href="{{ static_folder }}/css/font-awesome.min.css" rel="stylesheet" media="screen">
+      <link href="{{ p.static_folder }}/css/font-awesome.min.css" rel="stylesheet" media="screen">
       <!--[if IE 7]><link href="static/font-awesome/css/font-awesome-ie7.min.css" rel="stylesheet" media="screen"><!--[endif]-->
-      <link href="{{ static_folder }}/css/select2.css" rel="stylesheet" media="screen">
-      <link href="{{ static_folder }}/css/datepicker.css" rel="stylesheet" media="screen">
-      <link href="{{ static_folder }}/css/style.css" rel="stylesheet" media="screen">
+      <link href="{{ p.static_folder }}/css/select2.css" rel="stylesheet" media="screen">
+      <link href="{{ p.static_folder }}/css/datepicker.css" rel="stylesheet" media="screen">
+      <link href="{{ p.static_folder }}/css/style.css" rel="stylesheet" media="screen">
     {% endif %}
     {% endblock %}
   </head>
   <body>
     {% block content %}{% endblock %}
     {% block script %}
-    {% if compile and compile.livereload %}
+    {% if p and p.livereload %}
     <!--live reload-->
     <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':' + 6001 + '/livereload.js?snipver=1"><\/script>');</script>
     <!-- end live reload-->
     {% endif %}
 
-    <script src="{{ static_folder }}/js/common/base.js"></script>
-    <script src="{{ static_folder }}/js/requirejs/require.js">     </script>
-    <script src="{{ static_folder }}/js/config.js"></script>
-    {% if compile and compile.compress_js %}
-        <script src="{{ static_folder }}/{{compile.compress_js}}"></script>
+    <script src="{{ p.static_folder }}/js/common/base.js"></script>
+    <script src="{{ p.static_folder }}/js/requirejs/require.js">     </script>
+    <script src="{{ p.static_folder }}/js/config.js"></script>
+    {% if p and p.compress_js %}
+        <script src="{{ p.static_folder }}/{{p.compress_js}}"></script>
     {% else %}
-        <script src="{{ static_folder }}/js/main.js"></script>
+        <script src="{{ p.static_folder }}/js/main.js"></script>
     {% endif %}
 
     {% endblock %}
