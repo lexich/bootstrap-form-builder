@@ -12,6 +12,7 @@ define [
     Constants
     ###
     HOVER_CLASS: "ui_formitem__editablemode"
+    HORIZONTAL_SIZE_LIMIT: 9
 
     ###
     Variables Backbone.CustomView
@@ -75,6 +76,9 @@ define [
       APIView::updateViewModes.apply this, arguments
       bVertical = @model.get("direction") is "vertical"
       size = @model.get("size")
+      if !bVertical and size > @HORIZONTAL_SIZE_LIMIT
+        @model.set "size", @HORIZONTAL_SIZE_LIMIT, {validate:true,silent:true}
+        size = @model.get "size"
 
       $item = @getItem("input")
       @getItem("controls").addClass("row-fluid")
@@ -86,8 +90,6 @@ define [
         $item.addClass("span12")
       else
         $item.addClass("span#{@model.get('size')}")
-
-
 
     ###
     @overwrite Backbone.CustomView
@@ -117,6 +119,7 @@ define [
       log.info "event_incsize #{@cid}"
       rowSize = @parentView.getCurrentRowSize()
       size = @model.get "size"
+      return if @model.get("direction") == "horizontal" and rowSize > @HORIZONTAL_SIZE_LIMIT
       if rowSize < 12
         @model.set "size", size+1, {validate:true}
       else
