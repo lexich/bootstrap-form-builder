@@ -61,12 +61,13 @@ define [
       else
         meta = service.getTemplateMetaData(type)
         content = _.map data, (v,k)->
-          itemType = meta[k] or ""
+          itemType = meta[k] ? "hidden"
           opts =
             name: k
             value: v
             data: service.getItemFormTypes()
-          service.renderModalItemTemplate itemType, opts
+          tmpl = service.renderModalItemTemplate itemType, opts
+          tmpl
 
         $body.html content.join("")
       @setVisibleMode(true)
@@ -80,7 +81,9 @@ define [
       service = @options.service
       return unless (model = service.getEditableModel())
       data = service.parceModalItemData @getArea()
-      model.set data
+      model.set data, {validate:true}
+      if model.isValid()
+        log.error model.validationError
 
     event_itemRemove:->
       log.info "event_itemRemove"
