@@ -11,7 +11,7 @@ define [
     ###
     Constants
     ###
-    HOVER_CLASS: "ui_formitem__editablemode"
+    SELECTED_CLASS: "ui_formitem__editablemode"
     HORIZONTAL_SIZE_LIMIT: 9
 
     ###
@@ -59,7 +59,8 @@ define [
 
     on_editableModel_change:->
       @unbindWireEvents()
-      @$el.removeClass(@HOVER_CLASS)
+      @$el.removeClass(@SELECTED_CLASS)
+      @parentView?.setSelected?(false)
 
     on_editableModel_remove:->
       @unbindWireEvents()
@@ -139,7 +140,8 @@ define [
       log.info "event_clickEditable"
       if @options.service.setEditableModel(@model)
         @bindWireEvents()
-        @$el.addClass(@HOVER_CLASS)
+        @$el.addClass(@SELECTED_CLASS)
+        @parentView?.setSelected?(true)
 
     #*****************************************************************************************#
     #                                                                                         #

@@ -15,7 +15,7 @@ define [
     ###
     Constants
     ###
-    HOVER_CLASS: "hover-container"
+    SELECTED_CLASS:"ui_row__selected"
     DISABLE_DRAG: "data-js-row-disable-drag"
     handlers:{}
 
@@ -101,6 +101,12 @@ define [
       else
         bDisable = true
       @setDisable bDisable
+
+    setSelected:(bValue)->
+      if bValue
+        @$el.addClass @SELECTED_CLASS
+      else
+        @$el.removeClass @SELECTED_CLASS
 
     setDisable:(flag)->
       log.info "setDisable #{@viewname}:#{@cid}"
