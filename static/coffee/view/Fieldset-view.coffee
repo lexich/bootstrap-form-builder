@@ -19,9 +19,18 @@ define [
     events:
       "click [data-js-remove-fieldset]": "event_remove"
       "input [contenteditable][data-bind]":"event_inputDataBind"
+      "click [data-js-fieldset-position]":"event_clickDirection"
+
+    event_clickDirection:->
+      bVertical = @model.get('direction') == 'vertical'
+      value = if bVertical then "horizontal" else "vertical"
+      @model.set "direction", value, {validate:true}
+      @checkModel log, @model
+
 
     event_inputDataBind:(e)->
       @model.set "title", $(e.target).text(), {validate:true}
+      @checkModel log, @model
 
     ###
     Variables Backbone.CustomView
@@ -32,6 +41,7 @@ define [
     itemsSelectors:
       loader:"[data-html-fieldset-loader]"
       loaderChildren:"[data-html-fieldset-loader] >"
+      direction:"[data-js-fieldset-position]"
 
     ###
     @overwrite Backbone.View
@@ -44,18 +54,23 @@ define [
     on_model_change:(model,options)->
       log.info "on_model_change #{@cid}"
       changed = _.pick model.changed, _.keys(model.defaults)
+      if changed.direction?
+        _.each @childrenViews,(view)=>
+          view.model.set "direction", changed.direction,{validate:true}
+          @checkModel log, view.model
       _.each @childrenViews,(view,cid)->
         #silent mode freeze changing beause render call
         view.model.set changed,{validate:true}
+      @render()
 
     ###
-    @overwrite Backbone.View
+    @overwrite Custom.View
     ###
-    render:->
-      log.info "render #{@cid}"
+    updateViewModes:->
+      log.info "updateViewModes #{@cid}"
       if (sortable = @getItem("loader").data("sortable"))
         sortable.destroy()
-      Backbone.CustomView::render.apply this, arguments
+      Backbone.CustomView::updateViewModes.apply this, arguments
       connector = "[data-html-fieldset-loader]:not([data-js-row-disable-drag]),[data-drop-accept-placeholder='form']"
       @getItem("loader").sortable
         helper:"original"
@@ -67,6 +82,12 @@ define [
         start:_.bind(@handle_sortable_start, this)
         stop: _.bind(@handle_sortable_stop, this)
         update: _.bind(@handle_sortable_update,this)
+
+      if @model.get("direction") is "vertical"
+        @getItem("direction").addClass("icon-resize-horizontal").removeClass("icon-resize-vertical")
+      else
+        @getItem("direction").addClass("icon-resize-vertical").removeClass("icon-resize-horizontal")
+
       this
 
     ###
@@ -119,7 +140,7 @@ define [
         else #Иначе создаем новый
           rowView = @createChild
             el: ui.helper
-            model: new RowModel {fieldset:@model.get("fieldset")}
+            model: new RowModel {fieldset:@model.get("fieldset"), direction:@model.get("direction")}
             service: @options.service
 
     ###
@@ -153,9 +174,11 @@ define [
       if filterRowView.length > 0
         view = filterRowView[0]
       else
+        model = @collection.getOrAddRowModel row, @model.get("fieldset")
+        model.set "direction", @model.get("direction"), {validation:true}
         view = @createChild
           collection:@collection
-          model: @collection.getOrAddRowModel row, @model.get("fieldset")
+          model:model
           service: @options.service
       view
 

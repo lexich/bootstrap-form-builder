@@ -27,11 +27,11 @@ require [
 
   Log.initConfig {
     "view/FormView": level: CHECK
-    "view/FieldsetView": level: CHECK
+    "view/FieldsetView": level: ALL
     "view/APIView": level: CHECK
-    "view/FormItemView": level: ALL
+    "view/FormItemView": level: CHECK
     "view/ModalView": level: CHECK
-    "view/RowView": level: ALL
+    "view/RowView": level: CHECK
     "view/SettingsView": level: CHECK
     "view/ToolItemView": level: CHECK
     "common/CustomView": level: CHECK

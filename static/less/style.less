@@ -112,9 +112,6 @@ textarea {
   width: 100%;
 }
 
-.ui_fieldset__loader{
-}
-
 //////////////////////////////////////////////////
 //  ui_formitem
 //////////////////////////////////////////////////
@@ -266,12 +263,6 @@ textarea {
   }
 }
 
-.ui_row.form-horizontal .ui_formitem__remove,
-.ui_row.form-horizontal .ui_formitem__move {
-  display: none;
-}
-
-
 /*
  * .ui_tools*
  */
@@ -408,4 +399,22 @@ legend {
 legend + * {
   -webkit-margin-top-collapse : separate;
   margin-top                  : 20px;
+}
+
+
+.ui_fieldset__direction{
+  cursor: pointer;
+}
+
+.ui_fieldset__table{
+  width: 100%;
+}
+.ui_fieldset__table-direction{
+  & > {
+    float: right;
+  }
+  width: 14px;
+}
+.ui_fieldset__table-legend{
+  width: 100%;
 }

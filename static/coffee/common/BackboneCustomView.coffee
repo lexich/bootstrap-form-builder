@@ -108,6 +108,9 @@ define [
     checkModel:(log,model)->
       unless model.isValid()
         log.error model.validationError
+        false
+      else
+        true
 
     remove:->
       log.info "remove #{@cid}"
