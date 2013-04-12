@@ -38,7 +38,7 @@ require [
     "common/Service": level: CHECK
     "collection/FormItemCollection": level: CHECK
     "collection/FieldsetCollection": level: CHECK
-    "main":level:ALL
+    "main":level:CHECK
   }
 
   log = Log.getLogger("main")
