@@ -18,14 +18,9 @@ define [
         opacity: 0.7
         cursor: "pointer"
         connectToSortable:"[data-drop-accept]:not([data-js-row-disable-drag]),[data-drop-accept-placeholder]"
-        helper:_.bind( @handle_draggable_helper, this)
+        helper:"clone"
         start:_.bind(@handle_draggable_start, this)
         stop:_.bind(@handle_draggable_stop, this)
-
-    handle_draggable_helper:->
-      template = @options.service.getTemplate @options.type
-      dataHolder = @options.service.getTemplateData(@options.type)
-      _.template template, dataHolder
 
     handle_draggable_start:->
       $("[data-drop-accept-placeholder]").show()
