@@ -37,7 +37,10 @@ require [
 #    "common/Service": level: ALL
 #    "collection/FormItemCollection": level: ALL
 #    "collection/FieldsetCollection": level: ALL
+#    "main":level:ALL
   }
+
+  log = Log.getLogger("main")
 
   initCsrf = ->
     sameOrigin = (url) ->
@@ -79,7 +82,7 @@ require [
          className:"ui_workarea"
          el: $("[data-html-form]:first")
          dataDropAccept: "drop-accept"
-         collection, service, settings
+         collection, service
       }
 
     createToolItemView = (service,type,data)->
