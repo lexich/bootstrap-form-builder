@@ -91,6 +91,7 @@ define [
         view.render()
       $holder.remove()
       @updateViewModes()
+      @$el.find("select,input,textarea").focus -> $(this).blur()
       result
 
     reindex:->

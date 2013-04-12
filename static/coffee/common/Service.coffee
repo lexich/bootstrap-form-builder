@@ -65,9 +65,10 @@ define [
       if type is null or type is ""
         type = "input"
       templateHtml = @modalTemplates[type]
-      if not templateHtml or templateHtml == ""
-        templateHtml = @modalTemplates["input"]
-      _.template templateHtml, data
+      if templateHtml? and templateHtml != ""
+        _.template templateHtml, data
+      else
+        ""
 
     showModal:(options)-> 
       @modal.show options
@@ -89,16 +90,19 @@ define [
     getTemplate:(type)->
       @getData(type)?.template
 
-      
-
     parceModalItemData:($body)->
       pattern = "input[name], select[name]"
-      _.reduce $body.find(pattern),((memo,item)->
+      _.reduce $body.find(pattern),((memo,item)=>
         name = $(item).attr("name")
         if name? and name != ""
-          memo[name] = $(item).val()
+          memo[name] = @convertData $(item).val(), $(item).data("type")
         memo
-      ),{}      
+      ),{}
+
+    convertData:(val,type)->
+      if type is 'int' then parseInt(val)
+      else if type is 'float' then parseFloat(val)
+      else val
 
     renderAreaItem:(data)->
       htmlTemplate = $("#areaTemplateItem").html()

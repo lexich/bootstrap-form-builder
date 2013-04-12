@@ -277,19 +277,26 @@ textarea {
       text-shadow: 0px 1px 1px #4d4d4d;
     }
   }
-  .ui_tools_mixin(@name){
-    width: 120px;
-    background-position:  0px -10px;
-    background-image: url("@{img}/components/@{name}");
-  }
-  .ui_tools-select2     { .ui_tools_mixin("select_input.png"); }
-  .ui_tools-textarea    { .ui_tools_mixin("text_area.png"); }
-  .ui_tools-input       { .ui_tools_mixin("text_input.png"); }
-  .ui_tools-password    { .ui_tools_mixin("password_input.png"); }
-  .ui_tools-datepicker  { .ui_tools_mixin("datepicker_input.png"); }
-  .ui_tools-file        { .ui_tools_mixin("file_input.png"); }
-  .ui_tools-checkbox    { .ui_tools_mixin("checkbox_input.png"); }
 }
+
+.ui_tools_mixin(){
+  .ui_tools_item_mixin(@name){
+    &, &.ui-draggable{
+      width: 120px;
+      height: 64px;
+      background-position:  0px -10px;
+      background-image: url("@{img}/components/@{name}");
+    }
+  }
+  .ui_tools-select2      { .ui_tools_item_mixin("select_input.png"); }
+  .ui_tools-textarea    { .ui_tools_item_mixin("text_area.png"); }
+  .ui_tools-input          { .ui_tools_item_mixin("text_input.png"); }
+  .ui_tools-password    { .ui_tools_item_mixin("password_input.png"); }
+  .ui_tools-datepicker{ .ui_tools_item_mixin("datepicker_input.png"); }
+  .ui_tools-file            { .ui_tools_item_mixin("file_input.png"); }
+  .ui_tools-checkbox    { .ui_tools_item_mixin("checkbox_input.png"); }
+}
+.ui_tools_mixin();
 
 .ui_tools__container{
   ul{

@@ -22,22 +22,26 @@ require [
   INFO = Log.LEVEL.INFO
   WARN = Log.LEVEL.WARN
   ERROR = Log.LEVEL.ERROR
+  CHECK = WARN | ERROR
   ALL = DEBUG | INFO | WARN | ERROR
 
   Log.initConfig {
-#    "view/FormView": level: ALL
-#    "view/FieldsetView": level: ALL
-#    "view/APIView": level: ALL
-#    "view/FormItemView": level: ALL
-#    "view/ModalView": level: ALL
-#    "view/RowView": level: ALL
-#    "view/SettingsView": level: ALL
-#    "view/ToolItemView": level: ALL
-#    "common/CustomView": level: ALL
-#    "common/Service": level: ALL
-#    "collection/FormItemCollection": level: ALL
-#    "collection/FieldsetCollection": level: ALL
+    "view/FormView": level: CHECK
+    "view/FieldsetView": level: CHECK
+    "view/APIView": level: CHECK
+    "view/FormItemView": level: ALL
+    "view/ModalView": level: CHECK
+    "view/RowView": level: ALL
+    "view/SettingsView": level: CHECK
+    "view/ToolItemView": level: CHECK
+    "common/CustomView": level: CHECK
+    "common/Service": level: CHECK
+    "collection/FormItemCollection": level: CHECK
+    "collection/FieldsetCollection": level: CHECK
+    "main":level:ALL
   }
+
+  log = Log.getLogger("main")
 
   initCsrf = ->
     sameOrigin = (url) ->
@@ -79,7 +83,7 @@ require [
          className:"ui_workarea"
          el: $("[data-html-form]:first")
          dataDropAccept: "drop-accept"
-         collection, service, settings
+         collection, service
       }
 
     createToolItemView = (service,type,data)->
