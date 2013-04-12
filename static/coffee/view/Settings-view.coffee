@@ -20,7 +20,10 @@ define [
       log.info "initialize"
       @$el.addClass "hide"
       @bindServiceWire()
-      @handle_VisibleMode = => @setVisibleMode(false)
+      @handle_VisibleMode = (e)=>
+        if e.target.id is "" then e.target.id = _.uniqueId("_targetID")
+        if @$el.find("##{e.target.id}").length is 0
+          @setVisibleMode(false)
 
     bindServiceWire:()->
       log.info "bindServiceWire"
@@ -34,10 +37,10 @@ define [
       log.info "setVisibleMode #{bValue}"
       @visibleMode = bValue
       $item = $("[data-html-settings]")
+      $(document).off "click", @handle_VisibleMode
       if bValue
         $item.removeClass "hide"
-        $(document).off "click", @handle_VisibleMode
-        setTimeout (=>$(document).one "click", @handle_VisibleMode),0
+        setTimeout (=>$(document).on "click", @handle_VisibleMode),0
       else
         $item.addClass "hide"
         @options.service.eventWire.trigger "editableModel:change"
