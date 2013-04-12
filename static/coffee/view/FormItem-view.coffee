@@ -34,8 +34,9 @@ define [
       "editableModel:remove":"on_editableModel_remove"
 
     itemsSelectors:
-      "controls":".controls"
-      "input":"input,select,textarea"
+      controls:".controls"
+      input:"input,select,textarea"
+      moveElement:".ui_formitem__move"
 
     ###
     @overwrite Backbone.View
@@ -91,6 +92,12 @@ define [
         $item.addClass("span12")
       else
         $item.addClass("span#{@model.get('size')}")
+
+      $move = @getItem("moveElement")
+      if @model.get("direction") is "vertical"
+        $move.removeAttr("data-js-row-move").attr("data-js-formitem-move","")
+      else
+        $move.removeAttr("data-js-formitem-move").attr("data-js-row-move","")
 
     ###
     @overwrite Backbone.CustomView
