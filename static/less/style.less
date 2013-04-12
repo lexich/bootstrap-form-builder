@@ -169,35 +169,56 @@ textarea {
   }
 
   &.ui_formitem__editablemode{
-    border-color: rgba(82,168,236,.3);
+    border-color: @blue;
+
     &:hover {
-      border-color: rgba(82,168,236,.5)!important;
+      border-color: @blueDark!important;
     }
   }
 }
 
-.ui_row .ui_formitem {
-  & {
-    border-left: none;
-    border-right: none;
-    border-top: 2px solid transparent;
-    border-bottom: 2px solid transparent;
+.ui_row {
+  &.ui_row__selected {
+    .ui_row__tools {
+      background-color: @blueDark;
+      opacity: 1;
+    }
   }
-  &:hover {
-    border-top-color: rgba(51,51,51,.7);
-    border-bottom-color: rgba(51,51,51,.7);
-  }
-
-  &.ui_formitem__editablemode {
-    border-color: rgba(82,168,236,.3);
-
+  .ui_formitem {
+    & {
+      border-left: none;
+      border-right: none;
+      border-top: 2px solid transparent;
+      border-bottom: 2px solid transparent;
+    }
     &:hover {
-      border-color: rgba(82,168,236,.5)!important;
+      border-top-color: rgba(51,51,51,.7);
+      border-bottom-color: rgba(51,51,51,.7);
     }
 
-    .ui_formitem__tools {
-      background-color: rgba(82,168,236,.5);
-      opacity: 1;
+    &.ui_formitem__editablemode {
+      border-color: @blue;
+
+      &:hover {
+        border-color: @blueDark!important;
+      }
+
+      .ui_formitem__tools {
+        background-color: @blueDark;
+        opacity: 1;
+      }
+    }
+  }
+  &.form-horizontal.ui-sortable-helper,
+  &.ui-sortable-helper {
+    .ui_formitem {
+      padding: 2px;
+      border: none;
+      background: @white;
+      box-shadow: 0 0 5px 5px #999;
+    }
+    .ui_row__tools {
+      left: 0;
     }
   }
 }
