@@ -8,12 +8,12 @@ module.exports = (grunt) ->
     pkg: grunt.file.readJSON('package.json')
     gruntconfig: do ->
       cfg =
-        static_folder:"/resources/"
-        root:"www"
-        url:"forms.json"
-        param:"guid"
-        index_file:"index.html"
-        html:"freemarker"
+        static_folder: "/resources/"
+        root: "www"
+        url: "forms.json"
+        param: "guid"
+        index_file: "index.html"
+        html: "freemarker"
       try
         cfg = grunt.file.readJSON('gruntconfig.json')
       catch err
@@ -49,6 +49,15 @@ module.exports = (grunt) ->
           dest + filename.replace /\.coffee$/g, ".js"
         options:
           bare: true
+
+    replace:
+      config:
+        src: ["<%= resource.js %>/config.js"],
+        overwrite: true,
+        replacements: [{
+          from: "$STATIC_FOLDER$",
+          to: "<%= gruntconfig.static_folder %>"
+        }]
 
     copy:
       html5sortable:
@@ -248,18 +257,18 @@ module.exports = (grunt) ->
         static_folder: "<%= gruntconfig.static_folder %>"
         rest:
           get:
-            "/":(req, res)->
+            "/": (req, res)->
               htmlpath = grunt.config.get("resource.html")
               index_file = grunt.config.get("gruntconfig.index_file")
               filepath = path.normalize(path.join(__dirname, htmlpath, index_file))
               res.set('Content-Type', 'text/html');
               res.sendfile filepath
-            "/forms.json":(req, res) -> res.send data
-            "/select2.json": (req, res) ->
+            "**/form.json": (req, res) -> res.send data
+            "**/select2.json": (req, res) ->
               res.send { more: false, results: [{id: "CA",text: "California"},{id: "AL", text: "Alabama"}]}
 
           post:
-            "/forms.json":(req, res) -> data = req.body
+            "**/form.json": (req, res) -> data = req.body
 
       release:
         port: 9090
@@ -369,8 +378,8 @@ module.exports = (grunt) ->
   grunt.registerTask "css-gen", ["less:common", "concat"]
   grunt.registerTask "css-min", ["css-gen", "cssmin"]
   grunt.registerTask "js-min", ["coffee:common", "requirejs:common"]
-  grunt.registerTask "swig-release", ["copy", "css-min","js-min","swig:release"]
-  grunt.registerTask "swig-dev", ["copy", "css-gen","coffee:common","swig:dev"]
+  grunt.registerTask "swig-release", ["copy", "css-min","js-min","swig:release", "replace:config"]
+  grunt.registerTask "swig-dev", ["copy", "css-gen","coffee:common","swig:dev", "replace:config"]
 
   grunt.registerTask "default", ["clean", "swig-release","connect2:release"]
   grunt.registerTask "dev", ["clean", "swig-dev","connect2:dev", "watch"]
@@ -383,4 +392,5 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks "grunt-contrib-less"
   grunt.loadNpmTasks "grunt-contrib-requirejs"
   grunt.loadNpmTasks "grunt-contrib-watch"
+  grunt.loadNpmTasks "grunt-text-replace"
   grunt.loadTasks("tasks")
