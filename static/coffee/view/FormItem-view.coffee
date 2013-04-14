@@ -129,14 +129,6 @@ define [
       return if @model.get("direction") == "horizontal" and rowSize > @HORIZONTAL_SIZE_LIMIT
       if rowSize < 12
         @model.set "size", size+1, {validate:true}
-      else
-        for item in [@parentView.getPrevious(this), @parentView.getNext(this)]
-          if not (model = item?.model)
-            continue
-          itemSize = model.get("size")
-          if itemSize > 1 and model.set "size", itemSize - 1, {validate:true}
-            @model.set "size", size + 1, {validate:true}
-            break
 
     event_remove:->
       log.info "event_remove #{@cid}"
