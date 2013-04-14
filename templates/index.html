@@ -1,10 +1,8 @@
 {% extends 'base.html' %}
 {% import 'layout/ui_tools.html' as tools %} 
 
-
 {% block content %}
     {% parent %}
-    {{ tools.navigation_tabs_full() }}
     <script type="text/javascript">
         rootformconfig={};
         {% if p.url %}rootformconfig.url = "{{ p.url }}";{% endif %}
@@ -13,11 +11,12 @@
 
     <div class="body container-fluid">
         <div class="row-fluid">
-            <div class="span8" data-html-form></div>
-            <div class="span4 ui_settings_editor" >
+            <div class="span9" data-html-form></div>
+            <div class="span3 ui_settings_editor" >
                 {% include 'settings.html' %}
             </div>
         </div>
     </div>
+    {{ tools.navigation_tabs_full() }}
     {% include 'layout/template.html' %}
 {% endblock %}

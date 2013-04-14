@@ -7,9 +7,8 @@
 {% import 'controls/file.html' as file %}
 {% import 'controls/checkbox.html' as checkbox %}
 
-
 {% macro navigation_tabs %}
-<div class="navbar navbar-inverse navbar-fixed-top navbar-fixed-top-back">
+<div class="navbar navbar-fixed-top navbar-fixed-top-back">
     <div class="navbar-inner">
         <div class="container">
             <div class="nav-collapse collapse">
@@ -27,7 +26,7 @@
         </div>
     </div>
     <div class="tab-content ui_tools navbar-inner">
-        <div id="input" class="tab-pane active ui_tools__container clearfix">
+        <div id="input" class="tab-pane active ui_tools__container">
             <ul>
                 <li>{{ password.component() }}</li>
                 <li>{{ textarea.component() }}</li>

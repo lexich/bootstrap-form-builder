@@ -10,6 +10,11 @@
 @hoverButtons: @blue;
 @colorPlaceholderBackground:@lightgray;
 
+.ui_settings_editor {
+  position: fixed;
+  right: @fluidGridGutterWidth;
+}
+
 .lverticalline{
   border-left:1px solid @lightgray;
 }
@@ -21,7 +26,7 @@ textarea {
   resize: none;
 }
 
-.body{
+.body {
   margin: auto;
   margin-top: @bodyOffset;
 }
@@ -37,6 +42,16 @@ textarea {
   }
   .hover-container{
     border: 1px solid #333333;
+  }
+}
+
+fieldset {
+  position: relative;
+  .ui_fieldset__direction {
+    margin: 10px;
+    position: absolute;
+    right: 0;
+    top: 0;
   }
 }
 
@@ -116,7 +131,16 @@ textarea {
 //  ui_formitem
 //////////////////////////////////////////////////
 
-.ui_formitem{
+.ui_formitem .control-group, .ui_fieldset__direction {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.ui_formitem {
   list-style-type: none;
   cursor: pointer;
   position: relative;
@@ -150,18 +174,22 @@ textarea {
     .mixin_formitem(block);
     .mixin_formitem__tools(block);
   }
-
+  &.ui_formitem__editablemode {
+    .mixin_formitem__tools(block);
+  }
+  
+  input, textarea {
+    cursor: pointer;
+  }
 }
 
 .ui_row.form-horizontal .ui_formitem {
   & {
     border-top: none;
     border-bottom: none;
-    border-left: 2px solid transparent;
     border-right: 2px solid transparent;
   }
   &:hover {
-    border-left-color: rgba(51,51,51,.7);
     border-right-color: rgba(51,51,51,.7);
   }
 
@@ -185,11 +213,9 @@ textarea {
     & {
       border-left: none;
       border-right: none;
-      border-top: 2px solid transparent;
       border-bottom: 2px solid transparent;
     }
     &:hover {
-      border-top-color: rgba(51,51,51,.7);
       border-bottom-color: rgba(51,51,51,.7);
     }
 
@@ -198,10 +224,13 @@ textarea {
 
       &:hover {
         border-color: @blueDark!important;
+        .ui_formitem__tools {
+          background-color: @blueDark!important;
+        }
       }
 
       .ui_formitem__tools {
-        background-color: @blueDark;
+        background-color: @blue;
         opacity: 1;
       }
     }
@@ -230,19 +259,23 @@ textarea {
   float: left;
 }
 
-.ui_formitem__tools{
+.ui_formitem__tools {
   position: absolute;
-  right: 0;
+  left: 0;
+  right: auto;
   bottom: 0;
   padding: 5px;
   opacity: .7;
   display: none;
   background: @toolsBackground;
-  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
 
-  &:hover {
-    opacity: 1;
-  }
+.ui_row.form-horizontal .ui_formitem__tools {
+  left: auto;
+  right: 0;
+  border-top-right-radius: 0;
+  border-top-left-radius: 5px;
 }
 
 .ui_row.form-horizontal .ui_row__tools {
@@ -352,10 +385,7 @@ textarea {
   overflow: hidden;
 }
 .ui_settings_editor__area{
-  position: fixed;
-  height: 80%;
-  width: 100%;
-  overflow-y:auto;
+  overflow-y: auto;
   top: @bodyOffset;
 }
 

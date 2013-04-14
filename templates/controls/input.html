@@ -1,12 +1,12 @@
 {% macro component %}
   {% set name = "input" %}
-  {% set jsrender = { label:"input", placeholder:"input", name: "input", help: "help", type:{ value:"input", type:"hidden"}, position:{ value:0, type:"hidden"}, row:{ value:0, type:"hidden"}, } %}
+  {% set jsrender = { label:"Заголовок", placeholder:"input", name: "input", help: "help", type:{ value:"input", type:"hidden"}, position:{ value:0, type:"hidden"}, row:{ value:0, type:"hidden"}, } %}
 <script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="{{ name }}">
   <div class="control-group">
     <label class="control-label" for="<%= id %>"><%= label %></label>
     <div class="controls">
       <input type="text" id="<%= id %>" name="<%= name %>" placeholder="<%= placeholder %>">
-      <% if(help) { %>
+      <% if (help) { %>
         <p class="help-block valtype" data-valtype="help"><%= help %></p>
       <% } %>
     </div>
@@ -17,9 +17,14 @@
 
 {% macro modal %}
 <div data-ui-jsrender-modal-template="input" style="display:none">
-  <label for="__id_label">label</label>
-  <input id="__id_label" type="text" name="label" value="Comment"><label for="__id_placeholder">placeholder</label>
-  <input id="__id_placeholder" type="text" name="placeholder" value="Your comment"><label for="__id_name">name</label>
-  <input id="__id_name" type="text" name="name" value="comment"><label for="__id_type">type</label>
+  <label for="__id_label">Заголовок</label>
+  <input id="__id_label" type="text" class="span12" name="label">
+  <label for="__id_placeholder">Подсказка</label>
+  <input id="__id_placeholder" type="text" class="span12" name="placeholder">
+  <label for="__id_help">Комментарий</label>
+  <input id="__id_help" type="text" class="span12" name="help">
+  <hr/>
+  <label for="__id_name">name</label>
+  <input id="__id_name" type="text" name="name" value="comment">
 </div>
 {% endmacro %} 
