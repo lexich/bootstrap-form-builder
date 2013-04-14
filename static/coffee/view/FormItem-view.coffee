@@ -83,7 +83,6 @@ define [
         size = @model.get "size"
 
       $item = @getItem("input")
-      @getItem("controls").addClass("row-fluid")
 
       @cleanSpan(@$el)
       @cleanSpan($item)
