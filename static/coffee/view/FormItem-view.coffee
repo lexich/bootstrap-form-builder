@@ -12,7 +12,7 @@ define [
     Constants
     ###
     SELECTED_CLASS: "ui_formitem__editablemode"
-    HORIZONTAL_SIZE_LIMIT: 9
+    HORIZONTAL_SIZE_LIMIT: 12
 
     ###
     Variables Backbone.CustomView
@@ -116,7 +116,7 @@ define [
     ###
     event_decsize:(e)->
       size = @model.get "size"
-      if size > 1
+      if size > 2
         @model.set "size", size - 1, validate: true
 
     ###
