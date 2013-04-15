@@ -151,6 +151,10 @@ textarea {
     .mixin_formitem__tools(block);
   }
 
+  &.ui-sortable-helper {
+    background: @white;
+    box-shadow: 0 0 5px 5px #999;
+  }
 }
 
 .ui_row.form-horizontal .ui_formitem {
@@ -208,11 +212,13 @@ textarea {
   }
   &.form-horizontal.ui-sortable-helper,
   &.ui-sortable-helper {
+
+    background: @white;
+    box-shadow: 0 0 5px 5px #999;
+
     .ui_formitem {
       padding: 2px;
       border: none;
-      background: @white;
-      box-shadow: 0 0 5px 5px #999;
     }
     .ui_row__tools {
       left: 0;
@@ -228,6 +234,12 @@ textarea {
   background-color: @colorPlaceholderBackground;
   height: 100px;
   float: left;
+  opacity: .3;
+}
+
+.ui_row.form-horizontal .ui_formitem__placeholder {
+  float: none;
+  display: block;
 }
 
 .ui_formitem__tools{
@@ -369,11 +381,13 @@ textarea {
 .ui_global_placeholder{
   display: none;
   min-height: 100px;
+  border: 1px transparent solid;
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAASElEQVQYV4XQywkAMAgD0LqT+0/gTi3xIJj68aY8RCNmdg+VqgrPhGGFYBLsELYHnFDADTnko9FXD36wSyHBKaqAW54ONwTzALtHNPo9r6sPAAAAAElFTkSuQmCC) repeat;
 }
 
 .ui_global_placeholder-active{
   min-height: 100px;
+  border: 1px transparent solid;
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAARklEQVQYV4XQSw4AMAQE0DqtMzltm7GQmPrYkRdhxMzuoVJV4ZkwrBBMgh3C9oATCrghh3w0+urBD3YpJDhFFXDL0+GGYB5ncTH9nH87wgAAAABJRU5ErkJggg==) repeat;
 }
 
@@ -401,9 +415,17 @@ legend + * {
   margin-top                  : 20px;
 }
 
+fieldset {
+  position: relative;
+}
 
 .ui_fieldset__direction{
   cursor: pointer;
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: block;
+  padding: 10px 10px;
 }
 
 .ui_fieldset__table{
