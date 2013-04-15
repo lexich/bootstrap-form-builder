@@ -46,20 +46,29 @@ define [
 
 
 
-    renderSettingsForm:(name,data)->
-      @_renderModalFormCache = {} if _.isUndefined(@_renderModalFormCache) 
-      return @_renderModalFormCache[name] if @_renderModalFormCache[name]?
-      selector = "[data-ui-jsrender-modal-template='#{name}']:first" 
-      $item = $(selector)
+    renderSettingsForm:( type, data)->
+      $frag = $("<div>")
+      $item = $("[data-ui-jsrender-modal-template='#{type}']:first")
       if $item.length is 1
-        _.each $("input,select,textarea",$item), (input)->
+        $frag.html $item.html()
+        _.each $("input,select,textarea",$frag), (input)->
           $input = $(input)
-          name = $input.attr("name")
-          value = data[name]
+          type = $input.attr("name")
+          value = data[type]
           unless _.isUndefined(value)
-            $input.val(value)        
-      @_renderModalFormCache[name] = $item
-      $item
+            $input.val(value)
+      else
+        meta = @getTemplateMetaData(type)
+        content = _.map data, (v,k)=>
+          itemType = meta[k] ? "hidden"
+          opts =
+            name: k
+            value: v
+            data: @getItemFormTypes()
+          tmpl = @renderModalItemTemplate itemType, opts
+          tmpl
+        $frag.html content.join("")
+      $frag.children()
 
     renderModalItemTemplate:(type,data)->
       if type is null or type is ""

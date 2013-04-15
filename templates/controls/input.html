@@ -16,10 +16,10 @@
 {% endmacro %}  
 
 {% macro modal %}
-<div data-ui-jsrender-modal-template="input" style="display:none">
-  <label for="__id_label">label</label>
+<script data-ui-jsrender-modal-template="input" type="text/template">
+  <label for="__id_label">Название</label>
   <input id="__id_label" type="text" name="label" value="Comment"><label for="__id_placeholder">placeholder</label>
   <input id="__id_placeholder" type="text" name="placeholder" value="Your comment"><label for="__id_name">name</label>
   <input id="__id_name" type="text" name="name" value="comment"><label for="__id_type">type</label>
-</div>
+</script>
 {% endmacro %} 

@@ -52,24 +52,8 @@ define [
       $body = @getArea()
       type = model.get("type")
       data = model.attributes
-      $item = service.renderSettingsForm(type, data)
-
-      if $item.length is 1
-        $body.empty()
-        $item.appendTo $body
-        $item.show()
-      else
-        meta = service.getTemplateMetaData(type)
-        content = _.map data, (v,k)->
-          itemType = meta[k] ? "hidden"
-          opts =
-            name: k
-            value: v
-            data: service.getItemFormTypes()
-          tmpl = service.renderModalItemTemplate itemType, opts
-          tmpl
-
-        $body.html content.join("")
+      $body.empty()
+      $body.append service.renderSettingsForm(type, data)
       @setVisibleMode(true)
 
     on_editableModel_set:->
