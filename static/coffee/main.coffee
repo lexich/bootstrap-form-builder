@@ -86,17 +86,10 @@ require [
          collection, service
       }
 
-    createToolItemView = (service,type,data)->
-      new ToolItemView
-          type: type
-          service:service
-          template:service.renderAreaItem(data) 
-
     service = new Service
       dataToolBinder: "ui-jsrender"
       collection: collection
       createFormView:createFormView
-      createToolItemView:createToolItemView
       areaTemplateItem: ""      
       dataPostfixModalType:"modal-type"
 
@@ -104,8 +97,9 @@ require [
       el: $("[data-html-settings]:first")
       service:service
 
-      
-    collection.fetch()
+    _.each service.toolData, (data,type)=>
+      toolItem = new ToolItemView {type,service,data}
+      toolItem.render()
 
     $("[data-js-global-form-save]").click ->
       collection.updateAll()
@@ -115,3 +109,5 @@ require [
         $(this).toggleClass "icon-bookmark-empty"
         $(this).toggleClass "icon-bookmark"
         $("body").toggleClass "ui_debug"
+
+    collection.fetch()

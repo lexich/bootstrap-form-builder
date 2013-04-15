@@ -43,17 +43,15 @@
 </script>
 
 
-
 {# Значек для схематичного отображения контролов #}
-<script type="text/template" id="areaTemplateItem">
-  <% if(type==""){ %>    
-  <% } else if(type==""){ %>    
-  <% } else { %>
-    <div class="ui_tools__item">
-        <p><%= type.charAt(0).toUpperCase() + type.slice(1) %></p>
-    </div>
+<script type="text/template" id="ToolItemViewTemplate">
+<div class="ui_tools__item">
+  <% if(type!=""){ %>
+     <p><%= type.charAt(0).toUpperCase() + type.slice(1) %></p>
   <% } %>
+</div>
 </script>
+
 {# Модальное окно #}
 <script type="text/template" id="modalTemplate">
   <div class="modal">

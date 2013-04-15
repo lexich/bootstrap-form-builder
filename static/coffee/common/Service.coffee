@@ -29,9 +29,6 @@ define [
 
       @_bindWire()
       @toolData = @getToolData options.dataToolBinder
-      toolPanelItem = _.map @toolData, (v,k)=>
-        options.createToolItemView(this,k,v).render()
-
       @modal = options.modal
 
       formView = options.createFormView(this)
@@ -112,10 +109,6 @@ define [
       if type is 'int' then parseInt(val)
       else if type is 'float' then parseFloat(val)
       else val
-
-    renderAreaItem:(data)->
-      htmlTemplate = $("#areaTemplateItem").html()
-      _.template htmlTemplate, data
 
     getToolData:(toolBinder)->
       _.reduce $("*[data-#{toolBinder}]"),((memo, el)=>
