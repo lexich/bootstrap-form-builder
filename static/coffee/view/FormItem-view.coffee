@@ -30,12 +30,13 @@ define [
       "click":  "event_clickEditable"
 
     wireEvents:
-      "editableModel:change":"on_editableModel_change"
-      "editableModel:remove":"on_editableModel_remove"
+      "editableView:change":"on_editableView_change"
+      "editableView:remove":"on_editableView_remove"
 
     itemsSelectors:
-      "controls":".controls"
-      "input":"input,select,textarea"
+      controls:".controls"
+      input:"input,select,textarea"
+      moveElement:".ui_formitem__move"
 
     ###
     @overwrite Backbone.View
@@ -57,12 +58,13 @@ define [
         @options.service.eventWire.off action, handler
 
 
-    on_editableModel_change:->
+    on_editableView_change:(view)->
+      return if view is this
       @unbindWireEvents()
       @$el.removeClass(@SELECTED_CLASS)
       @parentView?.setSelected?(false)
 
-    on_editableModel_remove:->
+    on_editableView_remove:->
       @unbindWireEvents()
       @remove()
 
@@ -91,6 +93,12 @@ define [
         $item.addClass("span12")
       else
         $item.addClass("span#{@model.get('size')}")
+
+      $move = @getItem("moveElement")
+      if @model.get("direction") is "vertical"
+        $move.removeAttr("data-js-row-move").attr("data-js-formitem-move","")
+      else
+        $move.removeAttr("data-js-formitem-move").attr("data-js-row-move","")
 
     ###
     @overwrite Backbone.CustomView
@@ -137,8 +145,9 @@ define [
       @remove()
 
     event_clickEditable:(e)->
+      return if $(e.target).hasClass("ui_formitem__tools") and $(e.target).parents(".ui_formitem__tools").length > 0
       log.info "event_clickEditable"
-      if @options.service.setEditableModel(@model)
+      if @options.service.setEditableView(this)
         @bindWireEvents()
         @$el.addClass(@SELECTED_CLASS)
         @parentView?.setSelected?(true)

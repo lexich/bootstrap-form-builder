@@ -87,6 +87,7 @@ define [
         handle:"[data-js-formitem-move]"
         dropOnEmpty:"true"
         placeholder: "ui_formitem__placeholder"
+        change:_.bind(@handle_sortable_change,this)
         connectWith: connectWith
         start:_.bind(@handle_sortable_start, this)
         stop: _.bind(@handle_sortable_stop, this)
@@ -283,12 +284,8 @@ define [
       if changed.direction
         @updateViewModes()
 
-    ###
-    Handle to jQuery.UI.sortable - start
-    ###
-    handle_sortable_start:(event,ui)->
-      log.info "handle_sortable_start #{@cid}"
-      Backbone.CustomView::handle_sortable_start.apply this, arguments
+    handle_sortable_change:(event,ui)->
+      log.info "handle_sortable_change #{@cid}"
       freesize = @getCurrentFreeRowSize()
       size = 3
       if (view = Backbone.CustomView::staticViewFromEl(ui.item))
@@ -298,8 +295,7 @@ define [
       else
         if freesize <= 3 then size = freesize
 
-      $item = $(".ui_formitem__placeholder", @$el)
-      @cleanSpan($item).addClass "span#{size}"
+      @cleanSpan(ui.placeholder).addClass "span#{size}"
 
     ###
     Handle to jQuery.UI.sortable - update

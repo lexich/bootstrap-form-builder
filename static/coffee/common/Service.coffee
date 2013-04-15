@@ -12,11 +12,9 @@ define [
     this
 
   Service::=
-    formItemViews:[]
     constructor:Service
     toolData:{}
-    modalTemplates:{}
-    editableModel:null
+    editableView:null
     eventWire:{}
     ###
     --OPTIONS--
@@ -26,58 +24,13 @@ define [
     @param modal - 
     ###
     initialize:(options)->
-
       @_bindWire()
       @toolData = @getToolData options.dataToolBinder
-      toolPanelItem = _.map @toolData, (v,k)=>
-        options.createToolItemView(this,k,v).render()
-
-      @modal = options.modal
-
-      formView = options.createFormView(this)
-
-      @modalTemplates = _.reduce $("[data-#{options.dataPostfixModalType}]"),(
-        (memo,item)->
-          type = $(item).data(options.dataPostfixModalType)
-          if type? and type != ""
-            memo[type] = $(item).html()
-          memo
-      ),{}
-
-
-
-    renderSettingsForm:(name,data)->
-      @_renderModalFormCache = {} if _.isUndefined(@_renderModalFormCache) 
-      return @_renderModalFormCache[name] if @_renderModalFormCache[name]?
-      selector = "[data-ui-jsrender-modal-template='#{name}']:first" 
-      $item = $(selector)
-      if $item.length is 1
-        _.each $("input,select,textarea",$item), (input)->
-          $input = $(input)
-          name = $input.attr("name")
-          value = data[name]
-          unless _.isUndefined(value)
-            $input.val(value)        
-      @_renderModalFormCache[name] = $item
-      $item
-
-    renderModalItemTemplate:(type,data)->
-      if type is null or type is ""
-        type = "input"
-      templateHtml = @modalTemplates[type]
-      if templateHtml? and templateHtml != ""
-        _.template templateHtml, data
-      else
-        ""
-
-    showModal:(options)-> 
-      @modal.show options
 
     getData:(type)->
       @toolData[type]
 
-    getItemFormTypes:->
-      _.keys @toolData
+    getItemFormTypes:-> _.keys @toolData
 
     getTemplateMetaData:(type)->
       @getData(type)?.meta
@@ -91,6 +44,7 @@ define [
       @getData(type)?.template
 
     parceModalItemData:($body)->
+      log.info "parceModalItemData"
       pattern = "input[name], select[name]"
       _.reduce $body.find(pattern),((memo,item)=>
         name = $(item).attr("name")
@@ -100,15 +54,13 @@ define [
       ),{}
 
     convertData:(val,type)->
+      log.info "convertData"
       if type is 'int' then parseInt(val)
       else if type is 'float' then parseFloat(val)
       else val
 
-    renderAreaItem:(data)->
-      htmlTemplate = $("#areaTemplateItem").html()
-      _.template htmlTemplate, data
-
     getToolData:(toolBinder)->
+      log.info "getToolData"
       _.reduce $("*[data-#{toolBinder}]"),((memo, el)=>
         $el = $(el)
         type = $el.data(toolBinder+"-type")
@@ -132,24 +84,27 @@ define [
       ),{}
 
     _bindWire:->
+      log.info "_bindWire"
       _.extend @eventWire, Backbone.Events
-      @eventWire.on "editableModel:change", _.bind(@on_editableModel_change,this)
+      @eventWire.on "editableView:change", _.bind(@on_editableView_change,this)
 
 
-    on_editableModel_change:(model)->
-      log.info "on_editableModel_change"
-      @editableModel = model
-      @eventWire.trigger("editableModel:set",model)
+    on_editableView_change:(view)->
+      log.info "on_editableView_change"
+      @editableView = view
+      @eventWire.trigger("editableView:set",view)
 
 
-    setEditableModel:(model)->
-      log.info "setEditableModel"
-      unless @editableModel is model
-        @eventWire.trigger("editableModel:change",model)
+    setEditableView:(view)->
+      log.info "setEditableView"
+      unless @editableView is view
+        @eventWire.trigger("editableView:change", view)
         true
       else
         false
 
-    getEditableModel:-> @editableModel
+    getEditableModel:->
+      log.error "getEditableModel"
+      @editableView?.model
 
   Service
