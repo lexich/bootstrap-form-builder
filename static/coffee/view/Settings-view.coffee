@@ -25,6 +25,14 @@ define [
         if @$el.find("##{e.target.id}").length is 0
           @setVisibleMode(false)
 
+      @modalTemplates = _.reduce $("[data-#{@options.dataPostfixModalType}]"),(
+        (memo,item)=>
+          type = $(item).data(@options.dataPostfixModalType)
+          if type? and type != ""
+            memo[type] = $(item).html()
+          memo
+      ),{}
+
     bindServiceWire:()->
       log.info "bindServiceWire"
       return unless @options.service?
@@ -53,8 +61,44 @@ define [
       type = model.get("type")
       data = model.attributes
       $body.empty()
-      $body.append service.renderSettingsForm(type, data)
+      $body.append @renderForm(type, data)
       @setVisibleMode(true)
+
+
+    renderForm:( type, data)->
+      log.info "renderForm"
+      $frag = $("<div>")
+      $item = $("[data-ui-jsrender-modal-template='#{type}']:first")
+      if $item.length is 1
+        $frag.html $item.html()
+        _.each $("input,select,textarea",$frag), (input)->
+          $input = $(input)
+          type = $input.attr("name")
+          value = data[type]
+          unless _.isUndefined(value)
+            $input.val(value)
+      else
+        meta = @options.service.getTemplateMetaData(type)
+        content = _.map data, (v,k)=>
+          itemType = meta[k] ? "hidden"
+          opts =
+            name: k
+            value: v
+            data: @options.service.getItemFormTypes()
+          tmpl = @renderModalItemTemplate itemType, opts
+          tmpl
+        $frag.html content.join("")
+      $frag.children()
+
+    renderModalItemTemplate:(type,data)->
+      log.info "renderModalItemTemplate"
+      if type is null or type is ""
+        type = "input"
+      templateHtml = @modalTemplates[type]
+      if templateHtml? and templateHtml != ""
+        _.template templateHtml, data
+      else
+        ""
 
     on_editableModel_set:->
       log.info "on_editableModel_update"

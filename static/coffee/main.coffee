@@ -32,10 +32,10 @@ require [
     "view/FormItemView": level: CHECK
     "view/ModalView": level: CHECK
     "view/RowView": level: CHECK
-    "view/SettingsView": level: CHECK
+    "view/SettingsView": level: ALL
     "view/ToolItemView": level: CHECK
     "common/CustomView": level: CHECK
-    "common/Service": level: CHECK
+    "common/Service": level: ALL
     "collection/FormItemCollection": level: CHECK
     "collection/FieldsetCollection": level: CHECK
     "main":level:CHECK
@@ -91,7 +91,10 @@ require [
        collection, service
     }
 
-    settings = new SettingsView {el: $("[data-html-settings]:first"), service}
+    settings = new SettingsView
+      el: $("[data-html-settings]:first"),
+      dataPostfixModalType:"modal-type"
+      service:service
 
     _.each service.toolData, (data,type)=>
       toolItem = new ToolItemView {type,service,data}
