@@ -29,7 +29,7 @@ define [
 
 
     event_inputDataBind:(e)->
-      @model.set "title", $(e.target).text(), {validate:true}
+      @model.set "title", $(e.target).text(), {validate:true, silent:true}
       @checkModel log, @model
 
     ###
