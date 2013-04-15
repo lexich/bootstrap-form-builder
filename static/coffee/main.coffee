@@ -78,24 +78,20 @@ require [
     collection = new FormItemCollection {url}
 
 
-    createFormView = (service)-> 
-      new FormView {
-         className:"ui_workarea"
-         el: $("[data-html-form]:first")
-         dataDropAccept: "drop-accept"
-         collection, service
-      }
-
     service = new Service
       dataToolBinder: "ui-jsrender"
       collection: collection
-      createFormView:createFormView
       areaTemplateItem: ""      
       dataPostfixModalType:"modal-type"
 
-    settings = new SettingsView
-      el: $("[data-html-settings]:first")
-      service:service
+    formView = new FormView {
+       className:"ui_workarea"
+       el: $("[data-html-form]:first")
+       dataDropAccept: "drop-accept"
+       collection, service
+    }
+
+    settings = new SettingsView {el: $("[data-html-settings]:first"), service}
 
     _.each service.toolData, (data,type)=>
       toolItem = new ToolItemView {type,service,data}

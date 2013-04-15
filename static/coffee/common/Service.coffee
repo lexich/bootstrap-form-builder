@@ -29,9 +29,6 @@ define [
 
       @_bindWire()
       @toolData = @getToolData options.dataToolBinder
-      @modal = options.modal
-
-      formView = options.createFormView(this)
 
       @modalTemplates = _.reduce $("[data-#{options.dataPostfixModalType}]"),(
         (memo,item)->
@@ -44,6 +41,7 @@ define [
 
 
     renderSettingsForm:( type, data)->
+      log.info "renderSettingsForm"
       $frag = $("<div>")
       $item = $("[data-ui-jsrender-modal-template='#{type}']:first")
       if $item.length is 1
@@ -68,6 +66,7 @@ define [
       $frag.children()
 
     renderModalItemTemplate:(type,data)->
+      log.info "renderModalItemTemplate"
       if type is null or type is ""
         type = "input"
       templateHtml = @modalTemplates[type]
@@ -75,9 +74,6 @@ define [
         _.template templateHtml, data
       else
         ""
-
-    showModal:(options)-> 
-      @modal.show options
 
     getData:(type)->
       @toolData[type]
