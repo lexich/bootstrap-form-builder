@@ -49,7 +49,9 @@
   <% if(type==""){ %>    
   <% } else if(type==""){ %>    
   <% } else { %>
-  <p><%= type.charAt(0).toUpperCase() + type.slice(1) %></p>
+    <div class="ui_tools__item">
+        <p><%= type.charAt(0).toUpperCase() + type.slice(1) %></p>
+    </div>
   <% } %>
 </script>
 {# Модальное окно #}
