@@ -1,4 +1,4 @@
-{% import 'controls/input.html' as input %} 
+{% import 'controls/input.html' as input %}
 {% import 'controls/password.html' as password %}
 {% import 'controls/textarea.html' as textarea %}
 {% import 'controls/select2.html' as select2 %}
@@ -9,40 +9,40 @@
 
 {% macro navigation_tabs %}
 <div class="navbar navbar-fixed-top navbar-fixed-top-back">
-    <div class="navbar-inner">
-        <div class="container">
-            <div class="nav-collapse collapse">
-                <a class="brand icon-save" href="javascript:void(0);" data-js-global-form-save title="Сохранить"></a>
-                <a class="icon-bookmark-empty brand" href="javascript:void(0);" data-js-global-debug title="Отладка"></a>
-                <ul class="nav">
-                    <li class="active">
-                        <a href="#input" data-toggle="tab">Input</a>
-                    </li>
-                    <li>
-                        <a href="#js" data-toggle="tab">Dynamic</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+  <div class="navbar-inner">
+    <div class="container">
+      <div class="nav-collapse collapse">
+        <a class="brand icon-save" href="javascript:void(0);" data-js-global-form-save title="Сохранить"></a>
+        <a class="icon-bookmark-empty brand" href="javascript:void(0);" data-js-global-debug title="Отладка"></a>
+        <ul class="nav">
+          <li class="active">
+            <a href="#input" data-toggle="tab">Input</a>
+          </li>
+          <li>
+            <a href="#js" data-toggle="tab">Dynamic</a>
+          </li>
+        </ul>
+      </div>
     </div>
-    <div class="tab-content ui_tools navbar-inner">
-        <div id="input" class="tab-pane active ui_tools__container">
-            <ul>
-                <li>{{ password.component() }}</li>
-                <li>{{ textarea.component() }}</li>
-                <li>{{ input.component() }}</li>
-                <li>{{ file.component() }}</li>
-            </ul>
-        </div>
+  </div>
+  <div class="tab-content ui_tools navbar-inner">
+    <div id="input" class="tab-pane active ui_tools__container">
+      <ul>
+        <li>{{ input.component() }}</li>
+        <li>{{ password.component() }}</li>
+        <li>{{ textarea.component() }}</li>
+        <li>{{ file.component() }}</li>
+      </ul>
+    </div>
 
-        <div id="js" class="tab-pane ui_tools__container">
-            <ul>
-                <li>{{ select2.component() }}</li>
-                <li>{{ datepicker.component() }}</li>
-                <li>{{ checkbox.component() }}</li>
-            </ul>
-        </div>
+    <div id="js" class="tab-pane ui_tools__container">
+      <ul>
+        <li>{{ select2.component() }}</li>
+        <li>{{ datepicker.component() }}</li>
+        <li>{{ checkbox.component() }}</li>
+      </ul>
     </div>
+  </div>
 </div>
 {% endmacro %}
 
@@ -53,6 +53,6 @@
 {% endmacro %}
 
 {% macro navigation_tabs_full %}
-    {{ navigation_tabs() }}
-    {{ navigation_content() }}
+{{ navigation_tabs() }}
+{{ navigation_content() }}
 {% endmacro %}
