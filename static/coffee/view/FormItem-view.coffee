@@ -30,8 +30,8 @@ define [
       "click":  "event_clickEditable"
 
     wireEvents:
-      "editableModel:change":"on_editableModel_change"
-      "editableModel:remove":"on_editableModel_remove"
+      "editableView:change":"on_editableView_change"
+      "editableView:remove":"on_editableView_remove"
 
     itemsSelectors:
       controls:".controls"
@@ -58,12 +58,13 @@ define [
         @options.service.eventWire.off action, handler
 
 
-    on_editableModel_change:->
+    on_editableView_change:(view)->
+      return if view is this
       @unbindWireEvents()
       @$el.removeClass(@SELECTED_CLASS)
       @parentView?.setSelected?(false)
 
-    on_editableModel_remove:->
+    on_editableView_remove:->
       @unbindWireEvents()
       @remove()
 
@@ -144,8 +145,9 @@ define [
       @remove()
 
     event_clickEditable:(e)->
+      return if $(e.target).hasClass("ui_formitem__tools") $(e.target).parents(".ui_formitem__tools").length > 0
       log.info "event_clickEditable"
-      if @options.service.setEditableModel(@model)
+      if @options.service.setEditableView(this)
         @bindWireEvents()
         @$el.addClass(@SELECTED_CLASS)
         @parentView?.setSelected?(true)

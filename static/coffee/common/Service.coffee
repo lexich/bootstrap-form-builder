@@ -14,7 +14,7 @@ define [
   Service::=
     constructor:Service
     toolData:{}
-    editableModel:null
+    editableView:null
     eventWire:{}
     ###
     --OPTIONS--
@@ -86,23 +86,25 @@ define [
     _bindWire:->
       log.info "_bindWire"
       _.extend @eventWire, Backbone.Events
-      @eventWire.on "editableModel:change", _.bind(@on_editableModel_change,this)
+      @eventWire.on "editableView:change", _.bind(@on_editableView_change,this)
 
 
-    on_editableModel_change:(model)->
-      log.info "on_editableModel_change"
-      @editableModel = model
-      @eventWire.trigger("editableModel:set",model)
+    on_editableView_change:(view)->
+      log.info "on_editableView_change"
+      @editableView = view
+      @eventWire.trigger("editableView:set",view)
 
 
-    setEditableModel:(model)->
-      log.info "setEditableModel"
-      unless @editableModel is model
-        @eventWire.trigger("editableModel:change",model)
+    setEditableView:(view)->
+      log.info "setEditableView"
+      unless @editableView is view
+        @eventWire.trigger("editableView:change", view)
         true
       else
         false
 
-    getEditableModel:-> @editableModel
+    getEditableModel:->
+      log.error "getEditableModel"
+      @editableView?.model
 
   Service
