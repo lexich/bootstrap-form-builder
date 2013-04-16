@@ -27,15 +27,15 @@ require [
 
   Log.initConfig {
     "view/FormView": level: CHECK
-    "view/FieldsetView": level: ALL
+    "view/FieldsetView": level: CHECK
     "view/APIView": level: CHECK
     "view/FormItemView": level: CHECK
     "view/ModalView": level: CHECK
     "view/RowView": level: CHECK
-    "view/SettingsView": level: CHECK
+    "view/SettingsView": level: ALL
     "view/ToolItemView": level: CHECK
     "common/CustomView": level: CHECK
-    "common/Service": level: CHECK
+    "common/Service": level: ALL
     "collection/FormItemCollection": level: CHECK
     "collection/FieldsetCollection": level: CHECK
     "main":level:CHECK
@@ -78,34 +78,27 @@ require [
     collection = new FormItemCollection {url}
 
 
-    createFormView = (service)-> 
-      new FormView {
-         className:"ui_workarea"
-         el: $("[data-html-form]:first")
-         dataDropAccept: "drop-accept"
-         collection, service
-      }
-
-    createToolItemView = (service,type,data)->
-      new ToolItemView
-          type: type
-          service:service
-          template:service.renderAreaItem(data) 
-
     service = new Service
       dataToolBinder: "ui-jsrender"
       collection: collection
-      createFormView:createFormView
-      createToolItemView:createToolItemView
       areaTemplateItem: ""      
       dataPostfixModalType:"modal-type"
 
+    formView = new FormView {
+       className:"ui_workarea"
+       el: $("[data-html-form]:first")
+       dataDropAccept: "drop-accept"
+       collection, service
+    }
+
     settings = new SettingsView
-      el: $("[data-html-settings]:first")
+      el: $("[data-html-settings]:first"),
+      dataPostfixModalType:"modal-type"
       service:service
 
-      
-    collection.fetch()
+    _.each service.toolData, (data,type)=>
+      toolItem = new ToolItemView {type,service,data}
+      toolItem.render()
 
     $("[data-js-global-form-save]").click ->
       collection.updateAll()
@@ -115,3 +108,5 @@ require [
         $(this).toggleClass "icon-bookmark-empty"
         $(this).toggleClass "icon-bookmark"
         $("body").toggleClass "ui_debug"
+
+    collection.fetch()

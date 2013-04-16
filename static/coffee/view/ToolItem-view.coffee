@@ -7,6 +7,8 @@ define [
   "draggable"
 ],($,Backbone,_,FormItemView, FormItemModel)->
   ToolItemView = Backbone.View.extend
+    templatePath:"#ToolItemViewTemplate"
+    template:""
     placeholder:{}
     ###
     @param data    -  function which return {Object} for underscore template  
@@ -21,6 +23,8 @@ define [
         helper:"clone"
         start:_.bind(@handle_draggable_start, this)
         stop:_.bind(@handle_draggable_stop, this)
+      @template = _.template $("#{@templatePath}").html(), @options.data
+
 
     handle_draggable_start:->
       $("[data-drop-accept-placeholder]").show()
@@ -30,7 +34,7 @@ define [
 
     render:-> 
       data = @options.service.getData(@options.type)
-      @$el.html @options.template
+      @$el.html @template
       @$el.attr "data-#{DATA_TYPE}", @options.type
       @$el.addClass("ui_tools-#{@options.type}")
       data.$el.before @$el

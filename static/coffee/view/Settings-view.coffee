@@ -8,8 +8,8 @@ define [
 
   SettingsView = Backbone.View.extend
     visibleMode:false
-    handle_VisibleMode:->
-    disableDocumentClick:->
+    activeView:null
+    _bind__handle_VisibleMode:null
 
     events:
       "click [data-html-settings-item] [data-js-save]":   "event_itemSave"
@@ -20,15 +20,19 @@ define [
       log.info "initialize"
       @$el.addClass "hide"
       @bindServiceWire()
-      @handle_VisibleMode = (e)=>
-        if e.target.id is "" then e.target.id = _.uniqueId("_targetID")
-        if @$el.find("##{e.target.id}").length is 0
-          @setVisibleMode(false)
+      @_bind__handle_VisibleMode = _.bind(@handle_VisibleMode,this)
+      @modalTemplates = _.reduce $("[data-#{@options.dataPostfixModalType}]"),(
+        (memo,item)=>
+          type = $(item).data(@options.dataPostfixModalType)
+          if type? and type != ""
+            memo[type] = $(item).html()
+          memo
+      ),{}
 
     bindServiceWire:()->
       log.info "bindServiceWire"
       return unless @options.service?
-      @options.service.eventWire.on "editableModel:set", _.bind(@on_editableModel_set,this)
+      @options.service.eventWire.on "editableView:set", _.bind(@on_editableView_set,this)
 
 
     getArea:-> $("[data-html-settings-loader]",@$el)
@@ -37,44 +41,63 @@ define [
       log.info "setVisibleMode #{bValue}"
       @visibleMode = bValue
       $item = $("[data-html-settings]")
-      $(document).off "click", @handle_VisibleMode
+      $(document).off "click", @_bind__handle_VisibleMode
       if bValue
         $item.removeClass "hide"
-        setTimeout (=>$(document).on "click", @handle_VisibleMode),0
+        setTimeout (=>$(document).on "click", @_bind__handle_VisibleMode),0
       else
         $item.addClass "hide"
-        @options.service.eventWire.trigger "editableModel:change"
+        @options.service.eventWire.trigger "editableView:change"
 
     render:->
       log.info "render"
-      service = @options.service
-      return unless (model = service.getEditableModel())
+      return unless (model = @activeView?.model)
       $body = @getArea()
       type = model.get("type")
       data = model.attributes
-      $item = service.renderSettingsForm(type, data)
+      $body.empty()
+      $body.append @renderForm(type, data)
 
+    renderForm:( type, data)->
+      log.info "renderForm"
+      $frag = $("<div>")
+      $item = $("[data-ui-jsrender-modal-template='#{type}']:first")
       if $item.length is 1
-        $body.empty()
-        $item.appendTo $body
-        $item.show()
+        $frag.html $item.html()
+        _.each $("input,select,textarea",$frag), (input)->
+          $input = $(input)
+          type = $input.attr("name")
+          value = data[type]
+          unless _.isUndefined(value)
+            $input.val(value)
       else
-        meta = service.getTemplateMetaData(type)
-        content = _.map data, (v,k)->
+        meta = @options.service.getTemplateMetaData(type)
+        content = _.map data, (v,k)=>
           itemType = meta[k] ? "hidden"
           opts =
             name: k
             value: v
-            data: service.getItemFormTypes()
-          tmpl = service.renderModalItemTemplate itemType, opts
+            data: @options.service.getItemFormTypes()
+          tmpl = @renderModalItemTemplate itemType, opts
           tmpl
+        $frag.html content.join("")
+      $frag.children()
 
-        $body.html content.join("")
-      @setVisibleMode(true)
+    renderModalItemTemplate:(type,data)->
+      log.info "renderModalItemTemplate"
+      if type is null or type is ""
+        type = "input"
+      templateHtml = @modalTemplates[type]
+      if templateHtml? and templateHtml != ""
+        _.template templateHtml, data
+      else
+        ""
 
-    on_editableModel_set:->
-      log.info "on_editableModel_update"
+    on_editableView_set:(view)->
+      log.info "on_editableView_set"
+      @activeView = view
       @render()
+      @setVisibleMode(true)
 
     event_itemSave:->
       log.info "event_itemSave"
@@ -87,11 +110,27 @@ define [
 
     event_itemRemove:->
       log.info "event_itemRemove"
-      @options.service.eventWire.trigger "editableModel:remove"
+      @options.service.eventWire.trigger "editableView:remove"
       @setVisibleMode(false)
 
     event_itemHide:->
       log.info "event_itemHide"
+      @setVisibleMode(false)
+
+    handle_VisibleMode:(e)->
+      unless @_$__find?
+        @_$__find=($el,target)->
+          return false unless $el?
+          if $el[0] == e.target
+            return true
+          else
+            e.target.id = _.uniqueId("_targetID") if e.target.id is ""
+            return true if $el.find("##{e.target.id}").length > 0
+          false
+
+      return if @_$__find(@$el)
+      return if @_$__find(@activeView?.$el)
+
       @setVisibleMode(false)
 
   SettingsView
