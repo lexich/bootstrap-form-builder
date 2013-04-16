@@ -136,7 +136,7 @@ define [
       @remove()
 
     event_clickEditable:(e)->
-      return if $(e.target).hasClass("ui_formitem__tools") and $(e.target).parents(".ui_formitem__tools").length > 0
+      return if $(e.target).hasClass("ui_formitem__tools") or $(e.target).parents(".ui_formitem__tools").length > 0
       log.info "event_clickEditable"
       if @options.service.setEditableView(this)
         @bindWireEvents()
