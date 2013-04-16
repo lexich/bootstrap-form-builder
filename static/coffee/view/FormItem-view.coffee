@@ -2,12 +2,12 @@ define [
   "jquery",
   "backbone",
   "underscore",
-  "view/API-view"
   "common/Log"
-],($,Backbone,_, APIView, Log)->
+  "common/BackboneCustomView"
+],($,Backbone,_, Log)->
   log = Log.getLogger("view/FormItemView")
 
-  FormItemView = APIView.extend
+  FormItemView = Backbone.CustomView.extend
     ###
     Constants
     ###
@@ -76,7 +76,7 @@ define [
       @render()
 
     updateViewModes:->
-      APIView::updateViewModes.apply this, arguments
+      Backbone.CustomView::updateViewModes.apply this, arguments
       bVertical = @model.get("direction") is "vertical"
       size = @model.get("size")
       if !bVertical and size > @HORIZONTAL_SIZE_LIMIT
