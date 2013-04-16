@@ -44,18 +44,18 @@ define [
     initialize:->
       log.info "initialize #{@cid}"
       @$el.data DATA_VIEW, this
-      @model.on "change", _.bind(@on_model_change,this)
+      @listenTo @model, "change", @on_model_change
 
     bindWireEvents:->
       @__saveWireEvents = _.reduce @wireEvents or {}, ((save, callback,action)=>
         handler = _.bind(this[callback], this)
-        @options.service.eventWire.on action, handler
+        @listenTo @options.service, action, handler
         save[action] = handler
         save),{}
 
     unbindWireEvents:->
       _.each @__saveWireEvents or {}, (handler, action)=>
-        @options.service.eventWire.off action, handler
+        @stopListening @options.service, action, handler
 
 
     on_editableView_change:(view)->

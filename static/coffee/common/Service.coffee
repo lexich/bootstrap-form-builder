@@ -1,9 +1,10 @@
 define [
-  "jquery",  
+  "jquery",
+  "backbone"
   "underscore",
   "view/FormItem-view"
   "common/Log"
-],($,_,FormItemView,Log)->
+],($, Backbone, _,FormItemView,Log)->
 
   log = Log.getLogger("common/Service")
 
@@ -11,11 +12,10 @@ define [
     @initialize.apply this, arguments
     this
 
-  Service::=
+  _.extend Service.prototype, Backbone.Events,
     constructor:Service
     toolData:{}
     editableView:null
-    eventWire:{}
     ###
     --OPTIONS--
     @param dataToolBinder
@@ -24,8 +24,8 @@ define [
     @param modal - 
     ###
     initialize:(options)->
-      @_bindWire()
       @toolData = @getToolData options.dataToolBinder
+      @listenTo this, "editableView:change", @on_editableView_change
 
     getData:(type)->
       @toolData[type]
@@ -83,22 +83,16 @@ define [
         memo
       ),{}
 
-    _bindWire:->
-      log.info "_bindWire"
-      _.extend @eventWire, Backbone.Events
-      @eventWire.on "editableView:change", _.bind(@on_editableView_change,this)
-
-
     on_editableView_change:(view)->
       log.info "on_editableView_change"
       @editableView = view
-      @eventWire.trigger("editableView:set",view)
+      @trigger("editableView:set",view)
 
 
     setEditableView:(view)->
       log.info "setEditableView"
       unless @editableView is view
-        @eventWire.trigger("editableView:change", view)
+        @trigger("editableView:change", view)
         true
       else
         false
