@@ -171,7 +171,7 @@ module.exports = (grunt) ->
           expand: true
           src: ["*.png","*.gif"]
           cwd: "<%= components %>/select2/"
-          dest: "<%= resource.img %>/"
+          dest: "<%= resource.css %>/"
         ]
       datepicker:
         files:[
