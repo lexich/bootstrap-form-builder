@@ -83,7 +83,7 @@ define [
 
       $area.sortable
         helper:"original"
-        tolerance:"pointer"
+        tolerance:"intersect"
         handle:"[data-js-formitem-move]"
         dropOnEmpty:"true"
         placeholder: "ui_formitem__placeholder"
