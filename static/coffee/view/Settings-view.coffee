@@ -3,6 +3,8 @@ define [
   "backbone"
   "underscore"
   "common/Log"
+  "spinner"
+  "select2"
 ],($,Backbone,_,Log)->
   log = Log.getLogger("view/SettingsView")
 
@@ -48,6 +50,9 @@ define [
       return if @activeView? and @__find @activeView.$el, e.target
       @setVisibleMode(false)
 
+    ui:
+      select2:($el)-> $el.select2()
+      spinner:($el)-> $el.spinner()
 
 
     render:->
@@ -58,6 +63,10 @@ define [
       data = model.attributes
       $body.empty()
       $body.append @renderForm(type, data)
+      _.each $body.find("[data-ui]"),(el)=>
+        uicomponent = $(el).data("ui")
+        if @ui[uicomponent]?
+          @ui[uicomponent]($(el))
 
     renderForm:( type, data)->
       log.info "renderForm"

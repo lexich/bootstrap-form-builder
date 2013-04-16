@@ -31,10 +31,10 @@ require [
     "view/FormItemView": level: CHECK
     "view/ModalView": level: CHECK
     "view/RowView": level: CHECK
-    "view/SettingsView": level: ALL
+    "view/SettingsView": level: CHECK
     "view/ToolItemView": level: CHECK
     "common/CustomView": level: CHECK
-    "common/Service": level: ALL
+    "common/Service": level: CHECK
     "collection/FormItemCollection": level: CHECK
     "collection/FieldsetCollection": level: CHECK
     "main":level:CHECK
