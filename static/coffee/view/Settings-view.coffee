@@ -102,10 +102,10 @@ define [
     event_itemSave:->
       log.info "event_itemSave"
       service = @options.service
-      return unless (model = service.getEditableModel())
+      return unless (model = @activeView?.model)
       data = service.parceModalItemData @getArea()
       model.set data, {validate:true}
-      if model.isValid()
+      unless model.isValid()
         log.error model.validationError
 
     event_itemRemove:->
@@ -121,15 +121,15 @@ define [
       unless @_$__find?
         @_$__find=($el,target)->
           return false unless $el?
-          if $el[0] == e.target
+          if $el[0] == target
             return true
           else
-            e.target.id = _.uniqueId("_targetID") if e.target.id is ""
-            return true if $el.find("##{e.target.id}").length > 0
+            target.id = _.uniqueId("_targetID") if target.id is ""
+            return true if $el.find("##{target.id}").length > 0
           false
 
-      return if @_$__find(@$el)
-      return if @_$__find(@activeView?.$el)
+      return if @_$__find(@$el, e.target)
+      return if @_$__find(@activeView?.$el, e.target)
 
       @setVisibleMode(false)
 
