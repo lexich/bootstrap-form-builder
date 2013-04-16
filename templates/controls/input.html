@@ -17,9 +17,28 @@
 
 {% macro modal %}
 <script data-ui-jsrender-modal-template="input" type="text/template">
-  <label for="__id_label">Название</label>
-  <input id="__id_label" type="text" name="label" value="Comment"><label for="__id_placeholder">placeholder</label>
-  <input id="__id_placeholder" type="text" name="placeholder" value="Your comment"><label for="__id_name">name</label>
-  <input id="__id_name" type="text" name="name" value="comment"><label for="__id_type">type</label>
+    <label for="__id_label">Название</label>
+    <input id="__id_label" type="text" name="label" value="Comment">
+
+    <label for="__id_placeholder">placeholder</label>
+    <input id="__id_placeholder" type="text" name="placeholder" value="Your comment">
+
+    <label for="__id_name">name</label>
+    <input id="__id_name" type="text" name="name" value="comment">
+
+    <label for="__id_type">type</label>
+    <select name="" id="" data-ui="select2">
+        <option>One</option>
+        <option>Two</option>
+        <option>Three</option>
+    </select>
+    <label for="MySpinner">Spinner</label>
+    <div id="MySpinner" class="spinner row-fluid" data-type="spinner">
+        <input type="text" class="input-mini spinner-input" />
+        <div class="spinner-buttons	btn-group btn-group-vertical">
+            <button class="btn spinner-up"><i class="icon-chevron-up"></i></button>
+            <button class="btn spinner-down"><i class="icon-chevron-down"></i></button>
+        </div>
+    </div>
 </script>
 {% endmacro %} 

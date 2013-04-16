@@ -2,12 +2,12 @@ define [
   "jquery",
   "backbone",
   "underscore",
-  "view/API-view"
   "common/Log"
-],($,Backbone,_, APIView, Log)->
+  "common/BackboneCustomView"
+],($,Backbone,_, Log)->
   log = Log.getLogger("view/FormItemView")
 
-  FormItemView = APIView.extend
+  FormItemView = Backbone.CustomView.extend
     ###
     Constants
     ###
@@ -44,18 +44,18 @@ define [
     initialize:->
       log.info "initialize #{@cid}"
       @$el.data DATA_VIEW, this
-      @model.on "change", _.bind(@on_model_change,this)
+      @listenTo @model, "change", @on_model_change
 
     bindWireEvents:->
       @__saveWireEvents = _.reduce @wireEvents or {}, ((save, callback,action)=>
         handler = _.bind(this[callback], this)
-        @options.service.eventWire.on action, handler
+        @listenTo @options.service, action, handler
         save[action] = handler
         save),{}
 
     unbindWireEvents:->
       _.each @__saveWireEvents or {}, (handler, action)=>
-        @options.service.eventWire.off action, handler
+        @stopListening @options.service, action, handler
 
 
     on_editableView_change:(view)->
@@ -76,7 +76,7 @@ define [
       @render()
 
     updateViewModes:->
-      APIView::updateViewModes.apply this, arguments
+      Backbone.CustomView::updateViewModes.apply this, arguments
       bVertical = @model.get("direction") is "vertical"
       size = @model.get("size")
       if !bVertical and size > @HORIZONTAL_SIZE_LIMIT
@@ -145,7 +145,7 @@ define [
       @remove()
 
     event_clickEditable:(e)->
-      return if $(e.target).hasClass("ui_formitem__tools") and $(e.target).parents(".ui_formitem__tools").length > 0
+      return if $(e.target).hasClass("ui_formitem__tools") or $(e.target).parents(".ui_formitem__tools").length > 0
       log.info "event_clickEditable"
       if @options.service.setEditableView(this)
         @bindWireEvents()

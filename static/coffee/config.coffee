@@ -13,6 +13,8 @@ require.config
     "sortable":"jquery-ui/jquery.ui.sortable.patch"
     "draggable":"jquery-ui/jquery.ui.draggable"
     "droppable":"jquery-ui/jquery.ui.droppable"
+    "spinner":"fuelux/spinner"
+    "fuelux":"fuelux/all.min"
 
   shim:
     "jasmine":
