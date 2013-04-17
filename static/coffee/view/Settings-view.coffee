@@ -36,7 +36,7 @@ define [
       log.info "setVisibleMode #{bValue}"
       @visibleMode = bValue
       $item = $("[data-html-settings]")
-      $(document).off "mousedown"
+      $(document).off "mousedown", @handle_VisibleMode
       if bValue
         $item.removeClass "hide"
         setTimeout (=> $(document).on "mousedown", @handle_VisibleMode),0
