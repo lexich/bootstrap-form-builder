@@ -82,7 +82,7 @@ define [
             delete data.inject
           @ui[uicomponent]($(el), data)
 
-    loadIds:-> _.map @collection.models, (model)-> id:model.get("id"), text:model.get("name")
+    loadIds:-> _.map @collection.models, (model)-> id:model.get("id"), text:model.get("name") + "##{model.get("id")}"
 
     renderForm:( type, data)->
       log.info "renderForm"
