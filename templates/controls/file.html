@@ -1,6 +1,6 @@
 {% macro component %}
   {% set name = "file" %}
-  {% set jsrender = { label:"file", placeholder:"file", name: "file", help: "help", type:{ value:"file", type:"hidden"}, position:{ value:0, type:"hidden"}, row:{ value:0, type:"hidden"}, } %}
+  {% set jsrender = { title:"Фаил",  label:"file", placeholder:"file", name: "file", help: "help", type:{ value:"file", type:"hidden"}, position:{ value:0, type:"hidden"}, row:{ value:0, type:"hidden"}, } %}
 <script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="{{ name }}">
   <div class="control-group">
     <label class="control-label" for="<%= id %>"><%= label %></label>

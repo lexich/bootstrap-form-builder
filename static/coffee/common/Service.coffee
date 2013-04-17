@@ -77,6 +77,7 @@ define [
           type: type
           data : data
           meta : meta
+          title: data.title
           img : $el.data(toolBinder+"-img")
           template : $el.html()
           $el: $el
