@@ -4,8 +4,9 @@ define [
   "model/FormItem-model"
   "collection/Fieldset-collection"
   "collection/Row-collection"
+  "collection/NotVisual-collection"
   "common/Log"
-],(Backbone,_, FormItemModel, FieldsetCollection,RowCollection, Log)->
+],(Backbone,_, FormItemModel, FieldsetCollection,RowCollection, NotVisualCollection, Log)->
 
   log = Log.getLogger("collection/FormItemCollection")
 
@@ -14,18 +15,26 @@ define [
     model : FormItemModel
     fieldsetCollection:new FieldsetCollection
     rowCollection: new RowCollection
+    notVisualCollection: new NotVisualCollection
 
     initialize:(options)->
       @url = if options.url then options.url else @DEFAULT_URL
 
     parse:(response)->
-      @rowCollection.add if @rowCollection.parse?
-        @rowCollection.parse response.rows
-      else response.rows
+      if rows = response.rows
+        @rowCollection.add if @rowCollection.parse?
+          @rowCollection.parse rows
+        else rows
 
-      @fieldsetCollection.add if @fieldsetCollection.parse?
-        @fieldsetCollection.parse response.fieldsets
-      else response.fieldsets
+      if fieldsets = response.fieldsets
+        @fieldsetCollection.add if @fieldsetCollection.parse?
+          @fieldsetCollection.parse fieldsets
+        else fieldsets
+
+      if notvisual = response.notvisual
+        @notVisualCollection.add if @notVisualCollection.parse?
+          @notVisualCollection.parse notvisual
+        else notvisual
 
       itemsMap = _.groupBy response.items, (item)->item.row
       keys = _.chain(itemsMap)
@@ -46,7 +55,8 @@ define [
       items = Backbone.Collection::toJSON.apply(this,arguments)
       rows = @rowCollection.toJSON()
       fieldsets = @fieldsetCollection.toJSON()
-      {items,rows,fieldsets}
+      notvisual = @notVisualCollection.toJSON()
+      {items,rows,fieldsets,notvisual}
     
     comparator:(model)->
       model.get("row") * 1000 + model.get("position")
@@ -102,6 +112,9 @@ define [
 
     getOrAddRowModel:(row,fieldset)->
       @rowCollection.getRow row, fieldset
+
+    addNotVisualModel:(data)->
+      @notVisualCollection.addModel(data)
 
 
   FormItemCollection

@@ -7,6 +7,7 @@
 {% import 'controls/file.html' as file %}
 {% import 'controls/checkbox.html' as checkbox %}
 
+{% import 'controls/binder.html' as binder %}
 
 {% macro navigation_tabs %}
 <div class="navbar navbar-inverse navbar-fixed-top navbar-fixed-top-back">
@@ -22,11 +23,15 @@
                     <li>
                         <a href="#js" data-toggle="tab">Dynamic</a>
                     </li>
+                    <li>
+                        <a data-toggle="tab" href="#notvisual">Not Visual</a>
+                    </li>
                 </ul>
             </div>
         </div>
     </div>
     <div class="tab-content ui_tools navbar-inner">
+
         <div id="input" class="tab-pane active ui_tools__container clearfix">
             <ul>
                 <li>{{ password.component() }}</li>
@@ -43,6 +48,12 @@
                 <li>{{ checkbox.component() }}</li>
             </ul>
         </div>
+
+        <div id="notvisual" class="tab-pane ui_tools_container">
+            <ui>
+                <li>{{ binder.component() }}</li>
+            </ui>
+        </div>
     </div>
 </div>
 {% endmacro %}
@@ -50,10 +61,11 @@
 {% macro navigation_content %}
 <div style="display:none">
   {{ input.modal() }}
+  {{ binder.modal() }}
 </div>
 {% endmacro %}
 
-{% macro navigation_tabs_full %}
+{% macro render %}
     {{ navigation_tabs() }}
     {{ navigation_content() }}
 {% endmacro %}

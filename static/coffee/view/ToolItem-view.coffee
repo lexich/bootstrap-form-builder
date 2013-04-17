@@ -10,27 +10,34 @@ define [
     templatePath:"#ToolItemViewTemplate"
     template:""
     placeholder:{}
+    notvisual:false
     ###
-    @param data    -  function which return {Object} for underscore template  
+    @param data    -  function which return {Object} for underscore template
     ###
     initialize:->
+      @notvisual = @options.data.data.notvisual?
+      if @notvisual
+        connectToSortable="[data-js-notvisual-drop]"
+      else
+        connectToSortable="[data-drop-accept]:not([data-js-row-disable-drag]),[data-drop-accept-placeholder]"
       @$el.draggable
         appendTo:"body"
         clone:true
         opacity: 0.7
         cursor: "pointer"
-        connectToSortable:"[data-drop-accept]:not([data-js-row-disable-drag]),[data-drop-accept-placeholder]"
+        connectToSortable:connectToSortable
         helper:"clone"
         start:_.bind(@handle_draggable_start, this)
         stop:_.bind(@handle_draggable_stop, this)
       @template = _.template $("#{@templatePath}").html(), @options.data
 
-
     handle_draggable_start:->
-      $("[data-drop-accept-placeholder]").show()
+      unless @notvisual
+        $("[data-drop-accept-placeholder]").show()
 
     handle_draggable_stop:->
-      $("[data-drop-accept-placeholder]").hide()
+      unless @notvisual
+        $("[data-drop-accept-placeholder]").hide()
 
     render:-> 
       data = @options.service.getData(@options.type)

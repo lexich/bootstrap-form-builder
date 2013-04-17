@@ -7,6 +7,7 @@ require [
   "view/Form-view"
   "view/ToolItem-view"
   "view/Settings-view"
+  "view/NotVisual-view"
   "common/Log"
   "bootstrap"
 ],($, Backbone,
@@ -16,6 +17,7 @@ require [
    FormView,
    ToolItemView,
    SettingsView,
+   NotVisualView,
    Log
 )->
   DEBUG = Log.LEVEL.DEBUG
@@ -33,6 +35,7 @@ require [
     "view/RowView": level: CHECK
     "view/SettingsView": level: CHECK
     "view/ToolItemView": level: CHECK
+    "view/NotVisual": level: ALL
     "common/CustomView": level: CHECK
     "common/Service": level: CHECK
     "collection/FormItemCollection": level: CHECK
@@ -89,6 +92,12 @@ require [
        dataDropAccept: "drop-accept"
        collection, service
     }
+
+    notVisual = new NotVisualView
+      className:"ui_notvisual"
+      el:$("[data-html-notvisual]:first")
+      collection:collection
+      service:service
 
     settings = new SettingsView
       el: $("[data-html-settings]:first"),

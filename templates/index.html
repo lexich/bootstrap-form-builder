@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% import 'layout/ui_tools.html' as tools %} 
-
+{% import 'layout/ui_notvisual.html' as notvisual %}
 
 {% block content %}
     {% parent %}
-    {{ tools.navigation_tabs_full() }}
+    {{ tools.render() }}
     <script type="text/javascript">
         rootformconfig={};
         {% if p.url %}rootformconfig.url = "{{ p.url }}";{% endif %}
@@ -19,5 +19,6 @@
             </div>
         </div>
     </div>
+    {{ notvisual.render() }}
     {% include 'layout/template.html' %}
 {% endblock %}

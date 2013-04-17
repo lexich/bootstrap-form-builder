@@ -319,7 +319,7 @@ module.exports = (grunt) ->
         tasks: ["coffee"]
 
       less_shell:
-        files: "static/less/*.less"
+        files: ["static/less/*.less","static/less/**/*.less"]
         tasks: ["less"]
 
       templates:
