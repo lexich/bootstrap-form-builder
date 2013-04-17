@@ -17,18 +17,25 @@ define [
     initialize:->
       @notvisual = @options.data.data.notvisual?
       if @notvisual
-        connectToSortable="[data-js-notvisual-drop]"
+        opts =
+          connectToSortable:"[data-js-notvisual-drop]"
+          scroll: false
       else
-        connectToSortable="[data-drop-accept]:not([data-js-row-disable-drag]),[data-drop-accept-placeholder]"
-      @$el.draggable
+        opts =
+          connectToSortable:"[data-drop-accept]:not([data-js-row-disable-drag]),[data-drop-accept-placeholder]"
+      _.extend opts,
         appendTo:"body"
         clone:true
         opacity: 0.7
+        cursorAt:
+         top:32
+         left:64
         cursor: "pointer"
-        connectToSortable:connectToSortable
         helper:"clone"
         start:_.bind(@handle_draggable_start, this)
         stop:_.bind(@handle_draggable_stop, this)
+
+      @$el.draggable opts
       @template = _.template $("#{@templatePath}").html(), @options.data
 
     handle_draggable_start:->
