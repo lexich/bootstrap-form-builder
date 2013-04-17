@@ -14,16 +14,12 @@
 {% macro modal %}
 <script data-ui-jsrender-modal-template="binder" type="text/template">
     <label for="__id_name">Название</label>
-    <input id="__id_name" type="text" name="name" value="Название">
+    <input id="__id_name" type="text" name="name">
 
     <label for="__id_source">Источник</label>
-    <select name="source" id="__id_source" data-ui="select2">
-        <option value="1">One</option>
-        <option value="2">Two</option>
-        <option value="3">Three</option>
-    </select>
+    <select name="source" id="__id_source" data-ui="select2" data-ui-data='{"inject":{"data":"loadIds"}}' />
 
     <label for="__id_target">Приемник</label>
-    <select name="__id_target" id="__id_target" data-ui="select2"></select>
+    <select name="target" id="__id_target" data-ui="select2" data-ui-data='{"inject":{"data":"loadIds"}}' />
 </script>
 {% endmacro %}

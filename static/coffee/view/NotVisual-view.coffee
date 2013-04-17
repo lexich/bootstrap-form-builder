@@ -12,6 +12,7 @@ define [
   NotVisual = Backbone.CustomView.extend
     ChildType:NotVisualItem
     templatePath:"#NotVisualViewTemplate"
+    placeholderSelector:""
     itemsSelectors:
       loader:"[data-js-notvisual-drop]"
       loaderChildren:"[data-js-notvisual-drop] >"

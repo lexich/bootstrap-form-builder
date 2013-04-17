@@ -95,6 +95,8 @@ define [
         @fieldsetCollection.remove models, options
       else if model.modelname is @rowCollection.model::modelname
         @rowCollection.remove models, options
+      else if model.modelname is @notVisualCollection.model::modelname
+        @notVisualCollection.remove model, options
 
     getRow:(fieldset, row)->
       _.filter @models,(model)->

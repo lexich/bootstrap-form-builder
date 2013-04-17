@@ -103,6 +103,7 @@ require [
       el: $("[data-html-settings]:first"),
       dataPostfixModalType:"modal-type"
       service:service
+      collection:collection
 
     _.each service.toolData, (data,type)=>
       toolItem = new ToolItemView {type,service,data}
