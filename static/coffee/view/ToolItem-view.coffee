@@ -15,8 +15,8 @@ define [
     ###
     initialize:->
       @$el.draggable
-        appendTo:"body"
-        clone:true
+        #appendTo:"body"
+        #clone:true
         opacity: 0.7
         cursor: "pointer"
         cursorAt:

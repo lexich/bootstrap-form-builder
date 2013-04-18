@@ -116,8 +116,12 @@ define [
           .sortable "refreshPositions"
 
     handle_sortable_start:(event,ui)->
+      $("[data-drop-accept-placeholder]")
+        .not("[data-ghost-row]")
+        .show()
 
     handle_sortable_stop:(event,ui)->
+      $("[data-drop-accept-placeholder]").hide()
 
     handle_sortable_deactivate:(event,ui)->
       @getItem("area").removeClass("ui_row__loader_active")
@@ -134,9 +138,12 @@ define [
     handle_sortable_over:(event,ui)->
       $("[data-ghost-row]")
         .hide()
-      @getItem("ghostRow")
-        .show()
-        .sortable "refreshPositions"
+      $itemParentRow = ui.item.closest(".#{@className}")
+      if not $itemParentRow.is(this.$el) or _.size(@childrenViews) > 1
+        @getItem("ghostRow")
+          .show()
+          .sortable "refreshPositions"
+      true
 
     setDisable:(flag)->
       log.info "setDisable #{@viewname}:#{@cid}"
@@ -190,15 +197,26 @@ define [
       view = Backbone.CustomView::staticViewFromEl(ui.item)
       size = @getCurrentFreeRowSize()
       if view? and view.viewname is "formitem"
-        position = _.size(@childrenViews)
-        data =
-          fieldset:@model.get('fieldset')
-          row: @model.get('row')
-          position:position
-        if size < 3 then data.size = size
-        @addChild view
-        view.model.set data, {validate:true}
-        @checkModel(log,view.model)
+        if ui.item.parent().is('[data-ghost-row]')
+          row = @parentView.insertRow @model.get "row"
+          data =
+            fieldset:row.model.get('fieldset')
+            row: row.model.get('row')
+            position:0
+          row.addChild view
+          view.model.set data, {validate:true}
+          @checkModel(log,view.model)
+          row.parentView.render()
+        else
+          position = _.size(@childrenViews)
+          data =
+            fieldset:@model.get('fieldset')
+            row: @model.get('row')
+            position:position
+          if size < 3 then data.size = size
+          @addChild view
+          view.model.set data, {validate:true}
+          @checkModel(log,view.model)
       else
         componentType = $(ui.item).data("componentType")
         data = @options.service.getTemplateData(componentType)
