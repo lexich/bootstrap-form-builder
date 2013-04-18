@@ -69,6 +69,13 @@
   background-color: @colorPlaceholderBackground;
   height: 100px;
   float: left;
+  &:first-of-type {
+    margin-left: 0;
+  }
+}
+
+.ui-draggable + .ui_formitem__placeholder {
+  margin-left: 0;
 }
 
 .ui_formitem__tools{

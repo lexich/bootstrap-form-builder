@@ -42,6 +42,7 @@ define [
       areaChildren:"[data-drop-accept] >"
       placeholderItem:".ui_formitem__placeholder"
       directionMode:"[data-js-row-position]"
+      ghostRow:"[data-ghost-row]"
 
     ###
     @overwrite Backbone.View
@@ -78,8 +79,8 @@ define [
         $el.addClass("icon-resize-vertical").removeClass("icon-resize-horizontal")
 
       connectWith = "[data-drop-accept]:not([#{@DISABLE_DRAG}]),[data-drop-accept-placeholder]"
-      if(sortable = $area.data("sortable"))
-        sortable.destroy()
+
+      $area.data("sortable")?.destroy()
 
       $area.sortable
         helper:"original"
@@ -91,8 +92,12 @@ define [
         connectWith: connectWith
         start:_.bind(@handle_sortable_start, this)
         stop: _.bind(@handle_sortable_stop, this)
+        over: _.bind(@handle_sortable_over, this)
         update: _.bind(@handle_sortable_update,this)
+        activate: _.bind(@handle_sortable_activate, this)
+        deactivate: _.bind(@handle_sortable_deactivate, this)
 
+      $area.bind("mouseenter", _.bind(@handle_mouse_enter, this))
 
       #disable mode
       bDisable = false
@@ -103,11 +108,35 @@ define [
         bDisable = true
       @setDisable bDisable
 
+    handle_mouse_enter:()->
+      if @dragActive and @getItem("area").is("[#{@DISABLE_DRAG}]")
+        $("[data-ghost-row]").hide()
+        @getItem("ghostRow")
+          .show()
+          .sortable "refreshPositions"
+
+    handle_sortable_start:(event,ui)->
+
+    handle_sortable_stop:(event,ui)->
+
+    handle_sortable_deactivate:(event,ui)->
+      @getItem("area").removeClass("ui_row__loader_active")
+
+    handle_sortable_activate:(event,ui)->
+      @getItem("area").addClass("ui_row__loader_active") unless @getItem("area").is("[#{@DISABLE_DRAG}]")
+
     setSelected:(bValue)->
       if bValue
         @$el.addClass @SELECTED_CLASS
       else
         @$el.removeClass @SELECTED_CLASS
+
+    handle_sortable_over:(event,ui)->
+      $("[data-ghost-row]")
+        .hide()
+      @getItem("ghostRow")
+        .show()
+        .sortable "refreshPositions"
 
     setDisable:(flag)->
       log.info "setDisable #{@viewname}:#{@cid}"
@@ -173,9 +202,19 @@ define [
       else
         componentType = $(ui.item).data("componentType")
         data = @options.service.getTemplateData(componentType)
-        view = @createChild
-          model: @createFormItemModel(data)
-          service: @options.service
+        if ui.item.parent().is('[data-ghost-row]')
+          row = @parentView.insertRow @model.get "row"
+          row.createChild
+            model: row.createFormItemModel(data)
+            service: row.options.service
+            collection: row.collection
+          row.parentView.render()
+          ui.helper?.remove()
+        else
+          view = @createChild
+            model: @createFormItemModel(data)
+            service: @options.service
+            collection:@collection
       this
 
     ###

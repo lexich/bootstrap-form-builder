@@ -8,6 +8,8 @@ define [
   Backbone.CustomView = Backbone.View.extend
     BIND_VIEW:"_$$CustomViewBinder"
 
+    dragActive: false
+
     childrenConnect:(parent,child)->
 
     constructor: (options)->
@@ -68,11 +70,17 @@ define [
           helper:"original"
           tolerance:"pointer"
           dropOnEmpty:"true"
-          placeholder:"ui_global_placeholder-active"
+          placeholder:"ui_formitem__placeholder span3"
           update: (event,ui)=>
             view = @handle_create_new(event,ui)
             view.render()
             view.reindex()
+          activate: (event,ui)=>
+            @dragActive = true
+            true
+          deactivate: (event, ui)=>
+            @dragActive = false
+            true
       $placeholder
 
     render:->
