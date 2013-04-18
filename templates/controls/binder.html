@@ -1,0 +1,25 @@
+{% macro component %}
+{% set name = "binder" %}
+{% set jsrender = { name: "binder", "notvisual":"1", source:"source", target:"target", type:{ value:"binder", type:"hidden"}, } %}
+<script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="{{ name }}">
+    <div class="ui_tools-binder">
+        <div class="ui_tools__item">
+            <p><%= name %></p>
+        </div>
+    </div>
+    <object data-binder='{"source":"<%= source %>","target":"<%= target %>"' width="0" height="0"></object>
+</script>
+{% endmacro %}
+
+{% macro modal %}
+<script data-ui-jsrender-modal-template="binder" type="text/template">
+    <label for="__id_name">Название</label>
+    <input id="__id_name" type="text" name="name">
+
+    <label for="__id_source">Источник</label>
+    <select name="source" id="__id_source" data-ui="select2" data-ui-data='{"inject":{"data":"loadIds"}}' />
+
+    <label for="__id_target">Приемник</label>
+    <select name="target" id="__id_target" data-ui="select2" data-ui-data='{"inject":{"data":"loadIds"}}' />
+</script>
+{% endmacro %}

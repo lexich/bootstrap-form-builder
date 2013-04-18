@@ -1,0 +1,73 @@
+///////////////////////////////
+//  ui_row
+///////////////////////////////
+.ui_row {
+  position: relative;
+
+  &.ui-sortable-helper {
+  }
+
+  .mixin_ui_row(){
+    .ui_row__direction,
+    .ui_row__move,
+    .ui_row__remove{
+      cursor: pointer;
+      float: left;
+      margin-left: 5px;
+      display: block;
+      color: @toolButtons;
+      &:hover{
+        color: @hoverButtons;
+      }
+    }
+  }
+
+  .mixin_ui_row__tools(@display){
+    .ui_row__tools {
+      display: @display;
+    }
+  }
+
+  .mixin_ui_row();
+  &:hover{
+    .mixin_ui_row__tools(block);
+  }
+}
+
+.ui_row__loader{
+  min-height: 80px;
+  position: relative;
+  .ui_formitem.ui-sortable-helper:first-child + .ui_formitem__placeholder,
+  .ui_formitem.ui-sortable-helper:first-child + .ui_formitem {
+    margin-left: 0;
+  }
+  .ui_formitem.ui-sortable-helper {
+    margin-left: 0;
+  }
+}
+.ui_row__placeholder{
+  min-height: 40px;
+  border: 2px dashed @lightgray;
+  background: @white;
+  margin: 4px;
+}
+.ui_row__tools{
+  overflow: hidden;
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 5px;
+  opacity: .7;
+  border-bottom-right-radius: 5px;
+  background: @toolsBackground;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.ui_placeholder {
+  min-height: 80px;
+  width: 100%;
+}

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% import 'layout/ui_tools.html' as tools %} 
+{% import 'layout/ui_notvisual.html' as notvisual %}
 
 {% block content %}
     {% parent %}
@@ -17,6 +18,7 @@
             </div>
         </div>
     </div>
-    {{ tools.navigation_tabs_full() }}
+    {{ tools.render() }}
+    {{ notvisual.render() }}
     {% include 'layout/template.html' %}
 {% endblock %}

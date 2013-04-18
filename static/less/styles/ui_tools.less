@@ -1,0 +1,63 @@
+////////////////////////////////
+// ui_tools
+////////////////////////////////
+
+.ui_tools{
+//mixins
+  min-height: 40px;
+
+  &.navbar-inner{
+    border-color: @white;
+    background: @white;
+  }
+  .ui_close{
+    display: none;
+  }
+  [data-component-type]{
+    background-image: url("@{img}/item64x64.png");
+    width: 64px;
+    height: 64px;
+  }
+}
+.ui_tools__item{
+  width: 100%;
+  height: 100%;
+  position: relative;
+  span, p{
+    text-align: center;
+    position: relative;
+    top: 60%;
+    text-shadow: 0px 1px 1px #4d4d4d;
+  }
+}
+
+.ui_tools_mixin(){
+  .ui_tools_item_mixin(@name){
+    &, &.ui-draggable{
+      width: 120px;
+      height: 64px;
+      background-position:  0px -10px;
+      background-image: url("@{img}/components/@{name}");
+    }
+  }
+  .ui_tools-select2      { .ui_tools_item_mixin("select_input.png"); }
+  .ui_tools-textarea    { .ui_tools_item_mixin("text_area.png"); }
+  .ui_tools-input          { .ui_tools_item_mixin("text_input.png"); }
+  .ui_tools-password    { .ui_tools_item_mixin("password_input.png"); }
+  .ui_tools-datepicker{ .ui_tools_item_mixin("datepicker_input.png"); }
+  .ui_tools-file            { .ui_tools_item_mixin("file_input.png"); }
+  .ui_tools-checkbox    { .ui_tools_item_mixin("checkbox_input.png"); }
+  .ui_tools-binder    { .ui_tools_item_mixin("binder.png"); }
+}
+  .ui_tools_mixin();
+
+.ui_tools__container{
+  ul{
+    text-decoration: none;
+    li{
+      float: left;
+      list-style: none;
+      overflow-x: auto;
+    }
+  }
+}
