@@ -51,18 +51,19 @@ define [
         row++
       result
 
-    toJSON:->
+    toJSON:(options)->
       items = Backbone.Collection::toJSON.apply(this,arguments)
       rows = @rowCollection.toJSON()
       fieldsets = @fieldsetCollection.toJSON()
       notvisual = @notVisualCollection.toJSON()
-      {items,rows,fieldsets,notvisual}
+      img = options.img ? "data:image/png;base64,"
+      {items,rows,fieldsets,notvisual,img}
     
     comparator:(model)->
       model.get("row") * 1000 + model.get("position")
 
-    updateAll:->      
-      options =
+    updateAll:(options)->
+      options = _.extend options or {},
         success: (model, resp, xhr)=>
           @reset(model)
       Backbone.sync 'create', this, options
