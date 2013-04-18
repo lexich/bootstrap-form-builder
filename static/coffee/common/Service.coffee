@@ -37,7 +37,7 @@ define [
 
     getTemplateData:(type)->
       data = @getData(type)?.data ? {}
-      data.id = _.uniqueId('tmpl');
+      data.id = _.uniqueId(type);
       data
       
     getTemplate:(type)->

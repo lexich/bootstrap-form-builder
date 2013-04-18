@@ -55,6 +55,7 @@ define [
       select2:($el,options)->
         options = options ? {}
         options.closeOnSelect = true
+
         val = $el.data("value")
         if $el[0].tagName.toLowerCase() is "select" and options.data?
           opts = _.map options.data or [],(item)->
@@ -62,7 +63,7 @@ define [
             "<option #{selected} value='#{item.id}'>#{item.text}</option>"
           $el.html opts.join("")
           delete options.data
-        $el.select2()
+        $el.select2(options)
 
       spinner:($el,options)-> $el.spinner(options ? {})
 
