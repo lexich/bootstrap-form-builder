@@ -176,6 +176,7 @@ define [
         view = @createChild
           model: @createFormItemModel(data)
           service: @options.service
+          collection:@collection
       this
 
     ###
