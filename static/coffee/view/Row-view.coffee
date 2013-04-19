@@ -83,6 +83,10 @@ define [
 
     getNext:(view)-> @_getFormItemByPosition view.model.get("position") + 1
 
+    getPreviousRow:(view)-> @parentView.getRowByPosition view.model.get("row") - 1
+
+    getNextRow:(view)-> @parentView.getRowByPosition view.model.get("row") + 1
+
     reinitialize:->
       log.info "reinitialize #{@viewname}:#{@cid}"
       models = @collection.getRow @model.get("fieldset"), @model.get("row")
@@ -188,10 +192,11 @@ define [
     handle_sortable_over:(event,ui)->
       $("[data-ghost-row]")
         .hide()
-      if not this.$el.is(@originParent) or _.size(@childrenViews) > 1
-        @getItem("ghostRow")
-          .show()
-          .sortable "refreshPositions"
+      if not (@getPreviousRow(@)?.$el.is(@originParent) and _.size(@getPreviousRow(@).childrenViews) <= 1)
+        if (not @$el.is(@originParent) or _.size(@childrenViews) > 1)
+          @getItem("ghostRow")
+            .show()
+            .sortable "refreshPositions"
       true
 
     handle_sortable_deactivate:(event,ui)->
