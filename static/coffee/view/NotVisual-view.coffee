@@ -25,9 +25,7 @@ define [
       log.info "updateViewModes #{@cid}"
       $loader = @getItem("loader")
 
-      if $loader.data("sortable")?
-        $loader.sortable "destroy"
-
+      $loader.data("sortable")?.destroy()
       $loader.sortable
         helper:"original"
         tolerance:"pointer"

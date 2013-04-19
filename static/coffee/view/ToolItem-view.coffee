@@ -31,7 +31,6 @@ define [
           top: -1
           left: -1
         zIndex: 1000
-        connectToSortable:"[data-drop-accept]:not([data-js-row-disable-drag]),[data-drop-accept-placeholder]"
         helper:"clone"
         start:_.bind(@handle_draggable_start, this)
         stop:_.bind(@handle_draggable_stop, this)
