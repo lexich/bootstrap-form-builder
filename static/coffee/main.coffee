@@ -115,7 +115,9 @@ require [
     $("[data-js-global-form-save]").click ->
       html2canvas $("[data-html-form]:first")[0],
         onrendered: (canvas)->
-          collection.updateAll img:canvas.toDataURL()
+          data = canvas.toDataURL()
+          data = data.replace "data:image/png;base64,",""
+          collection.updateAll img:data
 
     $("[data-js-global-debug]")
       .click ->
@@ -128,8 +130,4 @@ require [
         onrendered: (canvas)->
           data = canvas.toDataURL()
           window.open(data,"_blank")
-        onparsed:(queue)->
-          log.info queue
-        onpreloaded:(images)->
-          log.info images
     collection.fetch()
