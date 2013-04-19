@@ -88,6 +88,8 @@ define [
             if $(this).is("[data-drop-accept-placeholder='fieldset']")
                 $("[data-ghost-row]")
                   .hide()
+                $(this)
+                  .sortable "refreshPositions"
             true
       $placeholder
 
