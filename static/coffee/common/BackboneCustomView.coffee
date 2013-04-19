@@ -5,9 +5,11 @@ define [
   "common/Log"
 ],($, _, Backbone, Log)->
   log = Log.getLogger("common/CustomView")
+
+  __super__ = Backbone.View
+
   Backbone.CustomView = Backbone.View.extend
     BIND_VIEW:"_$$CustomViewBinder"
-
     dragActive: false
     originParent: null
 
@@ -89,7 +91,7 @@ define [
       $holder = $(document.createDocumentFragment())
       $holder.append @$el.children()
 
-      result = Backbone.View::render.apply(this, arguments)
+      result = __super__::render.apply(this, arguments)
       htmlTemplate = @_getTemplateHtml()
       data = _.result(this,"templateData")
       html = _.template htmlTemplate, data
@@ -132,7 +134,7 @@ define [
       _.each @childrenViews, (view,k)=>
         @removeChild view
         view.remove()
-      Backbone.View::remove.apply(this, arguments)
+      __super__::remove.apply(this, arguments)
 
     createChild:(options)->
       item = new @ChildType(options)
