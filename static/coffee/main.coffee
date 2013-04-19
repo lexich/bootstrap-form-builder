@@ -119,15 +119,4 @@ require [
           data = data.replace "data:image/png;base64,",""
           collection.updateAll img:data
 
-    $("[data-js-global-debug]")
-      .click ->
-        $(this).toggleClass "icon-bookmark-empty"
-        $(this).toggleClass "icon-bookmark"
-        $("body").toggleClass "ui_debug"
-
-    $("[data-js-global-saveimg]").click ->
-      html2canvas $("[data-html-form]:first")[0],
-        onrendered: (canvas)->
-          data = canvas.toDataURL()
-          window.open(data,"_blank")
     collection.fetch()
