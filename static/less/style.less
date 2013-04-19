@@ -17,20 +17,12 @@
 @import "styles/ui_tools.less";
 @import "styles/ui_workarea.less";
 
+@import "controls/spinner.less";
 
-legend {
-  margin-bottom: 0;
+.ui_settings_editor {
+  position: fixed;
+  right: @fluidGridGutterWidth;
 }
-
-legend + * {
-  -webkit-margin-top-collapse : separate;
-  margin-top                  : 20px;
-}
-
-textarea {
-  resize: none;
-}
-
 
 .lverticalline{
   border-left:1px solid @lightgray;
@@ -39,10 +31,25 @@ textarea {
   border-right:1px solid @lightgray;
 }
 
-.body{
+textarea {
+  resize: none;
+}
+
+.body {
   margin: auto;
   margin-top: @bodyOffset;
 }
+
+fieldset {
+  position: relative;
+  .ui_fieldset__direction {
+    margin: 10px;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+}
+
 .ui-droppable{
   padding: 5px;
 }
@@ -56,3 +63,13 @@ textarea {
 
 .ui_debug .ui_debug__item{ display: block; }
 .ui_debug__item{ display: none;}
+
+legend {
+  margin-bottom: 0;
+}
+
+legend + * {
+  -webkit-margin-top-collapse : separate;
+  margin-top                  : 20px;
+}
+

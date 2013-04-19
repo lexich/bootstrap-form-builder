@@ -1,0 +1,74 @@
+.spinner {
+
+  input {
+    float: left;
+  }
+
+  a.btn{
+    height: 11px;
+  }
+
+  .btn {
+    position: relative;
+    width: 20px;
+    height: 14px;
+    padding-top: 0;
+    padding-right: 9px;
+    padding-left: 9px;
+    overflow: hidden;
+
+    &.disabled {
+      cursor: not-allowed;
+    }
+  }
+
+  .spinner-buttons {
+    position: relative;
+    float: left;
+    height: 28px;
+    width: 20px;
+    left: -24px;
+  }
+
+  .spinner-up {
+
+    padding: 0 0 4px 1px;
+    top: 2px;
+
+    i {
+      position: relative;
+      top: -4px;
+    }
+  }
+
+  .spinner-down {
+
+    padding: 0 0 4px 1px;
+    top: 2px;
+    height: 13px;
+
+    i {
+      position: relative;
+      top: -5px;
+    }
+  }
+
+  a {
+    &.spinner-up {
+      padding: 0;
+      top: 2px;
+    }
+    &.spinner-down {
+      padding: 0;
+      top: 3px;
+    }
+  }
+
+  &.spinner-left .spinner-buttons {
+    left: 22px;
+  }
+
+  &.spinner-left input {
+    padding-left: 28px;
+  }
+}

@@ -4,7 +4,6 @@
 
 {% block content %}
     {% parent %}
-    {{ tools.render() }}
     <script type="text/javascript">
         rootformconfig={};
         {% if p.url %}rootformconfig.url = "{{ p.url }}";{% endif %}
@@ -19,6 +18,7 @@
             </div>
         </div>
     </div>
+    {{ tools.render() }}
     {{ notvisual.render() }}
     {% include 'layout/template.html' %}
 {% endblock %}
