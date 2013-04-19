@@ -1,18 +1,17 @@
 {% macro component %}
   {% set jsrender = { title:"Поле ввода", label:"input", placeholder:"input", name: "input", help: "help", type:{ value:"input", type:"hidden"}, position:{ value:0, type:"hidden"}, row:{ value:0, type:"hidden"}, } %}
-<script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="input">
-  <div class="control-group">
-    <label class="control-label" for="<%= id %>"><%= label %></label>
-    <div class="controls">
-      <input type="text" id="<%= id %>" name="<%= name %>" placeholder="<%= placeholder %>">
-      <% if(help) { %>
-        <p class="help-block valtype" data-valtype="help"><%= help %></p>
-      <% } %>
+  <script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="input">
+    <div class="control-group">
+      <label class="control-label" for="<%= id %>"><%= label %></label>
+      <div class="controls">
+        <input type="text" id="<%= id %>" name="<%= name %>" placeholder="<%= placeholder %>">
+        <% if (help) { %>
+          <p class="help-block valtype" data-valtype="help"><%= help %></p>
+        <% } %>
+      </div>
     </div>
-  </div>
-</script>
-
-{% endmacro %}  
+  </script>
+{% endmacro %}
 
 {% macro modal %}
 <script data-ui-jsrender-modal-template="input" type="text/template">
@@ -35,8 +34,8 @@
     <div id="MySpinner" class="spinner row-fluid" data-type="spinner">
         <input type="text" class="input-mini spinner-input" />
         <div class="spinner-buttons	btn-group btn-group-vertical">
-            <button class="btn spinner-up"><i class="icon-chevron-up"></i></button>
-            <button class="btn spinner-down"><i class="icon-chevron-down"></i></button>
+            <a href="javascript:void(0)" class="btn spinner-up"><i class="icon-chevron-up"></i></a>
+            <a href="javascript:void(0)" class="btn spinner-down"><i class="icon-chevron-down"></i></a>
         </div>
     </div>
 </script>

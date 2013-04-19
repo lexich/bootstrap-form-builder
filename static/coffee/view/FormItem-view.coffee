@@ -12,7 +12,7 @@ define [
     Constants
     ###
     SELECTED_CLASS: "ui_formitem__editablemode"
-    HORIZONTAL_SIZE_LIMIT: 9
+    HORIZONTAL_SIZE_LIMIT: 12
 
     ###
     Variables Backbone.CustomView
@@ -84,7 +84,6 @@ define [
         size = @model.get "size"
 
       $item = @getItem("input")
-      @getItem("controls").addClass("row-fluid")
 
       @cleanSpan(@$el)
       @cleanSpan($item)
@@ -118,7 +117,7 @@ define [
     ###
     event_decsize:(e)->
       size = @model.get "size"
-      if size > 1
+      if size > 2
         @model.set "size", size - 1, validate: true
 
     ###
@@ -131,14 +130,6 @@ define [
       return if @model.get("direction") == "horizontal" and rowSize > @HORIZONTAL_SIZE_LIMIT
       if rowSize < 12
         @model.set "size", size+1, {validate:true}
-      else
-        for item in [@parentView.getPrevious(this), @parentView.getNext(this)]
-          if not (model = item?.model)
-            continue
-          itemSize = model.get("size")
-          if itemSize > 1 and model.set "size", itemSize - 1, {validate:true}
-            @model.set "size", size + 1, {validate:true}
-            break
 
     event_remove:->
       log.info "event_remove #{@cid}"
