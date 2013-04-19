@@ -140,6 +140,7 @@ define [
       #direction mode check
       if bVertical
         @$el.removeClass "form-horizontal"
+        @getItem("ghostRow").removeClass("form-horizontal")
         $el.addClass("icon-resize-horizontal").removeClass("icon-resize-vertical")
         if _.size(@childrenViews) > 1
           $el.addClass("hide")
@@ -147,6 +148,7 @@ define [
           $el.removeClass("hide")
       else
         @$el.addClass "form-horizontal"
+        @getItem("ghostRow").addClass("form-horizontal")
         $el.addClass("icon-resize-vertical").removeClass("icon-resize-horizontal")
 
       connectWith = "[data-drop-accept]:not([#{@DISABLE_DRAG}]),[data-drop-accept-placeholder]"
@@ -155,7 +157,7 @@ define [
 
       $area.sortable
         helper:"original"
-        tolerance:"intersect"
+        tolerance:"pointer"
         handle:"[data-js-formitem-move]"
         dropOnEmpty:true
         placeholder: "ui_formitem__placeholder"

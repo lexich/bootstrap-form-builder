@@ -85,8 +85,10 @@ define [
 
       if @model.get("direction") is "vertical"
         @getItem("direction").addClass("icon-resize-horizontal").removeClass("icon-resize-vertical")
+        @$el.find(".ui_global_placeholder").not('.ui_row__prev_loader').removeClass("form-horizontal")
       else
         @getItem("direction").addClass("icon-resize-vertical").removeClass("icon-resize-horizontal")
+        @$el.find(".ui_global_placeholder").not('.ui_row__prev_loader').addClass("form-horizontal")
 
       this
 
