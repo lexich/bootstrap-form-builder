@@ -111,7 +111,7 @@ define [
       log.info "handle_create_new #{@cid}"
       view = Backbone.CustomView::staticViewFromEl(ui.item)
       row = _.size(@childrenViews)
-      if view? and  view.viewname is "row"
+      if view? and view.viewname is "row"
         @addChild view
         view.model.set
           fieldset:@model.get("fieldset")
@@ -165,6 +165,17 @@ define [
       _.chain(@childrenViews)
         .omit(childrenCID)
         .each (view,cid)=> @removeChild view
+
+    insertRow:(row) ->
+      log.info "insertRowView #{@cid}"
+      filterRowView = _.chain(@childrenViews)
+        .filter (view)->
+          view.model.get("row") >= row
+        .map (view)->
+          view.model.set "row", view.model.get("row")+1, {validate:true, silent:true}
+          view
+        .value()
+      @getOrAddRowView row
 
     getOrAddRowView:(row)->
       log.info "getOrAddRowView #{@cid}"

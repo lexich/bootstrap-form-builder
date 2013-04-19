@@ -6,28 +6,16 @@
 
 {# FieldsetViewTemplate tagName="fieldset" #}
 <script type="text/template" id="FieldsetViewTemplate">
-    <table class="ui_fieldset__table">
-        <tbody>
-            <tr>
-                <td class="ui_fieldset__table-legend">
-                    <legend contenteditable data-bind="title" ><%= title %></legend>
-                </td>
-                <td class="ui_fieldset__table-direction">
-                    <span class="icon-resize-vertical ui_fieldset__direction" data-js-fieldset-position></span>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <div data-html-fieldset-loader class="ui_fieldset__loader"></div>
-    <div data-drop-accept-placeholder="fieldset" class="ui_global_placeholder row-fluid"></div>
+  <legend contenteditable data-bind="title" ><%= title %></legend>
+  <div data-html-fieldset-loader class="ui_fieldset__loader"></div>
+  <div data-drop-accept-placeholder="fieldset" class="ui_global_placeholder row-fluid"></div>
+  <span class="icon-resize-vertical ui_fieldset__direction" data-js-fieldset-position></span>
 </script>
 
 {# RowViewTemplate class="ui_row" #}
 <script type="text/template" id="RowViewTemplate">
+    <div data-drop-accept-placeholder="fieldset" data-ghost-row class="ui_row__prev_loader row-fluid ui_global_placeholder"></div>
     <div data-drop-accept class="ui_row__loader row-fluid"></div>
-    <div class="ui_row__tools clearfix">
-      <!--<span class="icon-resize-horizontal ui_row__direction" data-js-row-position></span>-->
-    </div>
 </script>
 
 {# FormItemViewTemplate class="ui_formitem" #}

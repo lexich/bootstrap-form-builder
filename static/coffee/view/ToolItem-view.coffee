@@ -25,13 +25,13 @@ define [
           connectToSortable:"[data-drop-accept]:not([data-js-row-disable-drag]),[data-drop-accept-placeholder]"
       _.extend opts,
         appendTo:"body"
-        clone:true
         opacity: 0.7
-        cursorAt:
-         top:32
-         left:64
-        zIndex:1000
         cursor: "pointer"
+        cursorAt:
+          top: -1
+          left: -1
+        zIndex: 1000
+        connectToSortable:"[data-drop-accept]:not([data-js-row-disable-drag]),[data-drop-accept-placeholder]"
         helper:"clone"
         start:_.bind(@handle_draggable_start, this)
         stop:_.bind(@handle_draggable_stop, this)
@@ -41,7 +41,9 @@ define [
 
     handle_draggable_start:->
       unless @notvisual
-        $("[data-drop-accept-placeholder]").show()
+        $("[data-drop-accept-placeholder]")
+          .not("[data-ghost-row]")
+          .show()
 
     handle_draggable_stop:->
       unless @notvisual
