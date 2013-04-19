@@ -109,9 +109,11 @@ define [
 
     handle_sortable_start:->
       $(@placeholderSelector).show()
+      $("body").addClass("ui_draggableprocess")
 
     handle_sortable_stop:(event,ui)->
       $(@placeholderSelector).hide()
+      $("body").removeClass("ui_draggableprocess")
       @reindex()
 
     checkModel:(log,model)->

@@ -11,14 +11,84 @@ define [
 ],($,Backbone,_,FormItemView,FormItemModel, DropAreaModel, Log)->
   log = Log.getLogger("view/RowView")
 
-  RowView = Backbone.CustomView.extend
+  RowViewSortableHandlers = Backbone.CustomView.extend
+    __super__:Backbone.CustomView
+    ###
+    Handle to jQuery.UI.sortable - change
+    ###
+    handle_sortable_change:(event,ui)->
+      log.info "handle_sortable_change #{@cid}"
+      freesize = @getCurrentFreeRowSize()
+      size = 3
+      if (view = @__super__::staticViewFromEl(ui.item))
+        size = view.model.get("size")
+        unless view.parentView is this
+          if size > freesize then size = freesize
+      else
+        if freesize <= 3 then size = freesize
+
+      @cleanSpan(ui.placeholder).addClass "span#{size}"
+
+    handle_sortable_over:(event,ui)->
+      $("[data-ghost-row]")
+        .hide()
+      if not this.$el.is(@originParent) or _.size(@childrenViews) > 1
+        @getItem("ghostRow")
+          .show()
+          .sortable "refreshPositions"
+      true
+
+    handle_sortable_deactivate:(event,ui)->
+      @getItem("area").removeClass("ui_row__loader_active")
+      @originParent = null
+
+    handle_sortable_activate:(event,ui)->
+      @originParent = ui.sender?.closest(".#{@className}")
+      @getItem("area").addClass("ui_row__loader_active") unless @getItem("area").is("[#{@DISABLE_DRAG}]")
+
+    ###
+    Handle to jQuery.UI.sortable - update
+    ###
+    handle_sortable_update:(event,ui)->
+      log.info "handle_sortable_update #{@viewname}:#{@cid}"
+      formItemView = @__super__::staticViewFromEl(ui.item)
+      if ui.sender?
+        log.info "handle_sortable_update #{@viewname}:#{@cid} ui.sender != null"
+        #Если View найден, создаем дочерний
+        if formItemView?
+          parentView = formItemView.parentView
+          #Проверим влезает ли элемент по размеру
+          if (model = formItemView.model)
+            freesize = @getCurrentFreeRowSize()
+            if model.get("size") > freesize
+              model.set "size", freesize, {validate:true, silent:true}
+              @checkModel log, model
+          #Если произошло перемещение между RowView, устанавливаем текуший
+          if parentView != this
+            @addChild formItemView
+            @reindex()
+      unless formItemView?
+        componentType = $(ui.item).data("componentType")
+        freesize = @getCurrentFreeRowSize()
+        data = @options.service.getTemplateData(componentType)
+        if data.size > freesize then data.size = freesize
+        formItemView = @createChild
+          model: @createFormItemModel(data)
+          collection:@collection
+          service: @options.service
+        ui.item.replaceWith formItemView.$el
+        @reindex()
+        @render()
+
+
+  RowView = RowViewSortableHandlers.extend
     ###
     Constants
     ###
     SELECTED_CLASS:"ui_row__selected"
     DISABLE_DRAG: "data-js-row-disable-drag"
     placeholderSelector:"[data-drop-accept-placeholder]:not([data-ghost-row])"
-    handlers:{}
+    __super__:RowViewSortableHandlers
 
     ###
     Variables Backbone.View
@@ -51,7 +121,6 @@ define [
     ###
     initialize:->
       @model.on "change", _.bind(@on_model_change,this)
-      @handlers['on_child_model_changes_size'] = _.bind(@on_child_model_changes_size,this)
 
     ###
     @overwrite Backbone.CustomView
@@ -64,7 +133,7 @@ define [
     ###
     updateViewModes:->
       log.info "updateViewModes #{@viewname}:#{@cid}"
-      Backbone.CustomView::updateViewModes.apply this, arguments
+      @__super__::updateViewModes.apply this, arguments
       $area = @getItem("area")
       bVertical = @model.get('direction') is "vertical"
       $el = @getItem("directionMode")
@@ -88,7 +157,7 @@ define [
         helper:"original"
         tolerance:"intersect"
         handle:"[data-js-formitem-move]"
-        dropOnEmpty:"true"
+        dropOnEmpty:true
         placeholder: "ui_formitem__placeholder"
         change:_.bind(@handle_sortable_change,this)
         connectWith: connectWith
@@ -115,28 +184,12 @@ define [
           .show()
           .sortable "refreshPositions"
 
-    handle_sortable_deactivate:(event,ui)->
-      @getItem("area").removeClass("ui_row__loader_active")
-      @originParent = null
-
-    handle_sortable_activate:(event,ui)->
-      @originParent = ui.sender?.closest(".#{@className}")
-      @getItem("area").addClass("ui_row__loader_active") unless @getItem("area").is("[#{@DISABLE_DRAG}]")
-
     setSelected:(bValue)->
       if bValue
         @$el.addClass @SELECTED_CLASS
       else
         @$el.removeClass @SELECTED_CLASS
 
-    handle_sortable_over:(event,ui)->
-      $("[data-ghost-row]")
-        .hide()
-      if not this.$el.is(@originParent) or _.size(@childrenViews) > 1
-        @getItem("ghostRow")
-          .show()
-          .sortable "refreshPositions"
-      true
 
     setDisable:(flag)->
       log.info "setDisable #{@viewname}:#{@cid}"
@@ -187,7 +240,7 @@ define [
     ###
     handle_create_new:(event,ui)->
       log.info "handle_create_new #{@viewname}:#{@cid}"
-      view = Backbone.CustomView::staticViewFromEl(ui.item)
+      view = @__super__::staticViewFromEl(ui.item)
       size = @getCurrentFreeRowSize()
       if view? and view.viewname is "formitem"
         if ui.item.parent().is('[data-ghost-row]')
@@ -251,7 +304,7 @@ define [
     reindex:->
       log.info "reindex #{@viewname}:#{@cid}"
       _.reduce @getItem("areaChildren"), ((position,el)=>
-        if(view = Backbone.CustomView::staticViewFromEl el)
+        if(view = @__super__::staticViewFromEl el)
           view.model?.set {
              position
              row: @model.get "row"
@@ -267,11 +320,11 @@ define [
     ###
     addChild:(view)->
       log.info "addChild #{@viewname}:#{@cid}"
-      result = Backbone.CustomView::addChild.apply this, arguments
+      result = @__super__::addChild.apply this, arguments
       if view.model
         view.model.set "direction", @model.get("direction"),{validate:true, silent:true}
         @checkModel(log,view.model)
-        view.model?.on "change:size", @handlers['on_child_model_changes_size']
+        @listenTo view.model, "change:size", @on_child_model_changes_size
       result
 
     ###
@@ -279,8 +332,8 @@ define [
     ###
     removeChild:(view)->
       log.info "removeChild #{@viewname}:#{@cid}"
-      result = Backbone.CustomView::removeChild.apply this, arguments
-      view?.model?.off "change:size", @handlers['on_child_model_changes_size']
+      result = @__super__::removeChild.apply this, arguments
+      @stopListening view?.model, "change:size", @on_child_model_changes_size
       result
 
     ###
@@ -333,54 +386,6 @@ define [
 
       if changed.direction
         @updateViewModes()
-
-    handle_sortable_change:(event,ui)->
-      log.info "handle_sortable_change #{@cid}"
-      freesize = @getCurrentFreeRowSize()
-      size = 3
-      if (view = Backbone.CustomView::staticViewFromEl(ui.item))
-        size = view.model.get("size")
-        unless view.parentView is this
-          if size > freesize then size = freesize
-      else
-        if freesize <= 3 then size = freesize
-
-      @cleanSpan(ui.placeholder).addClass "span#{size}"
-
-    ###
-    Handle to jQuery.UI.sortable - update
-    ###
-    handle_sortable_update:(event,ui)->
-      log.info "handle_sortable_update #{@viewname}:#{@cid}"
-      formItemView = Backbone.CustomView::staticViewFromEl(ui.item)
-      if ui.sender?
-        log.info "handle_sortable_update #{@viewname}:#{@cid} ui.sender != null"
-        #Если View найден, создаем дочерний
-        if formItemView?
-          parentView = formItemView.parentView
-          #Проверим влезает ли элемент по размеру
-          if (model = formItemView.model)
-            freesize = @getCurrentFreeRowSize()
-            if model.get("size") > freesize
-              model.set "size", freesize, {validate:true, silent:true}
-              @checkModel log, model
-          #Если произошло перемещение между RowView, устанавливаем текуший
-          if parentView != this
-            @addChild formItemView
-            @reindex()
-      unless formItemView?
-        componentType = $(ui.item).data("componentType")
-        freesize = @getCurrentFreeRowSize()
-        data = @options.service.getTemplateData(componentType)
-        if data.size > freesize then data.size = freesize
-        formItemView = @createChild
-          model: @createFormItemModel(data)
-          collection:@collection
-          service: @options.service
-        ui.item.replaceWith formItemView.$el
-        @reindex()
-        @render()
-
 
     #****************************
     # Events

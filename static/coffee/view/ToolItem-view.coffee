@@ -44,10 +44,12 @@ define [
         $("[data-drop-accept-placeholder]")
           .not("[data-ghost-row]")
           .show()
+      $("body").addClass("ui_draggableprocess")
 
     handle_draggable_stop:->
       unless @notvisual
         $("[data-drop-accept-placeholder]").hide()
+      $("body").removeClass("ui_draggableprocess")
 
     render:-> 
       data = @options.service.getData(@options.type)
