@@ -37,7 +37,7 @@ define [
 
     getTemplateData:(type)->
       data = @getData(type)?.data ? {}
-      data.id = _.uniqueId('tmpl');
+      data.id = _.uniqueId(type);
       data
       
     getTemplate:(type)->
@@ -77,6 +77,7 @@ define [
           type: type
           data : data
           meta : meta
+          title: data.title
           img : $el.data(toolBinder+"-img")
           template : $el.html()
           $el: $el

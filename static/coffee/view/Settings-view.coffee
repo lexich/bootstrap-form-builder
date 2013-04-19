@@ -36,12 +36,13 @@ define [
       log.info "setVisibleMode #{bValue}"
       @visibleMode = bValue
       $item = $("[data-html-settings]")
-      $(document).off "mousedown"
+      $(document).off "mousedown", @handle_VisibleMode
       if bValue
         $item.removeClass "hide"
         setTimeout (=> $(document).on "mousedown", @handle_VisibleMode),0
       else
         $item.addClass "hide"
+        $(".select2-drop").hide()
         @options.service.trigger "editableView:change"
 
     handle_VisibleMode:(e)->
@@ -51,9 +52,20 @@ define [
       @setVisibleMode(false)
 
     ui:
-      select2:($el)-> $el.select2()
-      spinner:($el)-> $el.spinner()
+      select2:($el,options)->
+        options = options ? {}
+        options.closeOnSelect = true
 
+        val = $el.data("value")
+        if $el[0].tagName.toLowerCase() is "select" and options.data?
+          opts = _.map options.data or [],(item)->
+            selected = if item.id is val then "selected" else ""
+            "<option #{selected} value='#{item.id}'>#{item.text}</option>"
+          $el.html opts.join("")
+          delete options.data
+        $el.select2(options)
+
+      spinner:($el,options)-> $el.spinner(options ? {})
 
     render:->
       log.info "render"
@@ -66,7 +78,14 @@ define [
       _.each $body.find("[data-ui]"),(el)=>
         uicomponent = $(el).data("ui")
         if @ui[uicomponent]?
-          @ui[uicomponent]($(el))
+          data = $(el).data("ui-data")
+          if data?.inject?
+            _.each data.inject,(v,k)=>
+              data[k] = _.result(this,v)
+            delete data.inject
+          @ui[uicomponent]($(el), data)
+
+    loadIds:-> _.map @collection.models, (model)-> id:model.get("id"), text:model.get("name") + "##{model.get("id")}"
 
     renderForm:( type, data)->
       log.info "renderForm"
@@ -79,7 +98,7 @@ define [
           type = $input.attr("name")
           value = data[type]
           unless _.isUndefined(value)
-            $input.val(value)
+            $input.val(value).data("value",value)
       else
         meta = @options.service.getTemplateMetaData(type)
         content = _.map data, (v,k)=>

@@ -7,6 +7,7 @@
 {% import 'controls/file.html' as file %}
 {% import 'controls/checkbox.html' as checkbox %}
 
+{% import 'controls/binder.html' as binder %}
 
 {% macro navigation_tabs %}
 <div class="navbar navbar-inverse navbar-fixed-top navbar-fixed-top-back">
@@ -15,6 +16,7 @@
             <div class="nav-collapse collapse">
                 <a class="brand icon-save" href="javascript:void(0);" data-js-global-form-save title="Сохранить"></a>
                 <a class="icon-bookmark-empty brand" href="javascript:void(0);" data-js-global-debug title="Отладка"></a>
+                <a class="icon-cloud-upload brand" data-js-global-saveimg title="Сохранить Превью" href="javascript:void(0);"></a>
                 <ul class="nav">
                     <li class="active">
                         <a href="#input" data-toggle="tab">Input</a>
@@ -22,11 +24,15 @@
                     <li>
                         <a href="#js" data-toggle="tab">Dynamic</a>
                     </li>
+                    <li>
+                        <a data-toggle="tab" href="#notvisual">Not Visual</a>
+                    </li>
                 </ul>
             </div>
         </div>
     </div>
     <div class="tab-content ui_tools navbar-inner">
+
         <div id="input" class="tab-pane active ui_tools__container clearfix">
             <ul>
                 <li>{{ password.component() }}</li>
@@ -43,6 +49,12 @@
                 <li>{{ checkbox.component() }}</li>
             </ul>
         </div>
+
+        <div id="notvisual" class="tab-pane ui_tools__container">
+            <ul>
+                <li>{{ binder.component() }}</li>
+            </ul>
+        </div>
     </div>
 </div>
 {% endmacro %}
@@ -50,10 +62,11 @@
 {% macro navigation_content %}
 <div style="display:none">
   {{ input.modal() }}
+  {{ binder.modal() }}
 </div>
 {% endmacro %}
 
-{% macro navigation_tabs_full %}
+{% macro render %}
     {{ navigation_tabs() }}
     {{ navigation_content() }}
 {% endmacro %}

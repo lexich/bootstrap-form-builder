@@ -7,8 +7,11 @@ require [
   "view/Form-view"
   "view/ToolItem-view"
   "view/Settings-view"
+  "view/NotVisual-view"
   "common/Log"
+  "html2canvas/html2canvas"
   "bootstrap"
+
 ],($, Backbone,
    ModalView,
    Service,
@@ -16,7 +19,9 @@ require [
    FormView,
    ToolItemView,
    SettingsView,
-   Log
+   NotVisualView,
+   Log,
+   html2canvas
 )->
   DEBUG = Log.LEVEL.DEBUG
   INFO = Log.LEVEL.INFO
@@ -33,6 +38,7 @@ require [
     "view/RowView": level: CHECK
     "view/SettingsView": level: CHECK
     "view/ToolItemView": level: CHECK
+    "view/NotVisual": level: ALL
     "common/CustomView": level: CHECK
     "common/Service": level: CHECK
     "collection/FormItemCollection": level: CHECK
@@ -90,17 +96,26 @@ require [
        collection, service
     }
 
+    notVisual = new NotVisualView
+      className:"ui_notvisual"
+      el:$("[data-html-notvisual]:first")
+      collection:collection
+      service:service
+
     settings = new SettingsView
       el: $("[data-html-settings]:first"),
       dataPostfixModalType:"modal-type"
       service:service
+      collection:collection
 
     _.each service.toolData, (data,type)=>
       toolItem = new ToolItemView {type,service,data}
       toolItem.render()
 
     $("[data-js-global-form-save]").click ->
-      collection.updateAll()
+      html2canvas $("[data-html-form]:first")[0],
+        onrendered: (canvas)->
+          collection.updateAll img:canvas.toDataURL()
 
     $("[data-js-global-debug]")
       .click ->
@@ -108,4 +123,13 @@ require [
         $(this).toggleClass "icon-bookmark"
         $("body").toggleClass "ui_debug"
 
+    $("[data-js-global-saveimg]").click ->
+      html2canvas $("[data-html-form]:first")[0],
+        onrendered: (canvas)->
+          data = canvas.toDataURL()
+          window.open(data,"_blank")
+        onparsed:(queue)->
+          log.info queue
+        onpreloaded:(images)->
+          log.info images
     collection.fetch()

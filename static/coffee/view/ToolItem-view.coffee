@@ -10,32 +10,45 @@ define [
     templatePath:"#ToolItemViewTemplate"
     template:""
     placeholder:{}
+    notvisual:false
     ###
-    @param data    -  function which return {Object} for underscore template  
+    @param data    -  function which return {Object} for underscore template
     ###
     initialize:->
-      @$el.draggable
-        #appendTo:"body"
-        #clone:true
+      @notvisual = @options.data.data.notvisual?
+      if @notvisual
+        opts =
+          connectToSortable:"[data-js-notvisual-drop]"
+          scroll: false
+      else
+        opts =
+          connectToSortable:"[data-drop-accept]:not([data-js-row-disable-drag]),[data-drop-accept-placeholder]"
+      _.extend opts,
+        appendTo:"body"
+        clone:true
         opacity: 0.7
         cursor: "pointer"
         cursorAt:
           top: -1
           left: -1
+        zIndex: 1000
         connectToSortable:"[data-drop-accept]:not([data-js-row-disable-drag]),[data-drop-accept-placeholder]"
         helper:"clone"
         start:_.bind(@handle_draggable_start, this)
         stop:_.bind(@handle_draggable_stop, this)
+
+      @$el.draggable opts
       @template = _.template $("#{@templatePath}").html(), @options.data
 
-
     handle_draggable_start:->
-      $("[data-drop-accept-placeholder]")
-        .not("[data-ghost-row]")
-        .show()
+      unless @notvisual
+        $("[data-drop-accept-placeholder]")
+          .not("[data-ghost-row]")
+          .show()
 
     handle_draggable_stop:->
-      $("[data-drop-accept-placeholder]").hide()
+      unless @notvisual
+        $("[data-drop-accept-placeholder]").hide()
 
     render:-> 
       data = @options.service.getData(@options.type)

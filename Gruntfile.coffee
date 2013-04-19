@@ -59,6 +59,18 @@ module.exports = (grunt) ->
           cwd: "<%= components %>/html5sortable/"
           dest: "<%= resource.js %>/html5sortable/"
         ]
+      html2canvas:
+        files:[
+          flattern: true
+          expand: true
+          src: "index.js"
+          cwd: "<%= components %>/html2canvas/"
+          dest: "<%= resource.js %>/html2canvas/"
+          rename: (dest, filename, orig)->
+            dest + filename.replace( "index.js","html2canvas.js")
+          options:
+            bare: true
+        ]
       bootstrap:
         files:[
           flattern: true
@@ -319,7 +331,7 @@ module.exports = (grunt) ->
         tasks: ["coffee"]
 
       less_shell:
-        files: "static/less/*.less"
+        files: ["static/less/*.less","static/less/**/*.less"]
         tasks: ["less"]
 
       templates:

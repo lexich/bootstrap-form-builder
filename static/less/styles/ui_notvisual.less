@@ -2,5 +2,33 @@
 // ui_notvisual
 ////////////////////////////////
 .ui_notvisual{
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: @white;
+}
 
+.ui_notvisual__container{
+  border: 1px solid @black;
+  height: 64px;
+  * {
+    float: left;
+  }
+}
+
+.ui_notvisual__placeholder{
+  width: 120px;
+  height: 64px;
+  background-color: @gray;
+}
+
+.ui_notvisual__item{
+  border-top: none;
+  border-bottom: none;
+  border-left: 2px solid transparent;
+  border-right: 2px solid transparent;
+}
+
+.ui_notvisual__item-active{
+  border-color: @colorSelectedItem;
 }
