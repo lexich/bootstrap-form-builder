@@ -129,12 +129,24 @@
   display: block;
 }
 
+.ui_formitem.ui-sortable-helper {
+  background: @white;
+  box-shadow: 0 0 3px 3px @lightgray;
+}
+
 .ui_formitem__placeholder{
   border: 2px dashed @lightgray;
   background-color: @white;
   height: 100px;
   float: left;
   margin: 4px 0;
+  &:first-of-type {
+    margin-left: 0;
+  }
+}
+
+.ui-draggable + .ui_formitem__placeholder {
+  margin-left: 0;
 }
 
 .ui_formitem__tools {

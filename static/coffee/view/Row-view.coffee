@@ -17,6 +17,7 @@ define [
     ###
     SELECTED_CLASS:"ui_row__selected"
     DISABLE_DRAG: "data-js-row-disable-drag"
+    placeholderSelector:"[data-drop-accept-placeholder]:not([data-ghost-row])"
     handlers:{}
 
     ###
@@ -26,6 +27,7 @@ define [
       "click [data-js-row-disable]":"event_disable"
       "click [data-js-row-position]":"event_direction"
       "click [data-js-row-remove]": "event_remove"
+      "mouseenter [data-drop-accept]": "handle_mouse_enter"
 
 
     className:"ui_row"
@@ -42,6 +44,7 @@ define [
       areaChildren:"[data-drop-accept] >"
       placeholderItem:".ui_formitem__placeholder"
       directionMode:"[data-js-row-position]"
+      ghostRow:"[data-ghost-row]"
 
     ###
     @overwrite Backbone.View
@@ -78,8 +81,8 @@ define [
         $el.addClass("icon-resize-vertical").removeClass("icon-resize-horizontal")
 
       connectWith = "[data-drop-accept]:not([#{@DISABLE_DRAG}]),[data-drop-accept-placeholder]"
-      if(sortable = $area.data("sortable"))
-        sortable.destroy()
+
+      $area.data("sortable")?.destroy()
 
       $area.sortable
         helper:"original"
@@ -91,8 +94,10 @@ define [
         connectWith: connectWith
         start:_.bind(@handle_sortable_start, this)
         stop: _.bind(@handle_sortable_stop, this)
+        over: _.bind(@handle_sortable_over, this)
         update: _.bind(@handle_sortable_update,this)
-
+        activate: _.bind(@handle_sortable_activate, this)
+        deactivate: _.bind(@handle_sortable_deactivate, this)
 
       #disable mode
       bDisable = false
@@ -103,11 +108,35 @@ define [
         bDisable = true
       @setDisable bDisable
 
+    handle_mouse_enter:()->
+      if @dragActive and @getItem("area").is("[#{@DISABLE_DRAG}]")
+        $("[data-ghost-row]").hide()
+        @getItem("ghostRow")
+          .show()
+          .sortable "refreshPositions"
+
+    handle_sortable_deactivate:(event,ui)->
+      @getItem("area").removeClass("ui_row__loader_active")
+      @originParent = null
+
+    handle_sortable_activate:(event,ui)->
+      @originParent = ui.sender?.closest(".#{@className}")
+      @getItem("area").addClass("ui_row__loader_active") unless @getItem("area").is("[#{@DISABLE_DRAG}]")
+
     setSelected:(bValue)->
       if bValue
         @$el.addClass @SELECTED_CLASS
       else
         @$el.removeClass @SELECTED_CLASS
+
+    handle_sortable_over:(event,ui)->
+      $("[data-ghost-row]")
+        .hide()
+      if not this.$el.is(@originParent) or _.size(@childrenViews) > 1
+        @getItem("ghostRow")
+          .show()
+          .sortable "refreshPositions"
+      true
 
     setDisable:(flag)->
       log.info "setDisable #{@viewname}:#{@cid}"
@@ -161,22 +190,42 @@ define [
       view = Backbone.CustomView::staticViewFromEl(ui.item)
       size = @getCurrentFreeRowSize()
       if view? and view.viewname is "formitem"
-        position = _.size(@childrenViews)
-        data =
-          fieldset:@model.get('fieldset')
-          row: @model.get('row')
-          position:position
-        if size < 3 then data.size = size
-        @addChild view
-        view.model.set data, {validate:true}
-        @checkModel(log,view.model)
+        if ui.item.parent().is('[data-ghost-row]')
+          row = @parentView.insertRow @model.get "row"
+          data =
+            fieldset:row.model.get('fieldset')
+            row: row.model.get('row')
+            position:0
+          row.addChild view
+          view.model.set data, {validate:true}
+          @checkModel(log,view.model)
+          row.parentView.render()
+        else
+          position = _.size(@childrenViews)
+          data =
+            fieldset:@model.get('fieldset')
+            row: @model.get('row')
+            position:position
+          if size < 3 then data.size = size
+          @addChild view
+          view.model.set data, {validate:true}
+          @checkModel(log,view.model)
       else
         componentType = $(ui.item).data("componentType")
         data = @options.service.getTemplateData(componentType)
-        view = @createChild
-          model: @createFormItemModel(data)
-          service: @options.service
-          collection:@collection
+        if ui.item.parent().is('[data-ghost-row]')
+          row = @parentView.insertRow @model.get "row"
+          row.createChild
+            model: row.createFormItemModel(data)
+            service: row.options.service
+            collection: row.collection
+          row.parentView.render()
+          ui.helper?.remove()
+        else
+          view = @createChild
+            model: @createFormItemModel(data)
+            service: @options.service
+            collection:@collection
       this
 
     ###
