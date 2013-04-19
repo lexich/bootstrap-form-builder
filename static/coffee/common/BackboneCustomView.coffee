@@ -84,6 +84,11 @@ define [
           deactivate: (event, ui)=>
             @dragActive = false
             true
+          over: (event, ui)->
+            if $(this).is("[data-drop-accept-placeholder='fieldset']")
+                $("[data-ghost-row]")
+                  .hide()
+            true
       $placeholder
 
     render:->

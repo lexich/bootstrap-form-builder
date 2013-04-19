@@ -179,6 +179,11 @@ define [
         .value()
       @getOrAddRowView row
 
+    getRowByPosition:(row)->
+      result = _.filter @childrenViews, (view)->
+        view.model.get("row") is row
+      result[0] if result.length > 0
+
     getOrAddRowView:(row)->
       log.info "getOrAddRowView #{@cid}"
       filterRowView = _.filter @childrenViews, (view)->
