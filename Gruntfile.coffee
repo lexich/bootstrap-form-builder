@@ -275,12 +275,12 @@ module.exports = (grunt) ->
               filepath = path.normalize(path.join(__dirname, htmlpath, index_file))
               res.set('Content-Type', 'text/html');
               res.sendfile filepath
-            "**/form.json": (req, res) -> res.send data
-            "**/select2.json": (req, res) ->
+            "/forms.json": (req, res) -> res.send data
+            "/select2.json": (req, res) ->
               res.send { more: false, results: [{id: "CA",text: "California"},{id: "AL", text: "Alabama"}]}
 
           post:
-            "**/form.json": (req, res) -> data = req.body
+            "/forms.json": (req, res) -> data = req.body
 
       release:
         port: 9090
@@ -337,7 +337,7 @@ module.exports = (grunt) ->
 
       coffee_shell:
         files: ["static/coffee/*.coffee", "static/coffee/**/*.coffee"]
-        tasks: ["coffee"]
+        tasks: ["coffee","replace"]
 
       less_shell:
         files: ["static/less/*.less","static/less/**/*.less"]
