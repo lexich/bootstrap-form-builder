@@ -45,17 +45,16 @@
     margin-left: 0;
   }
   &.ui_row__loader_active {
-    border-top: 2px dashed @lightgray;
-    border-left: 2px dashed @lightgray;
-    border-right: 2px dashed @lightgray;
-    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAARUlEQVQYV2NkwALOnj1bjy7MiC6ATZGxsXEjikJcikCGwRXiUwRXSEgRWCExirAqBDkcmwdRTMSlCMVEfIrgCgkpAikEAN0tMom+/kc6AAAAAElFTkSuQmCC) repeat;
+    border-top: 2px solid @white;
+    border-left: 2px solid @white;
+    border-right: 2px solid @white;
+    background: @rowPlaceholderBg repeat;
   }
 }
 .ui_row__placeholder{
-  min-height: 40px;
-  border: 2px dashed @lightgray;
-  background: @white;
-  margin: 4px;
+  min-height: 100px;
+  background: @white @itemPlaceholderBg repeat;
+  margin: 0;
 }
 .ui_row__tools{
   overflow: hidden;
