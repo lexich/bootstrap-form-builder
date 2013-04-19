@@ -1,6 +1,6 @@
 {% macro component %}
   {% set name = "select2" %}
-  {% set jsrender = { label:"Label for select2", placeholder:"Placeholder for select2", name: "select2", help: "Help select2", position:{ value:0, type:"hidden"}, row:{ value:0, type:"hidden"}, type:{value:"select2", type:"hidden"}, url:"/select2.json", more:"20"} %}
+  {% set jsrender = { title:"Элемент выбора",  label:"Label for select2", placeholder:"Placeholder for select2", name: "select2", help: "Help select2", position:{ value:0, type:"hidden"}, row:{ value:0, type:"hidden"}, type:{value:"select2", type:"hidden"}, url:"/select2.json", more:"20"} %}
 <script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="{{ name }}">
   <div class="control-group">
     <label class="control-label" for="<%= id %>"><%= label %></label>

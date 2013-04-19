@@ -9,7 +9,9 @@ require [
   "view/Settings-view"
   "view/NotVisual-view"
   "common/Log"
+  "html2canvas/html2canvas"
   "bootstrap"
+
 ],($, Backbone,
    ModalView,
    Service,
@@ -18,7 +20,8 @@ require [
    ToolItemView,
    SettingsView,
    NotVisualView,
-   Log
+   Log,
+   html2canvas
 )->
   DEBUG = Log.LEVEL.DEBUG
   INFO = Log.LEVEL.INFO
@@ -110,7 +113,11 @@ require [
       toolItem.render()
 
     $("[data-js-global-form-save]").click ->
-      collection.updateAll()
+      html2canvas $("[data-html-form]:first")[0],
+        onrendered: (canvas)->
+          data = canvas.toDataURL()
+          data = data.replace "data:image/png;base64,",""
+          collection.updateAll img:data
 
     $("[data-js-global-debug]")
       .click ->
@@ -118,4 +125,9 @@ require [
         $(this).toggleClass "icon-bookmark"
         $("body").toggleClass "ui_debug"
 
+    $("[data-js-global-saveimg]").click ->
+      html2canvas $("[data-html-form]:first")[0],
+        onrendered: (canvas)->
+          data = canvas.toDataURL()
+          window.open(data,"_blank")
     collection.fetch()

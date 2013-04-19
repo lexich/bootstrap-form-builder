@@ -32,6 +32,9 @@ require.config
     "bootstrap":
       deps:["jquery"]
 
+    "html2canvas/html2canvas":
+      exports:"html2canvas"
+
     "datepicker":
       deps:["bootstrap"]
 
