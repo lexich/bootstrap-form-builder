@@ -125,8 +125,10 @@ define [
 
     handle_sortable_deactivate:(event,ui)->
       @getItem("area").removeClass("ui_row__loader_active")
+      @originParent = null
 
     handle_sortable_activate:(event,ui)->
+      @originParent = ui.sender?.closest(".#{@className}")
       @getItem("area").addClass("ui_row__loader_active") unless @getItem("area").is("[#{@DISABLE_DRAG}]")
 
     setSelected:(bValue)->
@@ -138,8 +140,7 @@ define [
     handle_sortable_over:(event,ui)->
       $("[data-ghost-row]")
         .hide()
-      $itemParentRow = ui.item.closest(".#{@className}")
-      if not $itemParentRow.is(this.$el) or _.size(@childrenViews) > 1
+      if not this.$el.is(@originParent) or _.size(@childrenViews) > 1
         @getItem("ghostRow")
           .show()
           .sortable "refreshPositions"

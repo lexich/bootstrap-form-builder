@@ -9,6 +9,7 @@ define [
     BIND_VIEW:"_$$CustomViewBinder"
 
     dragActive: false
+    originParent: null
 
     childrenConnect:(parent,child)->
 

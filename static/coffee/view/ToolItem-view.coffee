@@ -25,7 +25,6 @@ define [
           connectToSortable:"[data-drop-accept]:not([data-js-row-disable-drag]),[data-drop-accept-placeholder]"
       _.extend opts,
         appendTo:"body"
-        clone:true
         opacity: 0.7
         cursor: "pointer"
         cursorAt:
