@@ -1,7 +1,7 @@
 {# FormViewTemplate class="ui_formview" #}
 <script type="text/template" id="FormViewTemplate">
     <form data-html-formloader></form>
-    <div data-drop-accept-placeholder="form" class="ui_global_placeholder row-fluid"></div>
+    <div data-drop-accept-placeholder="form" class="ui_global_placeholder row-fluid form-horizontal"></div>
 </script>
 
 {# FieldsetViewTemplate tagName="fieldset" #}
@@ -21,7 +21,6 @@
 {# FormItemViewTemplate class="ui_formitem" #}
 <script type="text/template" id="FormItemViewTemplate">
     <div class="ui_formitem__tools clearfix">
-        <span class="ui_debug__item">fieldset : <%= model.fieldset %> row: <%= model.row %> position:<%= model.position %> size: <%= model.size %> cid: <%= cid %></span>
         <span data-js-formitem-move class='icon-move ui_formitem__move'/>
         <span data-js-formitem-incsize class="icon-plus ui_formitem__plus" ></span>
         <span data-js-formitem-decsize class="icon-minus ui_formitem__minus" ></span>
