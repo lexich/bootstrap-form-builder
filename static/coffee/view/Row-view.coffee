@@ -17,6 +17,7 @@ define [
     ###
     SELECTED_CLASS:"ui_row__selected"
     DISABLE_DRAG: "data-js-row-disable-drag"
+    placeholderSelector:"[data-drop-accept-placeholder]:not([data-ghost-row])"
     handlers:{}
 
     ###
@@ -26,6 +27,7 @@ define [
       "click [data-js-row-disable]":"event_disable"
       "click [data-js-row-position]":"event_direction"
       "click [data-js-row-remove]": "event_remove"
+      "mouseenter [data-drop-accept]": "handle_mouse_enter"
 
 
     className:"ui_row"
@@ -97,8 +99,6 @@ define [
         activate: _.bind(@handle_sortable_activate, this)
         deactivate: _.bind(@handle_sortable_deactivate, this)
 
-      $area.bind("mouseenter", _.bind(@handle_mouse_enter, this))
-
       #disable mode
       bDisable = false
       if bVertical
@@ -114,14 +114,6 @@ define [
         @getItem("ghostRow")
           .show()
           .sortable "refreshPositions"
-
-    handle_sortable_start:(event,ui)->
-      $("[data-drop-accept-placeholder]")
-        .not("[data-ghost-row]")
-        .show()
-
-    handle_sortable_stop:(event,ui)->
-      $("[data-drop-accept-placeholder]").hide()
 
     handle_sortable_deactivate:(event,ui)->
       @getItem("area").removeClass("ui_row__loader_active")
