@@ -58,9 +58,14 @@ define [
 
         val = $el.data("value")
         if $el[0].tagName.toLowerCase() is "select" and options.data?
+          bSelected = false
           opts = _.map options.data or [],(item)->
-            selected = if item.id is val then "selected" else ""
+            if item.id is val
+              bSelected = true
+              selected = "selected"
+            else selected = ""
             "<option #{selected} value='#{item.id}'>#{item.text}</option>"
+          unless bSelected then opts.splice(0,0,"<option></option>")
           $el.html opts.join("")
           delete options.data
         $el.select2(options)
