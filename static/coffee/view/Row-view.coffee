@@ -74,7 +74,7 @@ define [
       bDisable = false
       if bVertical
         freeSize = @getCurrentFreeRowSize()
-        if freeSize <= 0 then bDisable = true
+        if freeSize <= 1 then bDisable = true
       else
         bDisable = true
       @setDisable bDisable
