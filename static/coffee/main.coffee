@@ -115,10 +115,13 @@ require [
       toolItem.render()
 
     $("[data-js-global-form-save]").click ->
-      html2canvas $("[data-html-form]:first")[0],
+      $("body").addClass("ui_printform")
+      html2canvas $("[data-html-form]:first"),
         onrendered: (canvas)->
           data = canvas.toDataURL()
+          window.open(data,"_blank")
           data = data.replace "data:image/png;base64,",""
           collection.updateAll img:data
+          $("body").removeClass("ui_printform")
 
     collection.fetch()
