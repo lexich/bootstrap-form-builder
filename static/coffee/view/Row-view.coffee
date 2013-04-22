@@ -141,13 +141,10 @@ define [
       log.info "reindex #{@viewname}:#{@cid}"
       _.reduce @getItem("areaChildren"), ((position,el)=>
         if(view = __super__::staticViewFromEl el)
-          view.model?.set {
-                          position
-                          row: @model.get "row"
-                          fieldset: @model.get "fieldset"
-                          direction: @model.get "direction"
-                          }, { validate: true }
-
+          row = @model.get "row"
+          fieldset = @model.get "fieldset"
+          direction = @model.get "direction"
+          view.model?.set {position, row, fieldset, direction}, {validate: true }
         position + 1
       ),0
 
