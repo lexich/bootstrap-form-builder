@@ -8,33 +8,15 @@ define [
   "common/BackboneCustomView"
   "sortable"
 ],($,Backbone,_,RowView,RowModel,Log)->
-  log = Log.getLogger("view/FieldsetView")
-
-  FieldsetView = Backbone.CustomView.extend
-    ###
-    Variables Backbone.View
-    ###
+  ###
+  CustomView
+  ###
+  CustomView = do(
+    __super__ = Backbone.CustomView
+    log = Log.getLogger("view/FieldsetView_CustomView")
+  )-> __super__.extend
     viewname:"fieldset"
-    tagName:"fieldset"
-    events:
-      "click [data-js-remove-fieldset]": "event_remove"
-      "input [contenteditable][data-bind]":"event_inputDataBind"
-      "click [data-js-fieldset-position]":"event_clickDirection"
 
-    event_clickDirection:->
-      bVertical = @model.get('direction') == 'vertical'
-      value = if bVertical then "horizontal" else "vertical"
-      @model.set "direction", value, {validate:true}
-      @checkModel log, @model
-
-
-    event_inputDataBind:(e)->
-      @model.set "title", $(e.target).text(), {validate:true, silent:true}
-      @checkModel log, @model
-
-    ###
-    Variables Backbone.CustomView
-    ###
     ChildType: RowView
     templatePath:"#FieldsetViewTemplate"
     placeholderSelector:"[data-drop-accept-placeholder='form']"
@@ -43,34 +25,11 @@ define [
       loaderChildren:"[data-html-fieldset-loader] >"
       direction:"[data-js-fieldset-position]"
 
-    ###
-    @overwrite Backbone.View
-    ###
-    initialize:->
-      log.info "initialize #{@cid}"
-      @bindEvents()
-      @model.on "change", _.bind(@on_model_change,this)
-
-    on_model_change:(model,options)->
-      log.info "on_model_change #{@cid}"
-      changed = _.pick model.changed, _.keys(model.defaults)
-      if changed.direction?
-        _.each @childrenViews,(view)=>
-          view.model.set "direction", changed.direction,{validate:true}
-          @checkModel log, view.model
-      _.each @childrenViews,(view,cid)->
-        #silent mode freeze changing beause render call
-        view.model.set changed,{validate:true}
-      @render()
-
-    ###
-    @overwrite Custom.View
-    ###
     updateViewModes:->
       log.info "updateViewModes #{@cid}"
       if (sortable = @getItem("loader").data("sortable"))
         sortable.destroy()
-      Backbone.CustomView::updateViewModes.apply this, arguments
+      __super__::updateViewModes.apply this, arguments
       connector = "[data-html-fieldset-loader]:not([data-js-row-disable-drag]),[data-drop-accept-placeholder='form']"
       @getItem("loader").sortable
         helper:"original"
@@ -92,26 +51,23 @@ define [
 
       this
 
-    ###
-    @overwrite Backbone.CustomView
-    ###
+    childrenConnect:(self,view)->
+      self.getItem("loader").append view.$el
+
     reindex:->
       log.info "reindex #{@cid}"
       _.reduce @getItem("loaderChildren"), ((row,el)=>
-        if(view = Backbone.CustomView::staticViewFromEl el)
-          view.model?.set {
+        if(view = __super__::staticViewFromEl el)
+          view.model?.set
             row: row
             fieldset: @model.get "fieldset"
-          }, {validate: true}
+            , {validate: true}
         row + 1
       ),0
 
-    ###
-    @overwrite Backbone.CustomView
-    ###
     handle_create_new:(event,ui)->
       log.info "handle_create_new #{@cid}"
-      view = Backbone.CustomView::staticViewFromEl(ui.item)
+      view = __super__::staticViewFromEl(ui.item)
       row = _.size(@childrenViews)
       if view? and view.viewname is "row"
         @addChild view
@@ -124,12 +80,33 @@ define [
         view.handle_create_new(event,ui).reindex()
       this
 
-    ###
-    Handle to jQuery.UI.sortable - update
-    ###
+    childrenViewsOrdered:->
+      _.sortBy @childrenViews, (view,cid)-> view.model.get("row")
+
+    reinitialize:->
+      log.info "reinitialize #{@cid}"
+      fieldset = @model.get("fieldset")
+      rows = _.keys @collection.getFieldsetGroupByRow(fieldset)
+      childrenCID = _.map rows, (row)=>
+        row = toInt row
+        view = @getOrAddRowView(row)
+        view.reinitialize()
+        view.cid
+
+      _.chain(@childrenViews)
+        .omit(childrenCID)
+        .each (view,cid)=> @removeChild view
+
+  ###
+  UIView
+  ###
+  UIView = do(
+    __super__ = CustomView,
+    log = Log.getLogger("view/FieldsetView_UIView")
+  )->__super__.extend
     handle_sortable_update:(event,ui)->
       log.info "handle_sortable_update #{@cid}"
-      rowView = Backbone.CustomView::staticViewFromEl(ui.item)
+      rowView = __super__::staticViewFromEl(ui.item)
       if ui.sender?
         log.info "handle_sortable_update #{@cid} ui.sender != null"
         #Если View найден, создаем дочерний
@@ -145,28 +122,26 @@ define [
             model: new RowModel {fieldset:@model.get("fieldset"), direction:@model.get("direction")}
             service: @options.service
 
+  ###
+  FieldsetView
+  ###
+  FieldsetView = do(
+    __super__ = UIView,
+    log = Log.getLogger("view/FieldsetView")
+  )-> __super__.extend
     ###
-    @overwrite Backbone.CustomView
+    Variables Backbone.View
     ###
-    childrenViewsOrdered:->
-      _.sortBy @childrenViews, (view,cid)-> view.model.get("row")
 
-    ###
-    @overwrite Backbone.CustomView
-    ###
-    reinitialize:->
-      log.info "reinitialize #{@cid}"
-      fieldset = @model.get("fieldset")
-      rows = _.keys @collection.getFieldsetGroupByRow(fieldset)
-      childrenCID = _.map rows, (row)=>
-        row = toInt row
-        view = @getOrAddRowView(row)
-        view.reinitialize()
-        view.cid
+    tagName:"fieldset"
+    events:
+      "click [data-js-remove-fieldset]": "event_clickRemove"
+      "input [contenteditable][data-bind]":"event_inputDataBind"
+      "click [data-js-fieldset-position]":"event_clickDirection"
 
-      _.chain(@childrenViews)
-        .omit(childrenCID)
-        .each (view,cid)=> @removeChild view
+    initialize:->
+      log.info "initialize #{@cid}"
+      @model.on "change", _.bind(@on_model_change,this)
 
     insertRow:(row) ->
       log.info "insertRowView #{@cid}"
@@ -200,13 +175,41 @@ define [
           service: @options.service
       view
 
-    bindEvents:->
-      #bind events
+    ###
+    Handle change model (callback Backbone event)
+    ###
+    on_model_change:(model,options)->
+      log.info "on_model_change #{@cid}"
+      changed = _.pick model.changed, _.keys(model.defaults)
+      if changed.direction?
+        _.each @childrenViews,(view)=>
+          view.model.set "direction", changed.direction,{validate:true}
+          @checkModel log, view.model
+      _.each @childrenViews,(view,cid)->
+        #silent mode freeze changing beause render call
+        view.model.set changed,{validate:true}
+      @render()
 
-    childrenConnect:(self,view)->
-      self.getItem("loader").append view.$el
+    ###
+    Event to change direction
+    ###
+    event_clickDirection:->
+      bVertical = @model.get('direction') == 'vertical'
+      value = if bVertical then "horizontal" else "vertical"
+      @model.set "direction", value, {validate:true}
+      @checkModel log, @model
 
-    event_remove:(e)->
+    ###
+    Event to change Fieldset legend
+    ###
+    event_inputDataBind:(e)->
+      @model.set "title", $(e.target).text(), {validate:true, silent:true}
+      @checkModel log, @model
+
+    ###
+    event to destroy view
+    ###
+    event_clickRemove:->
       @destroy()
 
   FieldsetView
