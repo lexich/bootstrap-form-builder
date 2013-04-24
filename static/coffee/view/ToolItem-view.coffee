@@ -30,7 +30,7 @@ define [
         cursorAt:
           top: -1
           left: -1
-        zIndex: 1000
+        zIndex: 1500
         helper:"clone"
         start:_.bind(@handle_draggable_start, this)
         stop:_.bind(@handle_draggable_stop, this)
