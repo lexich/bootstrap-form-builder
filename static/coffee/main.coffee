@@ -31,21 +31,21 @@ require [
   ALL = DEBUG | INFO | WARN | ERROR
 
   Log.initConfig {
-    "view/FormView": level: CHECK
-    "view/FieldsetView": level: CHECK
-    "view/FormItemView": level: CHECK
-    "view/ModalView": level: CHECK
-    "view/RowView": level: CHECK
-    "view/RowViewSortableHandlers": level: CHECK
-    "view/RowViewCustomView": level: CHECK
-    "view/SettingsView": level: CHECK
-    "view/ToolItemView": level: CHECK
-    "view/NotVisual": level: CHECK
-    "common/CustomView": level: CHECK
-    "common/Service": level: CHECK
-    "collection/FormItemCollection": level: CHECK
-    "collection/FieldsetCollection": level: CHECK
-    "main":level:CHECK
+    "view/FormView": level: ALL
+    "view/FieldsetView": level: ALL
+    "view/FormItemView": level: ALL
+    "view/ModalView": level: ALL
+    "view/RowView": level: ALL
+    "view/RowViewSortableHandlers": level: ALL
+    "view/RowViewCustomView": level: ALL
+    "view/SettingsView": level: ALL
+    "view/ToolItemView": level: ALL
+    "view/NotVisual": level: ALL
+    "common/CustomView": level: ALL
+    "common/Service": level: ALL
+    "collection/FormItemCollection": level: ALL
+    "collection/FieldsetCollection": level: ALL
+    "main":level:ALL
   }
 
   log = Log.getLogger("main")
@@ -119,7 +119,7 @@ require [
       html2canvas $("[data-html-form]:first"),
         onrendered: (canvas)->
           data = canvas.toDataURL()
-          window.open(data,"_blank")
+          #window.open(data,"_blank")
           data = data.replace "data:image/png;base64,",""
           collection.updateAll img:data
           $("body").removeClass("ui_printform")
