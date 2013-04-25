@@ -48,7 +48,7 @@ define [
       else
         @getItem("direction").addClass("icon-resize-vertical").removeClass("icon-resize-horizontal")
         @$el.find(".ui_global_placeholder").not('.ui_row__prev_loader').addClass("form-horizontal")
-
+      @updateDirectionVisible()
       this
 
     childrenConnect:(self,view)->
@@ -175,6 +175,20 @@ define [
           model:model
           service: @options.service
       view
+
+    isVisibleDirection:->
+      log.info "isVisibleDirection"
+      _.chain(@childrenViews)
+          .filter((view)-> !view.isVisibleDirection())
+          .size()
+          .value() <= 0
+
+    updateDirectionVisible:->
+      log.info "updateDirectionVisible"
+      if @isVisibleDirection()
+        @getItem("direction").removeClass "hide"
+      else
+        @getItem("direction").addClass "hide"
 
     ###
     Handle change model (callback Backbone event)

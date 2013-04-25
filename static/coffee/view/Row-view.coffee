@@ -155,6 +155,7 @@ define [
         view.model.set "direction", @model.get("direction"),{validate:true, silent:true}
         @checkModel(log,view.model)
         @listenTo view.model, "change:size", @on_child_model_changes_size
+      @parentView.updateDirectionVisible()
       result
 
     removeChild:(view)->
@@ -198,6 +199,7 @@ define [
 
     handle_sortable_deactivate:(event,ui)->
       @getItem("area").removeClass("ui_row__loader_active")
+      @getItem("ghostRow").hide()
       @originParent = null
 
     handle_sortable_activate:(event,ui)->
@@ -317,6 +319,8 @@ define [
           collection:@collection
           service:@options.service
       view
+
+    isVisibleDirection:-> _.size(@childrenViews) <= 1
 
     #****************************
     # Handlers
