@@ -134,6 +134,7 @@ define [
     ###
 
     tagName:"fieldset"
+    className:"ui_fieldset"
     events:
       "click [data-js-remove-fieldset]": "event_clickRemove"
       "input [contenteditable][data-bind]":"event_inputDataBind"
