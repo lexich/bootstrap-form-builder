@@ -5,32 +5,16 @@ define [
   "common/Log"
   "sortable"
   "common/BackboneCustomView"
+  "common/BackboneWireMixin"
 ],($,Backbone,_,Log)->
   log = Log.getLogger("view/NotVisualItem")
-  NotVisualItem = Backbone.CustomView.extend
 
-    SELECTED_CLASS:"ui_notvisual__item-active"
+  CustomView = do(
+    __super__ = Backbone.CustomView,
+    log = log
+  )-> __super__.extend
 
-    className:"ui_notvisual__item"
     templatePath:"#NotVisualItemTemplate"
-
-    wireEvents:
-      "editableView:change":"on_editableView_change"
-      "editableView:remove":"on_editableView_remove"
-
-    bindWireEvents:->
-      @__saveWireEvents = _.reduce @wireEvents or {}, ((save, callback,action)=>
-        handler = _.bind(this[callback], this)
-        @listenTo @options.service, action, handler
-        save[action] = handler
-        save),{}
-
-    unbindWireEvents:->
-      _.each @__saveWireEvents or {}, (handler, action)=>
-        @stopListening @options.service, action, handler
-
-    events:
-      "click":"event_clickEditable"
 
     templateData:->
       templateHTML = @options.service.getTemplate(@model.get("type"))
@@ -41,26 +25,50 @@ define [
     itemsSelectors:
       loader:"[data-js-notvisual-drop]"
 
+
+  NotVisualItem = do(
+    __super__ = CustomView.extend Backbone.WireMixin,
+    log = log
+  )-> __super__.extend
+
+    SELECTED_CLASS:"ui_notvisual__item-active"
+
+    className:"ui_notvisual__item"
+
+    wireEvents:
+      "editableView:change":"on_editableView_change"
+      "editableView:remove":"on_editableView_remove"
+
+    events:
+      "click":"event_clickEditable"
+
     initialize:->
       log.info "initialize #{@cid}"
       @listenTo @model, "change", @on_model_change
 
+    remove:->
+      log.info "remove #{@cid}"
+      @unbindWireEvents()
+      __super__::remove.apply this, arguments
+
     event_clickEditable:->
       log.info "event_clickEditable #{@cid}"
       if @options.service.setEditableView(this)
-        @bindWireEvents()
+        @bindWireEvents @options.service, @wireEvents
         @$el.addClass(@SELECTED_CLASS)
 
     on_model_change:->
+      log.info "on_model_change #{@cid}"
       @render()
 
     on_editableView_change:(view)->
+      log.info "on_editableView_change #{@cid}"
       return if view is this
       @unbindWireEvents()
       @$el.removeClass(@SELECTED_CLASS)
 
     on_editableView_remove:->
-      @unbindWireEvents()
+      log.info "on_editableView_remove #{@cid}"
       @remove()
 
 
