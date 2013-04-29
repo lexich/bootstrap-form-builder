@@ -1,5 +1,5 @@
 require.config({
-  baseUrl: "/builder//js",
+  baseUrl: "/bootstrap-form-builder/builder//js",
   paths: {
     "jquery": "jquery/jquery",
     "underscore": "underscore/underscore",
