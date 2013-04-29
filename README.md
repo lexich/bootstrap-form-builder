@@ -4,5 +4,4 @@
 
 > ./node_modules/.bin/grunt
 
-### Live demo
-lexich.github.com/bootstrap-form-builder/
+### [Live demo](lexich.github.com/bootstrap-form-builder/)
