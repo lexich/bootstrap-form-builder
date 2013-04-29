@@ -5,4 +5,4 @@
 > ./node_modules/.bin/grunt
 
 ### Live demo
-http://lexich.ru/bootstrap-form-builder/
+lexich.github.com/bootstrap-form-builder/
