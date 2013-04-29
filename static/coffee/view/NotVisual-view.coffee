@@ -10,6 +10,7 @@ define [
 ],($,Backbone,_,Log, NotVisualItem,NotVisualModel)->
   log = Log.getLogger("view/NotVisual")
   NotVisual = Backbone.CustomView.extend
+    viewname:"notvisual"
     ChildType:NotVisualItem
     templatePath:"#NotVisualViewTemplate"
     placeholderSelector:""

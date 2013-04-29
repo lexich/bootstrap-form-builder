@@ -13,7 +13,7 @@ define [
     __super__ = Backbone.CustomView,
     log = log
   )-> __super__.extend
-
+    viewname:"notvisualitem"
     templatePath:"#NotVisualItemTemplate"
 
     templateData:->

@@ -79,10 +79,6 @@ define [
         bDisable = true
       @setDisable bDisable
 
-    getPrevious:(view)-> @_getFormItemByPosition view.model.get("position") - 1
-
-    getNext:(view)-> @_getFormItemByPosition view.model.get("position") + 1
-
     getPreviousRow:(view)-> @parentView.getRowByPosition view.model.get("row") - 1
 
     getNextRow:(view)-> @parentView.getRowByPosition view.model.get("row") + 1
@@ -275,14 +271,6 @@ define [
         $area.attr(@DISABLE_DRAG,"")
       else
         $area.removeAttr(@DISABLE_DRAG)
-
-    ###
-    Get child view by model value  position
-    ###
-    _getFormItemByPosition:(position)->
-      result = _.filter @childrenViews, (view)->
-        view.model.get("position") is position
-      result[0] if result.length > 0
 
     ###
     create new model FormItemModel
