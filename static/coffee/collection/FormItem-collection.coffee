@@ -56,7 +56,7 @@ define [
       rows = @rowCollection.toJSON()
       fieldsets = @fieldsetCollection.toJSON()
       notvisual = @notVisualCollection.toJSON()
-      img = options.img ? "data:image/png;base64,"
+      img = options?.img ? "data:image/png;base64,"
       {items,rows,fieldsets,notvisual,img}
     
     comparator:(model)->
@@ -67,18 +67,6 @@ define [
         success: (model, resp, xhr)=>
           @reset(model)
       Backbone.sync 'create', this, options
-
-    smartSliceNormalize:(row,key,baseValue)->
-      models = @where row:row
-      groups = _.groupBy models, (model)-> model.get(key)
-      keys = _.keys(groups)
-      if keys.length > 1
-        _.each models,(model)=>
-          model.set key, baseValue, {
-            validation:true
-            silent: true
-          }
-      models
 
     remove:(models, options)->
       log.info "remove"

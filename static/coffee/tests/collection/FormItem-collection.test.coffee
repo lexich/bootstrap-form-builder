@@ -2,7 +2,7 @@ define [
   "model/FormItem-model",
   "collection/FormItem-collection"
 ],(FormItemModel,FormItemCollection)->
-  respond = [{
+  respond = items: [{
     label:"one"
     placeholder:"two"
     type:"input1"
@@ -10,6 +10,7 @@ define [
     help:"one"
     position:"2"
     row:2,
+    fieldset:0
     direction:"horizontal"
   },{
     label:"one"
@@ -18,7 +19,8 @@ define [
     name:"three"
     help:"one"
     position:"1"
-    row:1,
+    row:1
+    fieldset:0
     direction:"vertical"
   },{
     label:"one"
@@ -27,11 +29,18 @@ define [
     name:"three"
     help:"one"
     position:"1"
-    row:1,
+    row:1
+    fieldset:1
     direction:"horizontal"
+  }],fieldsets:[{
+    direction:"horizontal"
+  }],notvisual:[{
+    direction:"horizontal"
+  }],rows:[{
+    test:"test"
   }]
 
-  describe "Test collection",->
+  describe "FormItemcollection",->
     beforeEach ->
       @server = sinon.fakeServer.create()
       @server.respondWith "GET","/forms1.json",[
@@ -83,29 +92,58 @@ define [
       )
 
     it "Collection parce",->
-      expect(respond.length).toEqual(3)
-      expect(respond[0].row).toEqual(2)
-      expect(respond[1].row).toEqual(1)
-      expect(respond[1].row).toEqual(1)
+      items = respond.items
+      expect(items.length).toEqual(3)
+      expect(items[0].row).toEqual(2)
+      expect(items[1].row).toEqual(1)
+      expect(items[1].row).toEqual(1)
       resp = @collection.parse respond
+      items = resp.items
       expect(resp[0].row).toEqual(0)
       expect(resp[1].row).toEqual(0)
       expect(resp[2].row).toEqual(1)
 
-    it "Collection smartSliceNormalize",->
+    it "toJson",->
+      json = @collection.toJSON()
+      expect(json.items?).toBeTruthy()
+      expect(json.rows?).toBeTruthy()
+      expect(json.fieldsets?).toBeTruthy()
+      expect(json.notvisual?).toBeTruthy()
+
+    it "get other collections",->
       @collection.fetch()
       @server.respond()
-      expect(@collection.models.length).toEqual(3)
-      row = 0 #1 after normalization 0
-      models = @collection.where row:row
-      expect(models.length).toEqual(2)
-      expect(models[0].get("direction")).toEqual("vertical")
-      expect(models[1].get("direction")).toEqual("horizontal")
-      models = @collection.smartSliceNormalize(row,"direction","vertical")
-      expect(models.length).toEqual(2)
-      expect(models[0].get("direction")).toEqual("vertical")
-      expect(models[1].get("direction")).toEqual("vertical")
-      @collection.smartSliceNormalize(row,"direction","horizontal")
-      expect(models[0].get("direction")).toEqual("vertical")
-      expect(models[1].get("direction")).toEqual("vertical")
+      expect(@collection.models.length).toEqual 3
+      rows = @collection.getRow(0,1)
+      expect(rows.length).toEqual(1)
+      fieldset = @collection.getFieldset(0)
+      expect(fieldset.length).toEqual(2)
+      fieldsetGroup = @collection.getFieldsetGroupByRow(0)
+      expect(_.keys(fieldsetGroup).length).toEqual 2
+
+    it "getOrAdd methods",->
+      @collection.fetch()
+      @server.respond()
+
+      if models = @collection.fieldsetCollection.models
+        len = models.length
+        @collection.getOrAddFieldsetModel(9)
+        expect(models.length).toEqual len + 1
+        @collection.getOrAddFieldsetModel(9)
+        expect(models.length).toEqual len + 1
+
+      if models = @collection.rowCollection.models
+        len = models.length
+        @collection.getOrAddRowModel(9,9)
+        expect(models.length).toEqual len + 1
+        @collection.getOrAddRowModel(9,9)
+        expect(models.length).toEqual len + 1
+
+      if models = @collection.notVisualCollection.models
+        len = models.length
+        @collection.addNotVisualModel({data:"test"})
+        expect(models.length).toEqual len + 1
+        @collection.addNotVisualModel({data:"test"})
+        expect(models.length).toEqual len + 2
+
 
