@@ -12,7 +12,7 @@ module.exports = (grunt)->
           autoescape: true
           allowErrors: true
           encoding: "utf8"
-        src = filePair.orig.src[0]
+        src = path.relative filePair.orig.cwd, filePair.src[0]
         tmpl = swig.compileFile(src)
         params = grunt.util._.defaults @data.params,{livereload:false}
         data = tmpl.render
