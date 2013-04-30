@@ -18,7 +18,7 @@ define [
     dragActive: false
 
     # Type of children elements
-    ChildType:Backbone.CustomView
+    ChildType: null
 
     # mapper of DOM elements, that contains in $el
     # key/value - alias/jQuery-selector
@@ -51,6 +51,7 @@ define [
         placeholderSelector:"[data-drop-accept-placeholder]"
         parentView:null
         childrenViews:{}
+        ChildType:Backbone.CustomView
 
       options = _.pick(options or {}, _.keys(mixin))
       _.extend this, options

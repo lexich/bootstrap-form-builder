@@ -60,201 +60,191 @@ module.exports = (grunt) ->
         }]
 
     copy:
-      html5sortable:
-        files:[
-          flattern: true
-          expand: true
-          src: "jquery.sortable.js"
-          cwd: "<%= components %>/html5sortable/"
-          dest: "<%= resource.js %>/html5sortable/"
+      html5sortable: files:[
+        flattern: true
+        expand: true
+        src: "jquery.sortable.js"
+        cwd: "<%= components %>/html5sortable/"
+        dest: "<%= resource.js %>/html5sortable/"
+      ]
+      html2canvas: files:[
+        flattern: true
+        expand: true
+        src: "index.js"
+        cwd: "<%= components %>/html2canvas/"
+        dest: "<%= resource.js %>/html2canvas/"
+        rename: (dest, filename, orig)->
+          dest + filename.replace( "index.js","html2canvas.js")
+        options:
+          bare: true
+      ]
+      bootstrap: files:[
+        flattern: true
+        expand: true
+        src: "*.js"
+        cwd: "<%= components %>/bootstrap/docs/assets/js/"
+        dest: "<%= resource.js %>/bootstrap/"
+      ,
+        flattern: true
+        expand: true
+        src: "*.css"
+        cwd: "<%= components %>/bootstrap/docs/assets/css/"
+        dest: "<%= resource.css %>/"
+      ,
+        flattern: true
+        expand: true
+        src: "*.png"
+        cwd: "<%= components %>/bootstrap/img/"
+        dest: "<%= resource.img %>/"
+      ]
+      font_awesome: files:[
+        flattern: true
+        expand: true
+        src: ["font-awesome.min.css", "font-awesome-ie7.min.css"]
+        cwd: "<%= components %>/font-awesome/css/"
+        dest: "<%= resource.css %>/"
+      ,
+        flattern: true
+        expand: true
+        src: "**"
+        cwd: "<%= components %>/font-awesome/font/"
+        dest: "<%= resource.font %>/"
+      ]
+      requirejs: files:[
+        flattern: true
+        expand: true
+        src: "text.js"
+        cwd: "<%= components %>/requirejs-text/"
+        dest: "<%= resource.js %>/"
+      ,
+        flattern: true
+        expand: true
+        src: "require.js"
+        cwd: "<%= components %>/requirejs/"
+        dest: "<%= resource.js %>/requirejs/"
+      ]
+      fuelux: files:[
+        flattern: true
+        expand: true
+        src: "*.js"
+        cwd: "<%= components %>/fuelux/dist"
+        dest: "<%= resource.js %>/fuelux/"
+      ,
+        flattern: true
+        expand: true
+        src: "*.min.css"
+        cwd: "<%= components %>/fuelux/dist/css"
+        dest: "<%= resource.css %>/"
+      ,
+        flattern: true
+        expand: true
+        src: "*.png"
+        cwd: "<%= components %>/fuelux/dist/img"
+        dest: "<%= resource.img %>/"
+      ]
+      jasmine: files:[
+        flattern: true
+        expand: true
+        src: [
+          "jasmine.js"
+          "jasmine-html.js"
         ]
-      html2canvas:
-        files:[
-          flattern: true
-          expand: true
-          src: "index.js"
-          cwd: "<%= components %>/html2canvas/"
-          dest: "<%= resource.js %>/html2canvas/"
-          rename: (dest, filename, orig)->
-            dest + filename.replace( "index.js","html2canvas.js")
-          options:
-            bare: true
+        cwd: "<%= components %>/jasmine/lib/jasmine-core/"
+        dest: "<%= resource.js %>/jasmine/"
+      ,
+        flattern: true
+        expand: true
+        src: "jasmine.css"
+        cwd: "<%= components %>/jasmine/lib/jasmine-core/"
+        dest: "<%= resource.css %>/"
+      ]
+      select2: files:[
+        flattern: true
+        expand: true
+        src: "select2.js"
+        cwd: "<%= components %>/select2/"
+        dest: "<%= resource.js %>/select2/"
+      ,
+        flattern: true
+        expand: true
+        src: "select2.css"
+        cwd: "<%= components %>/select2/"
+        dest: "<%= resource.css %>/"
+      ,
+        flattern: true
+        expand: true
+        src: ["*.png","*.gif"]
+        cwd: "<%= components %>/select2/"
+        dest: "<%= resource.css %>/"
+      ]
+      datepicker: files:[
+        flattern: true
+        expand: true
+        src:"bootstrap-datepicker.js"
+        cwd: "<%= components %>/bootstrap-datepicker/js"
+        dest: "<%= resource.js %>/datepicker/"
+      ,
+        flattern: true
+        expand: true
+        src: "datepicker.css"
+        cwd: "<%= components %>/bootstrap-datepicker/css"
+        dest: "<%= resource.css %>/"
+      ]
+      templates:files:[
+        flattern: true
+        expand: true
+        src: "*.html"
+        cwd: "static/templates/"
+        dest: "<%= resource.templates %>/"
+      ]
+      backbone:files:[
+        flattern: true
+        expand: true
+        src: "backbone.js"
+        cwd: "<%= components %>/backbone/"
+        dest: "<%= resource.js %>/backbone/"
+      ,
+        flattern: true
+        expand: true
+        src: "underscore.js"
+        cwd: "<%= components %>/underscore"
+        dest: "<%= resource.js %>/underscore"
+      ]
+      jquery:files:[
+        flattern: true
+        expand: true
+        src: "jquery.js"
+        cwd: "<%= components %>/jquery/"
+        dest: "<%= resource.js %>/jquery/"
+      ]
+      jqueryui:files:[
+        flattern: true
+        expand: true
+        src: [
+          "jquery.ui.core.js"
+          "jquery.ui.widget.js"
+          "jquery.ui.mouse.js"
+          "jquery.ui.resizable.js"
+          "jquery.ui.draggable.js"
+          "jquery.ui.droppable.js"
+          "jquery.ui.sortable.js"
         ]
-      bootstrap:
-        files:[
-          flattern: true
-          expand: true
-          src: "*.js"
-          cwd: "<%= components %>/bootstrap/docs/assets/js/"
-          dest: "<%= resource.js %>/bootstrap/"
-        ,
-          flattern: true
-          expand: true
-          src: "*.css"
-          cwd: "<%= components %>/bootstrap/docs/assets/css/"
-          dest: "<%= resource.css %>/"
-        ,
-          flattern: true
-          expand: true
-          src: "*.png"
-          cwd: "<%= components %>/bootstrap/img/"
-          dest: "<%= resource.img %>/"
-        ]
-      font_awesome:
-        files: [
-          flattern: true
-          expand: true
-          src: ["font-awesome.min.css", "font-awesome-ie7.min.css"]
-          cwd: "<%= components %>/font-awesome/css/"
-          dest: "<%= resource.css %>/"
-        ,
-          flattern: true
-          expand: true
-          src: "**"
-          cwd: "<%= components %>/font-awesome/font/"
-          dest: "<%= resource.font %>/"
-        ]
-      requirejs:
-        files:[
-          flattern: true
-          expand: true
-          src: "text.js"
-          cwd: "<%= components %>/requirejs-text/"
-          dest: "<%= resource.js %>/"
-        ,
-          flattern: true
-          expand: true
-          src: "require.js"
-          cwd: "<%= components %>/requirejs/"
-          dest: "<%= resource.js %>/requirejs/"
-        ]
-      fuelux:
-        files:[
-          flattern: true
-          expand: true
-          src: "*.js"
-          cwd: "<%= components %>/fuelux/dist"
-          dest: "<%= resource.js %>/fuelux/"
-        ,
-          flattern: true
-          expand: true
-          src: "*.min.css"
-          cwd: "<%= components %>/fuelux/dist/css"
-          dest: "<%= resource.css %>/"
-        ,
-          flattern: true
-          expand: true
-          src: "*.png"
-          cwd: "<%= components %>/fuelux/dist/img"
-          dest: "<%= resource.img %>/"
-        ]
-      jasmine:
-        files:[
-          flattern: true
-          expand: true
-          src: [
-            "jasmine.js"
-            "jasmine-html.js"
-          ]
-          cwd: "<%= components %>/jasmine/lib/jasmine-core/"
-          dest: "<%= resource.js %>/jasmine/"
-        ,
-          flattern: true
-          expand: true
-          src: "jasmine.css"
-          cwd: "<%= components %>/jasmine/lib/jasmine-core/"
-          dest: "<%= resource.css %>/"
-        ]
-      select2:
-        files:[
-          flattern: true
-          expand: true
-          src: "select2.js"
-          cwd: "<%= components %>/select2/"
-          dest: "<%= resource.js %>/select2/"
-        ,
-          flattern: true
-          expand: true
-          src: "select2.css"
-          cwd: "<%= components %>/select2/"
-          dest: "<%= resource.css %>/"
-        ,
-          flattern: true
-          expand: true
-          src: ["*.png","*.gif"]
-          cwd: "<%= components %>/select2/"
-          dest: "<%= resource.css %>/"
-        ]
-      datepicker:
-        files:[
-          flattern: true
-          expand: true
-          src:"bootstrap-datepicker.js"
-          cwd: "<%= components %>/bootstrap-datepicker/js"
-          dest: "<%= resource.js %>/datepicker/"
-        ,
-          flattern: true
-          expand: true
-          src: "datepicker.css"
-          cwd: "<%= components %>/bootstrap-datepicker/css"
-          dest: "<%= resource.css %>/"
-        ]
-      templates:
-        files:[
-          flattern: true
-          expand: true
-          src: "*.html"
-          cwd: "static/templates/"
-          dest: "<%= resource.templates %>/"
-        ]
-      backbone:
-        files:[
-          flattern: true
-          expand: true
-          src: "backbone.js"
-          cwd: "<%= components %>/backbone/"
-          dest: "<%= resource.js %>/backbone/"
-        ,
-          flattern: true
-          expand: true
-          src: "underscore.js"
-          cwd: "<%= components %>/underscore"
-          dest: "<%= resource.js %>/underscore"
-        ]
-      common:
-        files:[
-          flattern: true
-          expand: true
-          src: "jquery.js"
-          cwd: "<%= components %>/jquery/"
-          dest: "<%= resource.js %>/jquery/"
-        ,
-          flattern: true
-          expand: true
-          src: ["*.png","**/*.png"]
-          cwd: "static/img/"
-          dest: "<%= resource.img %>/"
-        ,
-          flattern: true
-          expand: true
-          src: [
-            "jquery.ui.core.js"
-            "jquery.ui.widget.js"
-            "jquery.ui.mouse.js"
-            "jquery.ui.resizable.js"
-            "jquery.ui.draggable.js"
-            "jquery.ui.droppable.js"
-            "jquery.ui.sortable.js"
-          ]
-          cwd: "<%= components %>/jquery-ui/ui/"
-          dest: "<%= resource.js %>/jquery-ui/"
-        ,
-          flattern: true
-          expand: true
-          src: "sinon.js"
-          cwd: "<%= components %>/sinon.js/"
-          dest: "<%= resource.js %>/sinon/"
-        ]
+        cwd: "<%= components %>/jquery-ui/ui/"
+        dest: "<%= resource.js %>/jquery-ui/"
+      ]
+      common: files:[
+        flattern: true
+        expand: true
+        src: ["*.png","**/*.png"]
+        cwd: "static/img/"
+        dest: "<%= resource.img %>/"
+      ,
+        flattern: true
+        expand: true
+        src: "sinon.js"
+        cwd: "<%= components %>/sinon.js/"
+        dest: "<%= resource.js %>/sinon/"
+      ]
 
     clean:
       files:
@@ -273,6 +263,12 @@ module.exports = (grunt) ->
               htmlpath = grunt.config.get("resource.html")
               index_file = grunt.config.get("gruntconfig.index_file")
               filepath = path.normalize(path.join(__dirname, htmlpath, index_file))
+              res.set('Content-Type', 'text/html');
+              res.sendfile filepath
+            "/test.html": (req, res)->
+              htmlpath = grunt.config.get("resource.html")
+              test_file = "test.html"
+              filepath = path.normalize(path.join(__dirname, htmlpath, test_file))
               res.set('Content-Type', 'text/html');
               res.sendfile filepath
             "/forms.json": (req, res) -> res.send data
@@ -358,7 +354,7 @@ module.exports = (grunt) ->
 
         files: [
           expand: true
-          src: ["index.html"]
+          src: ["index.html","test.html"]
           cwd: "templates"
           dest: "<%= resource.html %>/"
           rename: (dest, filename, orig)->
@@ -367,8 +363,6 @@ module.exports = (grunt) ->
               index_file = grunt.config.get("gruntconfig.index_file")
               if index_file
                 filename = index_file
-            else
-              filename = filename.replace /\.html/g, ".ftl"
             dest + filename
           options:
             bare: true

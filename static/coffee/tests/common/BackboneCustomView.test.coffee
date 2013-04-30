@@ -4,6 +4,9 @@ define [
  "common/BackboneCustomView"
 ],(Backbone,_)->
 
+  CustomView = Backbone.CustomView.extend
+    viewname:"customView"
+    ChildType: Backbone.CustomView.extend viewname:"customchild"
 
   describe "BackboneCustomView",->
     beforeEach ->
@@ -12,19 +15,22 @@ define [
 
       @tmpl = "<div>CustomView</div>"
       $("#tmplPath").text @tmpl
-      @view = new Backbone.CustomView
+      @view = new CustomView
         templatePath:"#tmplPath"
 
     it "constructor",->
       expect(@view.templatePath).toEqual("#tmplPath")
+
+    it "expect Throw",->
+      expect(-> new Backbone.CustomView).toThrow(new Error("Need this.viewname attribute"))
 
     it "render",->
       @view.render()
       expect(@view.$el.html()).toEqual(@tmpl)
 
     it "createChild",->
-      view = @view.createChild()
-      view2 = @view.createChild()
+      view = @view.createChild({})
+      view2 = @view.createChild({})
       expect(view.parentView.cid).toEqual(@view.cid)
       childrens = _.keys(@view.childrenViews)
       expect(childrens.length).toEqual(2)
