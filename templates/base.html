@@ -31,13 +31,13 @@
       {% if p.compress_cssie7 %}<!--[if lt IE 7]><link href="{{ p.static_folder }}/{{ p.compress_cssie7 }}" rel="stylesheet" media="screen"><![endif]-->{% endif %}
     {% else %}
       <!-- Bootstrap -->
-      <link href="{{ p.static_folder }}/css/bootstrap.css" rel="stylesheet" media="screen">
+      <link href="{{ p.static_folder }}css/bootstrap.css" rel="stylesheet" media="screen">
       <!-- End Bootstrap-->
-      <link href="{{ p.static_folder }}/css/font-awesome.min.css" rel="stylesheet" media="screen">
+      <link href="{{ p.static_folder }}css/font-awesome.min.css" rel="stylesheet" media="screen">
       <!--[if IE 7]><link href="static/font-awesome/css/font-awesome-ie7.min.css" rel="stylesheet" media="screen"><!--[endif]-->
-      <link href="{{ p.static_folder }}/css/select2.css" rel="stylesheet" media="screen">
-      <link href="{{ p.static_folder }}/css/datepicker.css" rel="stylesheet" media="screen">
-      <link href="{{ p.static_folder }}/css/style.css" rel="stylesheet" media="screen">
+      <link href="{{ p.static_folder }}css/select2.css" rel="stylesheet" media="screen">
+      <link href="{{ p.static_folder }}css/datepicker.css" rel="stylesheet" media="screen">
+      <link href="{{ p.static_folder }}css/style.css" rel="stylesheet" media="screen">
     {% endif %}
     {% endblock %}
   </head>
@@ -50,13 +50,13 @@
     <!-- end live reload-->
     {% endif %}
 
-    <script src="{{ p.static_folder }}/js/common/base.js"></script>
-    <script src="{{ p.static_folder }}/js/requirejs/require.js">     </script>
-    <script src="{{ p.static_folder }}/js/config.js"></script>
+    <script src="{{ p.static_folder }}js/common/base.js"></script>
+    <script src="{{ p.static_folder }}js/requirejs/require.js">     </script>
+    <script src="{{ p.static_folder }}js/config.js"></script>
     {% if p and p.compress_js %}
-        <script src="{{ p.static_folder }}/{{p.compress_js}}"></script>
+        <script src="{{ p.static_folder }}{{p.compress_js}}"></script>
     {% else %}
-        <script src="{{ p.static_folder }}/js/main.js"></script>
+        <script src="{{ p.static_folder }}js/main.js"></script>
     {% endif %}
 
     {% endblock %}
