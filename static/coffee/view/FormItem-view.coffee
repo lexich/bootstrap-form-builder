@@ -122,11 +122,13 @@ define [
     ###
     event_incsize:->
       log.info "event_incsize #{@cid}"
-      rowSize = @parentView.getCurrentRowSize()
       size = @model.get "size"
-      return if @model.get("direction") == "horizontal" and rowSize > @HORIZONTAL_SIZE_LIMIT
-      if rowSize < 12
-        @model.set "size", size+1, {validate:true}
+      if rowSize = @parentView?.getCurrentRowSize?()
+        return if @model.get("direction") == "horizontal" and rowSize > @HORIZONTAL_SIZE_LIMIT
+        if rowSize < 12
+          @model.set "size", size+1, {validate:true}
+      else unless size > 12
+        @model.set "size", size + 1, {validate:true}
 
     ###
     Remove current item

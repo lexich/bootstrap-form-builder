@@ -200,7 +200,8 @@ define [
     ###
     remove:->
       log.info "remove #{@cid}"
-      if @model? then @collection?.remove @model
+      if @collection? and @model then @collection?.remove @model
+      else @model?.destroy()
       @parentView?.removeChild this
       @parentView?.updateViewModes()
 
