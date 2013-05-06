@@ -143,7 +143,7 @@ define [
 
     initialize:->
       log.info "initialize #{@cid}"
-      @model.on "change", _.bind(@on_model_change,this)
+      @listenTo @model, "change", @on_model_change
 
     insertRow:(row) ->
       log.info "insertRowView #{@cid}"
@@ -226,6 +226,6 @@ define [
     event to destroy view
     ###
     event_clickRemove:->
-      @destroy()
+      @remove()
 
   FieldsetView

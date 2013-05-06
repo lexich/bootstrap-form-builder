@@ -4,6 +4,7 @@ require [
 
   "tests/view/Form-view.test"
   "tests/view/FormItem-view.test"
+  "tests/view/Fieldset-view.test"
   "tests/common/BackboneCustomView.test"
 ],->
   jasmineEnv = jasmine.getEnv();
