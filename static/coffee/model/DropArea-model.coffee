@@ -4,6 +4,7 @@ define [
 ],(Backbone,_)->
 
   DropAreaModel = Backbone.Model.extend
+    modelname:"DropAreaModel"
     DEFAULT_URL: "/area.json"
     HORIZONTAL:"horizontal"
     VERTICAL: "vertical"

@@ -32,9 +32,10 @@ define [
     ###
     initialize:->
       log.info "initialize #{@cid}"
-      @collection.on "reset", _.bind(@on_collection_reset,this)
+      @listenTo @collection, "reset", @on_collection_reset
 
     remove:->
+      @stopListening @collection
       @parentView?.removeChild this
       @parentView?.updateViewModes()
 
