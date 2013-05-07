@@ -6,6 +6,7 @@ require [
   "tests/view/FormItem-view.test"
   "tests/view/Fieldset-view.test"
   "tests/common/BackboneCustomView.test"
+  "tests/view/NotVisual-view.test"
 ],->
   jasmineEnv = jasmine.getEnv();
   jasmineEnv.updateInterval = 1000;
