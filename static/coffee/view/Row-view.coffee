@@ -4,11 +4,10 @@ define [
   "underscore"
   "view/FormItem-view"
   "model/FormItem-model"
-  "model/DropArea-model"
   "common/Log"
   "sortable"
   "common/BackboneCustomView"
-],($,Backbone,_,FormItemView,FormItemModel, DropAreaModel, Log)->
+],($,Backbone,_,FormItemView,FormItemModel, Log)->
 
   RowViewCustomView = do(
     __super__ = Backbone.CustomView,
