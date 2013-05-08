@@ -50,6 +50,7 @@ define [
     
     afterEach ->
       @server.restore()
+      @collection.reset()
       delete @collection
     
     it "initialize",->
@@ -103,22 +104,28 @@ define [
       expect(resp[2].row).toEqual(1)
 
     it "toJson",->
+      @collection.fetch()
+      @server.respond()
       json = @collection.toJSON()
       expect(json.items?).toBeTruthy()
+      expect(3).toEqual _.size(json.items)
       expect(json.rows?).toBeTruthy()
+      expect(1).toEqual _.size(json.rows)
       expect(json.fieldsets?).toBeTruthy()
+      expect(1).toEqual _.size(json.fieldsets)
       expect(json.notvisual?).toBeTruthy()
+      expect(1).toEqual _.size(json.notvisual)
 
     it "get other collections",->
       @collection.fetch()
       @server.respond()
-      expect(@collection.models.length).toEqual 3
+      expect(3).toEqual @collection.models.length
       rows = @collection.getRow(0,1)
-      expect(rows.length).toEqual(1)
-      fieldset = @collection.getFieldset(0)
-      expect(fieldset.length).toEqual(2)
+      expect(1).toEqual rows.length
+      fieldset = @collection.getFieldset 0
+      expect(2).toEqual fieldset.length
       fieldsetGroup = @collection.getFieldsetGroupByRow(0)
-      expect(_.keys(fieldsetGroup).length).toEqual 2
+      expect(2).toEqual _.keys(fieldsetGroup).length
 
     it "getOrAdd methods",->
       @collection.fetch()
