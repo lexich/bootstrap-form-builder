@@ -11,14 +11,11 @@ define [
   log = Log.getLogger("collection/FormItemCollection")
 
   FormItemCollection = Backbone.Collection.extend
-    DEFAULT_URL:"/forms.json"
+    url:"/forms.json"
     model : FormItemModel
     fieldsetCollection:new FieldsetCollection
     rowCollection: new RowCollection
     notVisualCollection: new NotVisualCollection
-
-    initialize:(options)->
-      @url = if options.url then options.url else @DEFAULT_URL
 
     parse:(response)->
       if rows = response.rows

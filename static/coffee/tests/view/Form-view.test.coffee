@@ -26,15 +26,12 @@ define [
 
     beforeEach ->
       @server = sinon.fakeServer.create()          
-      @server.respondWith "GET","/form.json",[
+      @server.respondWith "GET","/forms.json",[
         200,{"Content-Type":"application/json"}, JSON.stringify respond
       ]
-      service = {
-        getTemplate:-> ""
-      }
+
       @collection = new FormItemCollection
-        url:"/form.json"
-        service:service
+
       @view = new FormView
         collection:@collection
       @view.el.id = "testid"

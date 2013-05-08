@@ -89,7 +89,8 @@ require [
     _.each window.location.search.replace("?","").split("&"),(query)->
       if query.indexOf("#{param}=") is 0 then url += "#{query}&"
 
-    collection = new FormItemCollection {url}
+    Collection = FormItemCollection.extend {url}
+    collection = new Collection
 
 
     service = new Service

@@ -43,18 +43,17 @@ define [
   describe "FormItemcollection",->
     beforeEach ->
       @server = sinon.fakeServer.create()
-      @server.respondWith "GET","/forms1.json",[
+      @server.respondWith "GET","/forms.json",[
         200,{"Content-Type":"application/json"}, JSON.stringify respond
       ]
       @collection = new FormItemCollection
-        url:"/forms1.json"
     
     afterEach ->
       @server.restore()
       delete @collection
     
     it "initialize",->
-      expect(@collection.models.length).toEqual(1)
+      expect(@collection.models.length).toEqual(0)
 
     it "fetch data",->      
       
@@ -86,7 +85,7 @@ define [
       expect(@server.requests.length).toEqual(1)
       request = @server.requests[0]
       expect(request.method).toEqual("POST")
-      expect(request.url).toEqual("/forms1.json")
+      expect(request.url).toEqual("/forms.json")
       expect(request.requestBody).toEqual(
         JSON.stringify(@collection.toJSON())
       )

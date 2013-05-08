@@ -3,10 +3,11 @@ define [
   "view/Fieldset-view"
   "collection/FormItem-collection"
 ], (_, FieldsetView, FormItemCollection)->
+
   describe "FieldsetView", ->
     beforeEach ->
       collection = new FormItemCollection
-        url: "/form.json"
+
       model = collection.getOrAddFieldsetModel(0)
       @view = new FieldsetView {model, collection}
 

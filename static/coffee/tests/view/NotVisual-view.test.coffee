@@ -5,11 +5,8 @@ define [
 ], (_, NotVisualView, FormItemCollection)->
   describe "NotVisualView",->
     beforeEach ->
-      service = {}
       collection = new FormItemCollection
-        url:"/form.json"
-        service:service
-
+      service = {}
       @view = new NotVisualView {collection, service}
 
     afterEach ->
