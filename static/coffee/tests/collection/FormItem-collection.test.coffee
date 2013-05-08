@@ -124,21 +124,21 @@ define [
       @collection.fetch()
       @server.respond()
 
-      if models = @collection.fieldsetCollection.models
+      if models = @collection.childCollection.fieldsets.models
         len = models.length
         @collection.getOrAddFieldsetModel(9)
         expect(models.length).toEqual len + 1
         @collection.getOrAddFieldsetModel(9)
         expect(models.length).toEqual len + 1
 
-      if models = @collection.rowCollection.models
+      if models = @collection.childCollection.rows.models
         len = models.length
         @collection.getOrAddRowModel(9,9)
         expect(models.length).toEqual len + 1
         @collection.getOrAddRowModel(9,9)
         expect(models.length).toEqual len + 1
 
-      if models = @collection.notVisualCollection.models
+      if models = @collection.childCollection.notvisual.models
         len = models.length
         @collection.addNotVisualModel({data:"test"})
         expect(models.length).toEqual len + 1

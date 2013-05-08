@@ -13,25 +13,18 @@ define [
   FormItemCollection = Backbone.Collection.extend
     url:"/forms.json"
     model : FormItemModel
-    fieldsetCollection:new FieldsetCollection
-    rowCollection: new RowCollection
-    notVisualCollection: new NotVisualCollection
+
+    childCollection:
+      fieldsets:new FieldsetCollection #fieldsetCollection
+      rows: new RowCollection #rowCollection
+      notvisual: new NotVisualCollection #notVisualCollection
 
     parse:(response)->
-      if rows = response.rows
-        @rowCollection.add if @rowCollection.parse?
-          @rowCollection.parse rows
-        else rows
-
-      if fieldsets = response.fieldsets
-        @fieldsetCollection.add if @fieldsetCollection.parse?
-          @fieldsetCollection.parse fieldsets
-        else fieldsets
-
-      if notvisual = response.notvisual
-        @notVisualCollection.add if @notVisualCollection.parse?
-          @notVisualCollection.parse notvisual
-        else notvisual
+      _.each @childCollection, (collection,k)->
+        if item = response[k]
+          collection.add if collection.parse?
+            collection.parse item
+          else item
 
       itemsMap = _.groupBy response.items, (item)->item.row
       keys = _.chain(itemsMap)
@@ -49,12 +42,12 @@ define [
       result
 
     toJSON:(options)->
-      items = Backbone.Collection::toJSON.apply(this,arguments)
-      rows = @rowCollection.toJSON()
-      fieldsets = @fieldsetCollection.toJSON()
-      notvisual = @notVisualCollection.toJSON()
-      img = options?.img ? "data:image/png;base64,"
-      {items,rows,fieldsets,notvisual,img}
+      result =
+        items: Backbone.Collection::toJSON.apply(this,arguments)
+        img: options?.img ? "data:image/png;base64,"
+      _.each @childCollection,(collection,k)->
+        result[k] = collection.toJSON()
+      result
     
     comparator:(model)->
       model.get("row") * 1000 + model.get("position")
@@ -77,12 +70,14 @@ define [
 
       if model.modelname is @model::modelname
         Backbone.Collection::remove.apply this, arguments
-      else if model.modelname is @fieldsetCollection.model::modelname
-        @fieldsetCollection.remove models, options
-      else if model.modelname is @rowCollection.model::modelname
-        @rowCollection.remove models, options
-      else if model.modelname is @notVisualCollection.model::modelname
-        @notVisualCollection.remove model, options
+      else
+        _.chain(@childCollection)\
+          .filter(
+            (collection)-> model.modelname is collection.model::modelname)\
+          .map(
+            (collection)-> collection.remove models, options)\
+          .value()
+
 
     getRow:(fieldset, row)->
       _.filter @models,(model)->
@@ -96,13 +91,13 @@ define [
       _.groupBy @getFieldset(fieldset), (model)-> model.get("row")
 
     getOrAddFieldsetModel:(fieldset)->
-      @fieldsetCollection.getFieldset fieldset
+      @childCollection.fieldsets.getFieldset fieldset
 
     getOrAddRowModel:(row,fieldset)->
-      @rowCollection.getRow row, fieldset
+      @childCollection.rows.getRow row, fieldset
 
     addNotVisualModel:(data)->
-      @notVisualCollection.addModel(data)
+      @childCollection.notvisual.addModel(data)
 
 
   FormItemCollection

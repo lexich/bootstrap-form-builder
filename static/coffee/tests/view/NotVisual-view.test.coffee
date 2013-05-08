@@ -35,7 +35,7 @@ define [
 
     it "reinitialize",->
       expect(_.size(@view.childrenViews)).toEqual 0
-      size = _.size(@view.collection.notVisualCollection.models)
+      size = _.size(@view.collection.childCollection.notvisual.models)
       @view.reinitialize()
       expect(_.size(@view.childrenViews)).toEqual size
       model = @view.collection.addNotVisualModel {}

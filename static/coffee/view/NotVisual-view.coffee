@@ -38,7 +38,7 @@ define [
 
     reinitialize:->
       log.info "reinitialize #{@cid}"
-      childrenCID = _.map @collection.notVisualCollection.models,(model)=>
+      childrenCID = _.map @collection.childCollection.notvisual.models,(model)=>
         view = @getOrAddViewByModel(model)
         view.reinitialize()
         view.cid
