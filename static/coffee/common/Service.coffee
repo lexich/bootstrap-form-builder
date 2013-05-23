@@ -8,6 +8,9 @@ define [
 
   log = Log.getLogger("common/Service")
 
+  parseBoolean = (val)->
+    if val in ["true","on"] then true else false
+
   Service=->
     @initialize.apply this, arguments
     this
@@ -27,8 +30,7 @@ define [
       @toolData = @getToolData options.dataToolBinder
       @listenTo this, "editableView:change", @on_editableView_change
 
-    getData:(type)->
-      @toolData[type]
+    getData:(type)-> @toolData[type]
 
     getItemFormTypes:-> _.keys @toolData
 
@@ -37,7 +39,7 @@ define [
 
     getTemplateData:(type)->
       data = @getData(type)?.data ? {}
-      data.id = _.uniqueId(type);
+      data.id = _.uniqueId(type)
       data
       
     getTemplate:(type)->
@@ -49,7 +51,11 @@ define [
       _.reduce $body.find(pattern),((memo,item)=>
         name = $(item).attr("name")
         if name? and name != ""
-          memo[name] = @convertData $(item).val(), $(item).data("type")
+          if $(item).attr("type") == "checkbox"
+            value = $(item).is(":checked")
+          else
+            value = $(item).val()
+          memo[name] = @convertData value, $(item).data("type")
         memo
       ),{}
 
@@ -64,23 +70,23 @@ define [
       _.reduce $("*[data-#{toolBinder}]"),((memo, el)=>
         $el = $(el)
         type = $el.data(toolBinder+"-type")
-        [data, meta] = [{},{}]
+        [data, meta, title] = [{},{},{}]
         _.each $el.data(toolBinder),(v,k)->
           if _.isString(v)
             data[k] = v
             meta[k] = ""
-          else if _.isObject(v)          
+            title[k] = k
+          else if _.isObject(v)
             data[k] = if v.value? then v.value else ""
             meta[k] = if v.type? then v.type else ""
+            title[k] = if v.title? then v.title else k
 
-        memo[type] =
-          type: type
-          data : data
-          meta : meta
+        memo[type] = {
+          type, data, meta, $el
           title: data.title
           img : $el.data(toolBinder+"-img")
           template : $el.html()
-          $el: $el
+        }
         memo
       ),{}
 

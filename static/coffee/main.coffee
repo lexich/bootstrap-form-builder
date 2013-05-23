@@ -48,7 +48,7 @@ require [
     "view/ToolItemView": level: CHECK
     "view/NotVisual": level: CHECK
     "common/CustomView": level: CHECK
-    "common/Service": level: CHECK
+    "common/Service": level: ALL
     "collection/FormItemCollection": level: CHECK
     "collection/FieldsetCollection": level: CHECK
 

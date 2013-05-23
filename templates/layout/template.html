@@ -78,3 +78,7 @@
   </select>
 </script>
 
+<script data-modal-type="checkbox" type="text/template">
+    <label for="__id_<%= name %>"><input id="__id_<%= name %>" type="checkbox" name="<%= name %>" data-type="boolean" <%= value %> <% if(value){ %>checked<% } %>> <%= name %></label>
+</script>
+

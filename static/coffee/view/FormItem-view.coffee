@@ -18,7 +18,7 @@ define [
 
     itemsSelectors:
       controls:".controls"
-      input:"input,select,textarea"
+      input:"input,select,textarea,[data-psevdo-input]"
       moveElement:".ui_formitem__move"
 
     updateViewModes:->
@@ -52,7 +52,7 @@ define [
       {content, model:@model.attributes, cid:@cid}
 
   FormItemView = do(
-    __super__ = CustomView.extend Backbone.WireMixin,
+    __super__ = CustomView.extend Backbone.WireMixin
     log = log
   )-> __super__.extend
 

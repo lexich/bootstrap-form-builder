@@ -1,16 +1,26 @@
 {% macro component %}
   {% set name = "select2" %}
-  {% set jsrender = { title:"Элемент выбора",  label:"Label for select2", placeholder:"Placeholder for select2", name: "select2", help: "Help select2", position:{ value:0, type:"hidden"}, row:{ value:0, type:"hidden"}, type:{value:"select2", type:"hidden"}, url:"/select2.json", more:"20"} %}
+  {% set jsrender = {type:{value:"select2", type:"hidden"}, path:{value:"", title:"Путь до поля"}, directory:"", placeholder:" ", filters:"", label:"Label for select2", help:"Help select2", title:"Элемент выбора", class:"", readOnly:{value:false, type:"checkbox"}, multiple:{value:false, type:"checkbox"}, clear:{value:false, type:"checkbox"}, fullWidth:{value:false, type:"checkbox"}} %}
 <script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="{{ name }}">
-  <div class="control-group">
-    <label class="control-label" for="<%= id %>"><%= label %></label>
-    <div class="controls" placeholder="<%= placeholder %>">
-      <input name="<%= name %>" id="<%= id %>"
-        data-js-url="<%= url %>" 
-        data-js-more="<%= more %>"
-        data-js-placeholder="<%= placeholder %>" />
-      <p class="help-block valtype" data-valtype="help"><%= help %></p>
+    <div class="control-group">
+        <label class="control-label" for="<%= path %>"><%= label %></label>
+        <div class="controls">
+        <div class="select2-container directory-select" data-psevdo-input>
+            <a href="#" onclick="return false;" class="select2-choice plus-as-tab" tabindex="-1">
+                <abbr class="select2-search-choice-close" style="display:none;"></abbr>
+                <div>
+                    <b></b>
+                </div>
+            </a>
+            <div class="select2-drop select2-with-searchbox select2-offscreen" style="display: block;">
+                <div class="select2-search">
+                    <input type="text" autocomplete="off" class="select2-input plus-as-tab" style="" tabindex="-1" name="<%= path %>" id="<%= path %>">
+                </div>
+                <ul class="select2-results"></ul>
+            </div>
+        </div>
+        <p class="help-block valtype span12" data-valtype="help"><%= help %></p>
     </div>
-  </div>
+</div>
 </script>
 {% endmacro %}

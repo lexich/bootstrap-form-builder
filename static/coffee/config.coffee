@@ -7,7 +7,7 @@ require.config
     "bootstrap":"bootstrap/bootstrap"
     "base":"common/base"
     "jasmine-html":"jasmine/jasmine-html"
-    "jasmine":"jasmine/jasmine" 
+    "jasmine":"jasmine/jasmine"
     "select2":"select2/select2"
     "datepicker":"datepicker/bootstrap-datepicker"
     "sortable":"jquery-ui/jquery.ui.sortable.patch"
