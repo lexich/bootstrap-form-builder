@@ -1,7 +1,53 @@
 {% macro component %}
   {% set name = "select2" %}
-  {% set jsrender = {type:{value:"select2", type:"hidden"}, path:{value:"", title:"Путь до поля"}, directory:"", placeholder:" ", filters:"", label:"Label for select2", help:"Help select2", title:"Элемент выбора", class:"", readOnly:{value:false, type:"checkbox"}, multiple:{value:false, type:"checkbox"}, clear:{value:false, type:"checkbox"}, fullWidth:{value:false, type:"checkbox"}} %}
-<script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="{{ name }}">
+  {% set jsrender = {
+  type: {
+    value: "select2",
+    type: "hidden"
+  },
+  path: {
+    value: "",
+    title: "Путь до элемента формы"
+  },
+  directory: {
+    value: "",
+    title: "Уникальное имя справочника"
+  },
+  filters: {
+    title: "Фильтр"
+  },
+  label: {
+    title:"Наименование",
+    value:"Select2"
+  },
+  help: {
+    title:"Строка помощи"
+  },
+  title: {
+    title:"Всплывающая подсказка"
+  },
+  readOnly: {
+    value: false,
+    type: "checkbox",
+    title:"Только для чтения"
+  },
+  multiple: {
+    value: false,
+    type: "checkbox",
+    title: "Разрешен множественный выбор элементов"
+  },
+  clear: {
+    value: false,
+    type: "checkbox",
+    title: "Доступна возможность очистить содержимое"
+  },
+  fullWidth: {
+    value: false,
+    type: "checkbox",
+    title: "По всей ширине"
+  },
+} %}
+<script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="{{ name }}" data-title="Cписок">
     <div class="control-group">
         <label class="control-label" for="<%= path %>"><%= label %></label>
         <div class="controls">

@@ -70,20 +70,23 @@ define [
       _.reduce $("*[data-#{toolBinder}]"),((memo, el)=>
         $el = $(el)
         type = $el.data(toolBinder+"-type")
-        [data, meta, title] = [{},{},{}]
-        _.each $el.data(toolBinder),(v,k)->
+        [data, meta, title, list] = [{},{},{}, {}]
+        _.each $el.data(toolBinder),(v,k)=>
           if _.isString(v)
             data[k] = v
             meta[k] = ""
             title[k] = k
+            list[k] = _.bind(@getItemFormTypes,this)
           else if _.isObject(v)
             data[k] = if v.value? then v.value else ""
             meta[k] = if v.type? then v.type else ""
             title[k] = if v.title? then v.title else k
+            list[k] = if v.data? then v.data else _.bind(@getItemFormTypes,this)
 
         memo[type] = {
-          type, data, meta, $el
-          title: data.title
+          type, data, meta, $el, list
+          title: $el.data("title") ? data.title
+          settingsTitle:title
           img : $el.data(toolBinder+"-img")
           template : $el.html()
         }

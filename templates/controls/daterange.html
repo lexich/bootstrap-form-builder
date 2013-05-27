@@ -1,8 +1,8 @@
 {% macro component %}
-{% set name = "datepicker" %}
+{% set name = "daterange" %}
 {% set jsrender = {
   type: {
-    value: "datepicker",
+    value: "daterange",
     type: "hidden"
   },
   path:{
@@ -10,13 +10,19 @@
   },
   label:{
     title:"Наименование",
-    value: "Select2"
+    value: "DateRange"
   },
   help:{
     title:"Строка помощи"
   },
   title:{
     title:"Всплывающая подсказка"
+  },
+  direction:{
+    title:"Направление выпадающего диалога",
+    data:["right","left"],
+    type:"select",
+    value:"rigth"
   },
   readOnly:{
     title:"Признак элемента только для чтения",
@@ -31,13 +37,13 @@
     title: "Значение по-умолчанию"
   },
 } %}
-<script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="{{ name }}" data-title="Дата">
+<script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="{{ name }}" data-title="Интервал дат">
 <div class="control-group">
     <label class="control-label" for="<%= id %>"><%= label %></label>
     <div class="controls">
         <div class="input-append date" id="dp3" data-psevdo-input style="padding-right:30px;" >
+            <span class="add-on"><i class="icon-calendar"></i></span>
             <input id="<%= id %>" size="16" type="text" value="<%= value %>" data-date-format="<%= format %>">
-            <span class="add-on"><i class="icon-th"></i></span>
         </div>
         <p class="help-block valtype span12" data-valtype="help" ><%= help %></p>
     </div>

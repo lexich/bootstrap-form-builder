@@ -106,12 +106,17 @@ define [
             $input.val(value).data("value",value)
       else
         meta = @options.service.getTemplateMetaData(type)
+        settingsTitle = @options.service.getData(type)?.settingsTitle
+        dataListRef = @options.service.getData(type).list
         content = _.map data, (v,k)=>
           itemType = meta[k] ? "hidden"
+          title = settingsTitle[k] ? k
+          dataList = _.result(dataListRef, k)
           opts =
+            title:title
             name: k
             value: v
-            data: @options.service.getItemFormTypes()
+            data: dataList
           tmpl = @renderModalItemTemplate itemType, opts
           tmpl
         $frag.html content.join("")

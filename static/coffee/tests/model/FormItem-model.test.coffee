@@ -10,7 +10,6 @@ define [
       expect(@model.get("position")).toEqual(0)
       expect(@model.get("row")).toEqual(0)
       expect(@model.get("label")).toEqual("")
-      expect(@model.get("placeholder")).toEqual("")
       expect(@model.get("type")).toEqual("input")
       expect(@model.get("name")).toEqual("")
       expect(@model.get("help")).toEqual("")

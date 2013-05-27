@@ -65,12 +65,12 @@
 </script>
 
 <script type="text/template" data-modal-type="input">
-  <label for="__id_<%= name %>"><%= name %></label>
+  <label for="__id_<%= name %>"><%= title %></label>
   <input id="__id_<%= name %>" type="text" name="<%= name %>" value="<%= value %>" data-type="">
 </script>
 
 <script type="text/template" data-modal-type="select">
-  <label for="__id_<%= name %>"><%= name %></label>
+  <label for="__id_<%= name %>"><%= title %></label>
   <select id="__id_<%= name %>" name="<%= name %>" value="<%= value %>" data-type="">
   <% _.each(data,function(item){ %>
     <option value="<%= item %>" <% if(value==item){ %>selected="selected"<% } %>  ><%= item %></option>
@@ -79,6 +79,6 @@
 </script>
 
 <script data-modal-type="checkbox" type="text/template">
-    <label for="__id_<%= name %>"><input id="__id_<%= name %>" type="checkbox" name="<%= name %>" data-type="boolean" <%= value %> <% if(value){ %>checked<% } %>> <%= name %></label>
+    <label for="__id_<%= name %>"><input id="__id_<%= name %>" type="checkbox" name="<%= name %>" data-type="boolean" <%= value %> <% if(value){ %>checked<% } %>> <%= title %></label>
 </script>
 

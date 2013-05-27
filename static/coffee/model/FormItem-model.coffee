@@ -9,7 +9,6 @@ define [
     modelname:"FormItemModel"
     defaults:
       label:""
-      placeholder:""
       type:"input"
       name:""
       help:""
@@ -40,8 +39,6 @@ define [
     validate:(attrs, options)->    
       if attrs.label is null or attrs.label is ""
         "label mustn't be not null"
-      else if attrs.placeholder is null or attrs.placeholder is ""
-        "placeholder mustn't be not null"
       else if attrs.type is null or attrs.type is ""
         "type mustn't be not null"      
       else if attrs.help is null
