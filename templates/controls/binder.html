@@ -1,7 +1,7 @@
 {% macro component %}
 {% set name = "binder" %}
 {% set jsrender = {title:"Привязка", name: "binder", "notvisual":"1", source:"source", target:"target", type:{ value:"binder", type:"hidden"}, } %}
-<script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="{{ name }}" data-title="Привязка">
+<script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="{{ name }}" data-ui-jsrender-img="img/components/binder.png" data-title="Привязка" >
     <div class="ui_tools-binder">
         <div class="ui_tools__item">
             <p><%= name %></p>

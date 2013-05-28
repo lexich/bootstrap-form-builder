@@ -1,6 +1,6 @@
 {% macro component %}
   {% set jsrender = { title:"Поле ввода", label:"input", placeholder:"input", name: "input", help: "help", type:{ value:"input", type:"hidden"}, position:{ value:0, type:"hidden"}, row:{ value:0, type:"hidden"}, } %}
-  <script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="input" data-title="Поле ввода">
+  <script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="input" data-title="Поле ввода" data-ui-jsrender-img="img/components/text_input.png">
     <div class="control-group">
       <label class="control-label" for="<%= id %>"><%= label %></label>
       <div class="controls">

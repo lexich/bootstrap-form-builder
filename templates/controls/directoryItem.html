@@ -1,24 +1,24 @@
 {% macro component %}
-  {% set name = "select2" %}
+  {% set name = "directoryitem" %}
   {% set jsrender = {
   type: {
-    value: "select2",
+    value: "directoryitem",
     type: "hidden"
   },
   path: {
     value: "",
     title: "Путь до элемента формы"
   },
+  directory: {
+    value: "",
+    title: "Уникальное имя справочника"
+  },
   filters: {
     title: "Фильтр"
   },
-  value:{
-    title:"Список значений",
-    type: "list"
-  },
   label: {
     title:"Наименование",
-    value:"Select2"
+    value:"DirectoruItem"
   },
   help: {
     title:"Строка помощи"
@@ -31,6 +31,11 @@
     type: "checkbox",
     title:"Только для чтения"
   },
+  multiple: {
+    value: false,
+    type: "checkbox",
+    title: "Разрешен множественный выбор элементов"
+  },
   clear: {
     value: false,
     type: "checkbox",
@@ -42,7 +47,7 @@
     title: "По всей ширине"
   },
 } %}
-<script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="{{ name }}" data-title="Cписок" data-ui-jsrender-img="img/components/select_input.png">
+<script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="{{ name }}" data-title="Директория" data-ui-jsrender-img="img/components/directoryitem_input.png">
     <div class="control-group">
         <label class="control-label" for="<%= path %>"><%= label %></label>
         <div class="controls">

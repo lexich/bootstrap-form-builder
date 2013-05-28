@@ -106,8 +106,8 @@ define [
             $input.val(value).data("value",value)
       else
         meta = @options.service.getTemplateMetaData(type)
-        settingsTitle = @options.service.getData(type)?.settingsTitle
-        dataListRef = @options.service.getData(type).list
+        settingsTitle = @options.service.getDataSettingsTitle(type)
+        dataListRef = @options.service.getDataList(type)
         content = _.map data, (v,k)=>
           itemType = meta[k] ? "hidden"
           title = settingsTitle[k] ? k

@@ -8,8 +8,47 @@ define [
 
   log = Log.getLogger("common/Service")
 
-  parseBoolean = (val)->
-    if val in ["true","on"] then true else false
+  ServiceModel = do(__super__=->)->
+    __super__:: =
+      data:{}
+      add:(type, item, extra)->
+        data = @parce(item) ? {}
+        @data[type] = _.defaults extra, data
+        this
+
+      get:(type)-> @data[type]
+
+      keys:-> _.keys @data
+
+      items:-> @data
+
+      parce:(items)->
+        _.reduce items,((memo,v,k)=>
+          if _.isString(v)
+            @_parceString k, v, memo
+          else
+            @_parceObject k, v, memo
+        ), data:{}, meta:{}, settingsTitle:{}, list:{}
+
+
+      _parceString:(k, v, memo)->
+        memo.data[k] = v
+        memo.meta[k] = ""
+        memo.settingsTitle[k] = k
+        memo.list[k] = []
+        memo
+
+      _parceObject:(k, v, memo)->
+        memo.meta[k] = if v.type? then v.type else ""
+        if memo.meta[k] is "list"
+          memo.data[k] = if v.value? then v.value.split("\n") else []
+        else
+          memo.data[k] = if v.value? then v.value else ""
+        memo.settingsTitle[k] = if v.title? then v.title else k
+        memo.list[k] = if v.data? then v.data else []
+        memo
+    __super__
+
 
   Service=->
     @initialize.apply this, arguments
@@ -27,12 +66,26 @@ define [
     @param modal - 
     ###
     initialize:(options)->
+      @static_folder = options.static_folder
       @toolData = @getToolData options.dataToolBinder
       @listenTo this, "editableView:change", @on_editableView_change
 
-    getData:(type)-> @toolData[type]
+    insertToolItemEl:(type, $el)->
+      data = @getData(type)
+      if @static_folder? and data.img?
+        path = "url(\"#{@static_folder}#{data.img}\")"
+        $el.css "background-image":path
+      data.$el.before $el
 
-    getItemFormTypes:-> _.keys @toolData
+    getItems:-> @toolData.items()
+
+    getData:(type)-> @toolData.get(type)
+
+    getDataList:(type)-> @toolData.get(type).list
+
+    getDataSettingsTitle:(type)-> @toolData.get(type).settingsTitle
+
+    getItemFormTypes:-> @toolData.keys()
 
     getTemplateMetaData:(type)->
       @getData(type)?.meta
@@ -67,31 +120,17 @@ define [
 
     getToolData:(toolBinder)->
       log.info "getToolData"
+
       _.reduce $("*[data-#{toolBinder}]"),((memo, el)=>
         $el = $(el)
         type = $el.data(toolBinder+"-type")
-        [data, meta, title, list] = [{},{},{}, {}]
-        _.each $el.data(toolBinder),(v,k)=>
-          if _.isString(v)
-            data[k] = v
-            meta[k] = ""
-            title[k] = k
-            list[k] = _.bind(@getItemFormTypes,this)
-          else if _.isObject(v)
-            data[k] = if v.value? then v.value else ""
-            meta[k] = if v.type? then v.type else ""
-            title[k] = if v.title? then v.title else k
-            list[k] = if v.data? then v.data else _.bind(@getItemFormTypes,this)
-
-        memo[type] = {
-          type, data, meta, $el, list
-          title: $el.data("title") ? data.title
-          settingsTitle:title
+        memo.add type, $el.data(toolBinder), {
+          type, $el
+          title: $el.data("title") ? type
           img : $el.data(toolBinder+"-img")
           template : $el.html()
         }
-        memo
-      ),{}
+      ), new ServiceModel
 
     on_editableView_change:(view)->
       log.info "on_editableView_change"

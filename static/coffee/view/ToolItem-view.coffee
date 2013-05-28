@@ -50,12 +50,11 @@ define [
         $("[data-drop-accept-placeholder]").hide()
       $("body").removeClass("ui_draggableprocess")
 
-    render:-> 
-      data = @options.service.getData(@options.type)
+    render:->
       @$el.html @template
       @$el.attr "data-#{DATA_TYPE}", @options.type
       @$el.addClass("ui_tools-#{@options.type}")
-      data.$el.before @$el
+      @options.service.insertToolItemEl @options.type, @$el
       this
       
   ToolItemView

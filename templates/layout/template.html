@@ -82,3 +82,12 @@
     <label for="__id_<%= name %>"><input id="__id_<%= name %>" type="checkbox" name="<%= name %>" data-type="boolean" <%= value %> <% if(value){ %>checked<% } %>> <%= title %></label>
 </script>
 
+<script type="text/template" data-modal-type="textarea">
+  <label for="__id_<%= name %>"><%= title %></label>
+  <textarea id="__id_<%= name %>" name="<%= name %>" id="" cols="30" rows="10" value="<%= value %>" data-type=""></textarea>
+</script>
+
+<script type="text/template" data-modal-type="list">
+  <label for="__id_<%= name %>"><%= title %></label>
+  <textarea id="__id_<%= name %>" name="<%= name %>" id="" cols="30" rows="10" value="<%= value.join('\n') %>" data-type=""></textarea>
+</script>

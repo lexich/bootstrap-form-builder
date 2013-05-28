@@ -52,7 +52,7 @@ module.exports = (grunt) ->
 
     replace:
       config:
-        src: ["<%= resource.js %>/config.js"],
+        src: ["<%= resource.js %>/config.js", "<%= resource.js %>/main.js"],
         overwrite: true,
         replacements: [{
           from: "$STATIC_FOLDER$",

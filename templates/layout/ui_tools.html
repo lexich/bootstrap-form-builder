@@ -2,6 +2,7 @@
 {% import 'controls/password.html' as password %}
 {% import 'controls/textarea.html' as textarea %}
 {% import 'controls/select2.html' as select2 %}
+{% import 'controls/directoryItem.html' as directoryItem %}
 {% import 'controls/other.html' as other  %}
 {% import 'controls/datepicker.html' as datepicker %}
 {% import 'controls/daterange.html' as daterange %}
@@ -38,12 +39,13 @@
                 <li>{{ textarea.component() }}</li>
                 <li>{{ input.component() }}</li>
                 <li>{{ file.component() }}</li>
+                <li>{{ select2.component() }}</li>
             </ul>
         </div>
 
         <div id="js" class="tab-pane ui_tools__container">
             <ul>
-                <li>{{ select2.component() }}</li>
+                <li>{{ directoryItem.component() }}</li>
                 <li>{{ datepicker.component() }}</li>
                 <li>{{ daterange.component() }}</li>
                 <li>{{ checkbox.component() }}</li>

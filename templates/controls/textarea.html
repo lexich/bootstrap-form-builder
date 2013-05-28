@@ -1,7 +1,7 @@
 {% macro component %} 
   {% set name = "textarea" %}
   {% set jsrender = { title:"Поле ввода", label:"Label for textarea", placeholder:"Placeholder for textarea", name: "textarea", help: "Textarea help", type:{ value:"textarea",type:"hidden"}, } %}
-<script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="{{ name }}" data-title="Мн. поле ввода">
+<script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="{{ name }}" data-title="Мн. поле ввода" data-ui-jsrender-img="img/components/text_area.png">
   <div class="control-group">
     <label class="control-label" for="<%= id %>"><%= label %></label>
     <div class="controls">

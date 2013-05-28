@@ -32,26 +32,14 @@
   }
 }
 
-.ui_tools_mixin(){
-  .ui_tools_item_mixin(@name){
-    &, &.ui-draggable{
-      width: 120px;
-      height: 64px;
-      background-position:  0px -10px;
-      background-image: url("@{img}/components/@{name}");
-    }
+[class*="ui_tools-"]{
+  &, &.ui-draggable{
+    width: 120px;
+    height: 64px;
+    background-position:  0px -10px;
   }
-  .ui_tools-select2      { .ui_tools_item_mixin("select_input.png"); }
-  .ui_tools-textarea    { .ui_tools_item_mixin("text_area.png"); }
-  .ui_tools-input          { .ui_tools_item_mixin("text_input.png"); }
-  .ui_tools-password    { .ui_tools_item_mixin("password_input.png"); }
-  .ui_tools-datepicker{ .ui_tools_item_mixin("datepicker_input.png"); }
-  .ui_tools-file            { .ui_tools_item_mixin("file_input.png"); }
-  .ui_tools-checkbox    { .ui_tools_item_mixin("checkbox_input.png"); }
-  .ui_tools-binder    { .ui_tools_item_mixin("binder.png"); }
-  .ui_tools-daterange    { .ui_tools_item_mixin("daterange_input.png"); }
 }
-  .ui_tools_mixin();
+
 
 .ui_tools__container{
   ul{

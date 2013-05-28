@@ -94,6 +94,7 @@ require [
 
 
     service = new Service
+      static_folder:"$STATIC_FOLDER$"
       dataToolBinder: "ui-jsrender"
       collection: collection
       areaTemplateItem: ""      
@@ -118,7 +119,7 @@ require [
       service:service
       collection:collection
 
-    _.each service.toolData, (data,type)=>
+    _.each service.getItems(), (data,type)=>
       toolItem = new ToolItemView {type,service,data}
       toolItem.render()
 
