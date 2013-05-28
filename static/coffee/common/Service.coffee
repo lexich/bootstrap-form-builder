@@ -100,7 +100,7 @@ define [
 
     parceModalItemData:($body)->
       log.info "parceModalItemData"
-      pattern = "input[name], select[name]"
+      pattern = "input[name], select[name], textarea[name]"
       _.reduce $body.find(pattern),((memo,item)=>
         name = $(item).attr("name")
         if name? and name != ""
@@ -116,6 +116,7 @@ define [
       log.info "convertData"
       if type is 'int' then parseInt(val)
       else if type is 'float' then parseFloat(val)
+      else if type is 'list' then val.trim().split("\n")
       else val
 
     getToolData:(toolBinder)->
