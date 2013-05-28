@@ -71,7 +71,7 @@
 
 <script type="text/template" data-modal-type="select">
   <label for="__id_<%= name %>"><%= title %></label>
-  <select id="__id_<%= name %>" name="<%= name %>" value="<%= value %>" data-type="">
+  <select id="__id_<%= name %>" name="<%= name %>" value="<%= value %>" data-type="" data-ui="select2">
   <% _.each(data,function(item){ %>
     <option value="<%= item %>" <% if(value==item){ %>selected="selected"<% } %>  ><%= item %></option>
   <%});%>
