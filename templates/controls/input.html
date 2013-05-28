@@ -1,10 +1,51 @@
 {% macro component %}
-  {% set jsrender = { title:"Поле ввода", label:"input", placeholder:"input", name: "input", help: "help", type:{ value:"input", type:"hidden"}, position:{ value:0, type:"hidden"}, row:{ value:0, type:"hidden"}, } %}
+  {% set jsrender = {
+  type: {
+    value: "input",
+    type: "hidden"
+  },
+  path:{
+    title: "Путь до элемента формы"
+  },
+  inputType:{
+    title: "Тип элемента",
+    type:"select",
+    data:["text","password"],
+    value:"text"
+  },
+  prepend:{
+    title: "Содержимое предворяющей части элемента"
+  },
+  append:{
+    title: "Cодержимое добавляющей части элемента"
+  },
+  prependClass:{
+    title: "Дополнительный стилевой класс предворяющей части элемента"
+  },
+  appendClass:{
+    title: "Дополнительный стилевой класс добавляющей части элемента"
+  },
+  label:{
+    title: "Наименование",
+    value: "Поле ввода"
+  },
+  help:{
+    title: "Строка помощи"
+  },
+  title:{
+    title: "Подсказка"
+  },
+  readOnly:{
+    title: "Только для чтения",
+    type: "checkbox",
+    value: true
+  }
+} %}
   <script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="input" data-title="Поле ввода" data-ui-jsrender-img="img/components/text_input.png">
     <div class="control-group">
       <label class="control-label" for="<%= id %>"><%= label %></label>
       <div class="controls">
-        <input type="text" id="<%= id %>" name="<%= name %>" placeholder="<%= placeholder %>">
+        <input type="text" id="<%= id %>" name="<%= name %>">
         <% if (help) { %>
           <p class="help-block valtype" data-valtype="help"><%= help %></p>
         <% } %>
