@@ -10,8 +10,15 @@
     title: "Путь до элемента формы"
   },
   directory: {
-    value: "",
-    title: "Уникальное имя справочника"
+    title: "Уникальное имя справочника",
+    type: "selectRemote",
+    data: {
+      ajax: {
+        url: "/select2.json",
+        dataType: 'json',
+        quietMillis: 100
+      }
+    }
   },
   filters: {
     title: "Фильтр"

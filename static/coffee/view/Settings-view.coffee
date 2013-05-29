@@ -68,6 +68,13 @@ define [
           unless bSelected then opts.splice(0,0,"<option></option>")
           $el.html opts.join("")
           delete options.data
+        if options.ajax?
+          _.extend options.ajax,
+            data:(term, page)->
+              q:"test"
+            results:(data,page)->
+              data
+
         $el.select2(options)
 
       spinner:($el,options)-> $el.spinner(options ? {})

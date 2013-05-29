@@ -71,11 +71,16 @@
 
 <script type="text/template" data-modal-type="select">
   <label for="__id_<%= name %>"><%= title %></label>
-  <select id="__id_<%= name %>" name="<%= name %>" value="<%= value %>" data-type="" data-ui="select2">
+  <select id="__id_<%= name %>" name="<%= name %>" value="<%= value %>" data-type="" data-ui="select2" >
   <% _.each(data,function(item){ %>
     <option value="<%= item %>" <% if(value==item){ %>selected="selected"<% } %>  ><%= item %></option>
   <%});%>
   </select>
+</script>
+
+<script type="text/template" data-modal-type="selectRemote">
+  <label for="__id_<%= name %>"><%= title %></label>
+  <input id="__id_<%= name %>" type="text" name="<%= name %>" value="<%= value %>" data-type="" data-ui="select2" data-ui-data='<%= JSON.stringify(data) %>'>
 </script>
 
 <script data-modal-type="checkbox" type="text/template">
