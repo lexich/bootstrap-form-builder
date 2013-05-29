@@ -52,7 +52,7 @@ module.exports = (grunt) ->
 
     replace:
       config:
-        src: ["<%= resource.js %>/config.js", "<%= resource.js %>/main.js"],
+        src: ["<%= resource.js %>/config.js", "<%= resource.js %>/main.js", "<%= resource.html %>/index.html"],
         overwrite: true,
         replacements: [{
           from: "$STATIC_FOLDER$",
@@ -329,11 +329,11 @@ module.exports = (grunt) ->
     watch:
       swig:
         files: ["templates/*.html", "templates/**/*.html", "templates/**/**/*.html"]
-        tasks: ["swig:dev"]
+        tasks: ["swig:dev", "replace:config"]
 
       coffee_shell:
         files: ["static/coffee/*.coffee", "static/coffee/**/*.coffee"]
-        tasks: ["coffee","replace"]
+        tasks: ["coffee", "replace:config"]
 
       less_shell:
         files: ["static/less/*.less","static/less/**/*.less"]
