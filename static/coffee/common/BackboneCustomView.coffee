@@ -122,16 +122,20 @@ define [
           dropOnEmpty:"true"
           placeholder:"ui_formitem__placeholder span3"
           update: (event,ui)=>
+            log.info "__initPlaceholder sortable::update"
             view = @handle_create_new(event,ui)
             view.render()
             view.reindex()
           activate: (event,ui)=>
+            log.info "__initPlaceholder sortable::activate"
             @dragActive = true
             true
           deactivate: (event, ui)=>
+            log.info "__initPlaceholder sortable::deactivate"
             @dragActive = false
             true
           over: (event, ui)->
+            log.info "__initPlaceholder sortable::over"
             if $(this).is("[data-drop-accept-placeholder='fieldset']")
                 $("[data-ghost-row]")
                   .hide()

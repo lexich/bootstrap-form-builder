@@ -97,7 +97,10 @@ define [
             delete data.inject
           @ui[uicomponent]($(el), data)
 
-    loadIds:-> _.map @collection.models, (model)-> id:model.get("id"), text:model.get("name") + "##{model.get("id")}"
+    loadIds:->
+      result = _.map @collection.models, (model)-> id:model.get("id"), text:model.get("name") + "##{model.get("id")}"
+      result.splice 0, 0, {id:"",text:" "}
+      result
 
     renderForm:( type, data)->
       log.info "renderForm"
@@ -118,12 +121,17 @@ define [
         content = _.map data, (v,k)=>
           itemType = meta[k] ? "hidden"
           title = settingsTitle[k] ? k
-          dataList = _.result(dataListRef, k)
           opts =
             title:title
             name: k
             value: v
-            data: dataList
+            data: _.result(dataListRef, k)
+
+          if opts.data?.inject?
+            _.each opts.data.inject,(v,k)=>
+              opts[k] = _.result(this,v)
+            delete opts.data.inject
+
           tmpl = @renderModalItemTemplate itemType, opts
           tmpl
         $frag.html content.join("")

@@ -1,6 +1,51 @@
 {% macro component %}
 {% set name = "binder" %}
-{% set jsrender = {title:"Привязка", name: "binder", "notvisual":"1", source:"source", target:"target", type:{ value:"binder", type:"hidden"}, } %}
+{% set jsrender = {
+  name: {
+    value: "binder",
+    title: "Название"
+  },
+  notvisual:{
+    type:"hidden",
+    value:"1"
+  },
+  source:{
+    title: "Источник",
+    type: "select",
+    data:{
+      inject: { data:"loadIds" }
+    }
+  },
+  target:{
+    title:"Приемник",
+    type: "select",
+    data:{
+      inject: { data:"loadIds" }
+    }
+  },
+  type:{
+    value:"binder",
+    type:"hidden"
+  },
+  param:{
+    title: "Наименование передаваемого параметра"
+  },
+  defaultValue:{
+    title: "Значение параметра по-умолчанию"
+  },
+  action:{
+    title: "Наименование события исходного элемента",
+    value: "change"
+  },
+  isParamRegexp:{
+    title: "Использование регулятных выражений",
+    value: false,
+    type: "checkbox"
+  },
+  dataAttr:{
+    title: "Название data-атрибута в который устанавливается фильтр"
+  }
+} %}
 <script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="{{ name }}" data-ui-jsrender-img="img/components/binder.png" data-title="Привязка" >
     <div class="ui_tools-binder">
         <div class="ui_tools__item">
