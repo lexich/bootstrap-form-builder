@@ -71,10 +71,29 @@
 
 <script type="text/template" data-modal-type="select">
   <label for="__id_<%= name %>"><%= title %></label>
-  <select id="__id_<%= name %>" name="<%= name %>" value="<%= value %>" data-type="" data-ui="select2" >
-  <% _.each(data,function(item){ %>
-    <option value="<%= _.isObject(item) ? item.id : item %>" <% if(value==(_.isObject(item) ? item.id : item)){ %>selected="selected"<% } %>  ><%= _.isObject(item) ? item.text : item %></option>
-  <%});%>
+  <%
+    var testMultiple = function(){
+      return (_.isObject(data) && data.multiple) ? "multiple" : "";
+    }
+
+    var optionSelected = function(item){
+      var item = _.isObject(item) ? item.id : item;
+      return (item == value) ? 'selected="selected"' : '';
+    }
+    var printVal = function(val){
+      return _.isString(val) ? val : JSON.stringify(val);
+    }
+  %>
+  <select id="__id_<%= name %>" data-type="" data-ui="select2"
+          name="<%= name %>"
+          data-value='<%= printVal(value) %>'
+          data-ui-data='<%= JSON.stringify(data) %>'
+          <%= testMultiple() %> >
+  <% if(_.isArray(data)){ _.each(data,function(item){ %>
+    <option value="<%= _.isObject(item) ? item.id : item %>" <%= optionSelected(item) %>  >
+      <%= _.isObject(item) ? item.text : item %>
+    </option>
+  <%});}%>
   </select>
 </script>
 

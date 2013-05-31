@@ -7,7 +7,7 @@
 {% import 'controls/daterange.html' as daterange %}
 {% import 'controls/file.html' as file %}
 {% import 'controls/checkbox.html' as checkbox %}
-
+{% import 'controls/visualbinder.html' as visualbinder %}
 {% import 'controls/binder.html' as binder %}
 
 {% macro navigation_tabs %}
@@ -18,13 +18,13 @@
                 <a class="brand icon-save" href="javascript:void(0);" data-js-global-form-save title="Сохранить"></a>
                 <ul class="nav">
                     <li class="active">
-                        <a href="#input" data-toggle="tab">Input</a>
+                        <a href="#input" data-toggle="tab">Простые</a>
                     </li>
                     <li>
-                        <a href="#js" data-toggle="tab">Dynamic</a>
+                        <a href="#js" data-toggle="tab">Динамические</a>
                     </li>
                     <li>
-                        <a data-toggle="tab" href="#notvisual">Not Visual</a>
+                        <a data-toggle="tab" href="#notvisual">Не визуальные</a>
                     </li>
                 </ul>
             </div>
@@ -34,11 +34,11 @@
 
         <div id="input" class="tab-pane active ui_tools__container">
             <ul>
-                <li>{{ textarea.component() }}</li>
                 <li>{{ input.component() }}</li>
-                <li>{{ file.component() }}</li>
-                <li>{{ select2.component() }}</li>
+                <li>{{ textarea.component() }}</li>
                 <li>{{ checkbox.component() }}</li>
+                <li>{{ select2.component() }}</li>
+                {#<li>{{ file.component() }}</li>#}
             </ul>
         </div>
 
@@ -54,6 +54,7 @@
         <div id="notvisual" class="tab-pane ui_tools__container">
             <ul>
                 <li>{{ binder.component() }}</li>
+                <li>{{ visualbinder.component() }}</li>
             </ul>
         </div>
     </div>
@@ -62,7 +63,7 @@
 
 {% macro navigation_content %}
 <div style="display:none">
-
+  {# binder.modal() #}
 </div>
 {% endmacro %}
 

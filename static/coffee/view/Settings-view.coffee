@@ -57,6 +57,9 @@ define [
         options.closeOnSelect = true
 
         val = $el.data("value")
+        if val is "" then val = $el.val()
+
+
         if $el[0].tagName.toLowerCase() is "select" and options.data?
           bSelected = false
           opts = _.map options.data or [],(item)->
@@ -68,6 +71,7 @@ define [
           unless bSelected then opts.splice(0,0,"<option></option>")
           $el.html opts.join("")
           delete options.data
+
         if options.ajax?
           _.extend options.ajax,
             data:(term, page)->
@@ -75,7 +79,13 @@ define [
             results:(data,page)->
               data
 
+        if $el.is("select")
+          delete options.multiple
+          delete options.data
+
+
         $el.select2(options)
+        if val != "" then $el.select2 "val", val
 
       spinner:($el,options)-> $el.spinner(options ? {})
 
@@ -91,6 +101,7 @@ define [
         uicomponent = $(el).data("ui")
         if @ui[uicomponent]?
           data = $(el).data("ui-data")
+          data = {} unless _.isObject(data)
           if data?.inject?
             _.each data.inject,(v,k)=>
               data[k] = _.result(this,v)
@@ -99,7 +110,6 @@ define [
 
     loadIds:->
       result = _.map @collection.models, (model)-> id:model.get("id"), text:model.get("name") + "##{model.get("id")}"
-      result.splice 0, 0, {id:"",text:" "}
       result
 
     renderForm:( type, data)->
@@ -127,10 +137,11 @@ define [
             value: v
             data: _.result(dataListRef, k)
 
-          if opts.data?.inject?
-            _.each opts.data.inject,(v,k)=>
-              opts[k] = _.result(this,v)
-            delete opts.data.inject
+          if _.isObject(opts.data)
+            if opts.data.inject?
+              _.each opts.data.inject,(v,k)=>
+                opts[k] = _.result(this,v)
+              delete opts.data.inject
 
           tmpl = @renderModalItemTemplate itemType, opts
           tmpl

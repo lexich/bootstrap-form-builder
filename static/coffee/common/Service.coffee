@@ -117,6 +117,7 @@ define [
       if type is 'int' then parseInt(val)
       else if type is 'float' then parseFloat(val)
       else if type is 'list' then val.trim().split("\n")
+      else if type is 'taglist' then val
       else val
 
     getToolData:(toolBinder)->

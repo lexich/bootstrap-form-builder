@@ -1,13 +1,13 @@
 {% macro component %}
-{% set name = "binder" %}
+{% set name = "visualbinder" %}
 {% set jsrender = {
   name: {
-    value: "binder",
+    value: "visualbinder",
     title: "Название"
   },
   notvisual:{
     type:"hidden",
-    value:"1"
+    value:0
   },
   source:{
     title: "Источник",
@@ -24,14 +24,8 @@
     }
   },
   type:{
-    value:"binder",
+    value:"visualbinder",
     type:"hidden"
-  },
-  param:{
-    title: "Наименование передаваемого параметра"
-  },
-  defaultValue:{
-    title: "Значение параметра по-умолчанию"
   },
   action:{
     title: "Наименование события исходного элемента",
@@ -42,18 +36,28 @@
       {id:"click",text:"Клик"},
     ]
   },
-  isParamRegexp:{
-    title: "Использование регулятных выражений",
-    value: false,
-    type: "checkbox"
+  actions:{
+    title: "Возможные действия",
+    value: "",
+    type: "select",
+    data:{
+      data: [
+        {id:"enable",text:"Доступность"},
+        {id:"visible",text:"Видимость"},
+        {id:"visible_by_value", text: "Видимость по значению"}
+      ],
+      multiple:true
+    }
   },
-  dataAttr:{
-    title: "Название data-атрибута в который устанавливается фильтр"
+  defaultAction:{
+    title: "",
+    type: "checkbox",
+    value: false
   }
 } %}
-<script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="{{ name }}" data-ui-jsrender-img="img/components/binder.png" data-title="Коннектор" >
+<script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="{{ name }}" data-ui-jsrender-img="img/components/visualbinder.png" data-title="Виз. коннектор" >
     <div style="width:65px;heigth:65px;overflow:hidden;display:block;">
-      <img src="$STATIC_FOLDER$/img/binder.png" alt="" style="width:30px;margin: 0 auto;"/>
+      <img src="$STATIC_FOLDER$/img/visualbinder.png" alt="" style="width:30px;margin: 0 auto;"/>
       <p style="text-align:center">
         <%= name %>
       </p>
@@ -63,7 +67,7 @@
 {% endmacro %}
 
 {% macro modal %}
-<script data-ui-jsrender-modal-template="binder" type="text/template">
+<script data-ui-jsrender-modal-template="visualbinder" type="text/template">
     <label for="__id_name">Название</label>
     <input id="__id_name" type="text" name="name">
 
