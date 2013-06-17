@@ -85,7 +85,7 @@ define [
 
 
         $el.select2(options)
-        if val != "" then $el.select2 "val", val
+        if (val? and val != "") then $el.select2 "val", val
 
       spinner:($el,options)-> $el.spinner(options ? {})
 

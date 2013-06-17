@@ -9,6 +9,8 @@
 {% import 'controls/checkbox.html' as checkbox %}
 {% import 'controls/visualbinder.html' as visualbinder %}
 {% import 'controls/binder.html' as binder %}
+{% import 'controls/toggle.html' as toggle %}
+{% import 'controls/spinner.html' as spinner %}
 
 {% macro navigation_tabs %}
 <div class="navbar navbar-inverse navbar-fixed-top navbar-fixed-top-back">
@@ -36,7 +38,7 @@
             <ul>
                 <li>{{ input.component() }}</li>
                 <li>{{ textarea.component() }}</li>
-                <li>{{ checkbox.component() }}</li>
+                {#<li>{{ checkbox.component() }}</li>#}
                 <li>{{ select2.component() }}</li>
                 {#<li>{{ file.component() }}</li>#}
             </ul>
@@ -47,7 +49,8 @@
                 <li>{{ directoryItem.component() }}</li>
                 <li>{{ datepicker.component() }}</li>
                 <li>{{ daterange.component() }}</li>
-
+                <li>{{ toggle.component() }}</li>
+                <li>{{ spinner.component() }}</li>
             </ul>
         </div>
 

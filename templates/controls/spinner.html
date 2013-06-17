@@ -1,0 +1,60 @@
+{% macro component %}
+  {% set jsrender = {
+  type: {
+    value: "spinner",
+    type: "hidden"
+  },
+  path:{
+    title:"Путь до элемента формы"
+  },
+  defautValue:{
+    title:"Значение по умолчанию"
+  },
+  min:{
+    title:"Минимальное значение элемента"
+  },
+  max:{
+    title:"Максимальное значение элемента"
+  },
+  step:{
+    title:"Шаг"
+  },
+  precision:{
+    title:"Количество знаков после запятой"
+  },
+  buttonSide:{
+    title:"Сторона размещения кнопок",
+    value:"rigth",
+    data:["rigth", "left"]
+  },
+  hold:{
+    title:"Изменять значение элемента при удержании кнопки изменения значения"
+  },
+  speed:{
+    title:"Скорость"
+  },
+  label:{
+    title:"Наименование",
+    value:"Счетчик"
+  },
+  help:{
+    title:"Строка помощи"
+  },
+  title:{
+    title:"Подсказка"
+  },
+  readOnly:{
+    title:"Только для чтения"
+  }
+} %}
+  <script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="spinner" data-title="Счетчик" data-ui-jsrender-img="img/components/spinner_input.png">
+
+  <div class="control-group">
+    <label class="control-label" for="<%= id %>"><%= label %></label>
+    <div class="controls">
+      <img src="$STATIC_FOLDER$/img/spinner.png" alt=""/>
+      <p class="help-block valtype" data-valtype="help"><%= help %></p>
+    </div>
+  </div>
+  </script>
+{% endmacro %}

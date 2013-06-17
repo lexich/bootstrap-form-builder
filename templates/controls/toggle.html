@@ -1,0 +1,70 @@
+{% macro component %}
+  {% set jsrender = {
+  type: {
+    value: "toggle",
+    type: "hidden"
+  },
+  path:{
+    title:"Путь до элемента формы"
+  },
+  width: {
+    title:"Ширина переключателя, задается в пикселях",
+    value:120
+  },
+  labelEnabled:{
+    title: "надпись при включенном состоянии",
+    value:"ВКЛ"
+  },
+  labelDisabled: {
+    title:"надпись при выключенном состоянии",
+    value:"ВЫКЛ"
+  },
+  styleEnabled: {
+    title:"стиль при включенном состоянии",
+    value:"primary"
+  },
+  styleDisabled: {
+    title:"стиль при выключенном состоянии"
+  },
+  isAnimated:{
+    title:"признак наличия анимации",
+    type:"checkbox"
+  },
+  transitionSpeed:{
+    title:"скорость анимации",
+    value:"100%"
+  },
+  label:{
+    title:"Наименование",
+    value:"Переключатель"
+  },
+  help:{
+    title:"Строка помощи",
+    value:""
+  },
+  title:{
+    title:"Подсказка"
+  },
+  class:{
+    title:"Cтилевой класс"
+  },
+  readOnly:{
+    title:"Только для чтения",
+    type:"checkbox"
+  },
+  disabled:{
+    title:"Только для чтения",
+    type:"checkbox"
+  }
+} %}
+  <script type="text/template" data-ui-jsrender="{{ jsrender|json_encode }}" data-ui-jsrender-type="toggle" data-title="Переключатель" data-ui-jsrender-img="img/components/toggle_input.png">
+
+  <div class="control-group">
+    <label class="control-label" for="<%= id %>"><%= label %></label>
+    <div class="controls">
+      <img src="$STATIC_FOLDER$/img/togglebutton.png" alt=""/>
+      <p class="help-block valtype" data-valtype="help"><%= help %></p>
+    </div>
+  </div>
+  </script>
+{% endmacro %}
