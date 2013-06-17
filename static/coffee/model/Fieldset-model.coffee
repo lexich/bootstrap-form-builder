@@ -5,7 +5,7 @@ define [
     modelname:"FieldsetModel"
     defaults:
       fieldset:0
-      title:"Default title"
+      title:"Название"
       direction:"horizontal"
     validate:(attrs, options)->
       if attrs.fieldset < 0

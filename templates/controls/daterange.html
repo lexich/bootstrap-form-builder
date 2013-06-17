@@ -6,17 +6,27 @@
     type: "hidden"
   },
   path:{
-    title:"Путь до элемента формы"
+    title:"Привязка (path)",
+    type: "selectRemote",
+    data: {
+      ajax: {
+        url: "/path.json",
+        dataType: 'json',
+        quietMillis: 100
+      }
+    }
   },
   label:{
     title:"Наименование",
     value: "DateRange"
   },
   help:{
-    title:"Строка помощи"
+    title:"Строка помощи",
+    value: "строка помощи"
   },
   title:{
-    title:"Всплывающая подсказка"
+    title:"Всплывающая подсказка",
+    value: "подсказка"
   },
   direction:{
     title:"Направление выпадающего диалога",

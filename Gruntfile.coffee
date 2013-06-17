@@ -273,7 +273,29 @@ module.exports = (grunt) ->
               res.sendfile filepath
             "/forms.json": (req, res) -> res.send data
             "/select2.json": (req, res) ->
-              res.send { more: false, results: [{id: "CA",text: "California"},{id: "AL", text: "Alabama"}]}
+              _data =
+                "patient": "Пациенты"
+                "drugs": "Препараты"
+              if req.query.value?
+                res.send {id:req.query.value, text: _data[req.query.value]}
+              else
+                results = []
+                for id,text of _data
+                  results.push {id,text}
+                res.send { mode: false, results}
+
+            "/path.json":(req, res)->
+              _data =
+                "healthCenter.govInstitutionAccessory":"Ведомственная принадлежность"
+                "healthCenter.ownershipType":"Форма собственности"
+
+              if req.query.value?
+                res.send {id:req.query.value, text: _data[req.query.value]}
+              else
+                results = []
+                for id,text of _data
+                  results.push {id,text}
+                res.send { mode: false, results}
 
           post:
             "/forms.json": (req, res) -> data = req.body

@@ -6,8 +6,15 @@
     type: "hidden"
   },
   path: {
-    value: "",
-    title: "Путь до элемента формы"
+    title: "Привязка (path)",
+    type: "selectRemote",
+    data: {
+      ajax: {
+        url: "/path.json",
+        dataType: 'json',
+        quietMillis: 100
+      }
+    }
   },
   directory: {
     title: "Уникальное имя справочника",
@@ -25,13 +32,15 @@
   },
   label: {
     title:"Наименование",
-    value:"DirectoruItem"
+    value:"Справочник"
   },
   help: {
-    title:"Строка помощи"
+    title:"Строка помощи",
+    value:"строка помощи"
   },
   title: {
-    title:"Всплывающая подсказка"
+    title:"Всплывающая подсказка",
+    value: "подсказка"
   },
   readOnly: {
     value: false,
@@ -58,7 +67,7 @@
     <div class="control-group">
         <label class="control-label" for="<%= path %>"><%= label %></label>
         <div class="controls">
-        <div class="select2-container directory-select" data-psevdo-input>
+          <div class="select2-container directory-select" data-psevdo-input>
             <a href="#" onclick="return false;" class="select2-choice plus-as-tab" tabindex="-1">
                 <abbr class="select2-search-choice-close" style="display:none;"></abbr>
                 <div>
@@ -71,8 +80,8 @@
                 </div>
                 <ul class="select2-results"></ul>
             </div>
-        </div>
-        <p class="help-block valtype span12" data-valtype="help"><%= help %></p>
+          </div>
+        <p class="help-block valtype span12" style="margin-left:0;" data-valtype="help"><%= help %></p>
     </div>
 </div>
 </script>

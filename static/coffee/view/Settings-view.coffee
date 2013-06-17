@@ -56,9 +56,6 @@ define [
         options = options ? {}
         options.closeOnSelect = true
 
-        val = $el.data("value")
-        if val is "" then val = $el.val()
-
 
         if $el[0].tagName.toLowerCase() is "select" and options.data?
           bSelected = false
@@ -72,6 +69,16 @@ define [
           $el.html opts.join("")
           delete options.data
 
+        if $el[0].tagName.toLowerCase() is "input"
+          options.initSelection = ($el, callback)->
+            value = $el.data("value")
+            opt = $el.data("ui-data")
+            $.ajax(
+              url: opt.ajax.url
+              data: {value}
+            ).done (data)->
+              callback data
+
         if options.ajax?
           _.extend options.ajax,
             data:(term, page)->
@@ -83,9 +90,12 @@ define [
           delete options.multiple
           delete options.data
 
+        val = $el.data("value")
+        unless val? then $el.data "value", $el.val()
+        val = $el.data("value")
 
         $el.select2(options)
-        if (val? and val != "") then $el.select2 "val", val
+        #if (val? and val != "") then $el.select2 "val", val
 
       spinner:($el,options)-> $el.spinner(options ? {})
 

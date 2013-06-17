@@ -6,8 +6,15 @@
     type: "hidden"
   },
   path: {
-    value: "",
-    title: "Путь до элемента формы"
+    title: "Привязка (path)",
+    type: "selectRemote",
+    data: {
+      ajax: {
+        url: "/path.json",
+        dataType: 'json',
+        quietMillis: 100
+      }
+    }
   },
   filters: {
     title: "Фильтр"
@@ -18,13 +25,15 @@
   },
   label: {
     title:"Наименование",
-    value:"Select2"
+    value:"Список"
   },
   help: {
-    title:"Строка помощи"
+    title:"Строка помощи",
+    value: "строка помощи"
   },
   title: {
-    title:"Всплывающая подсказка"
+    title:"Всплывающая подсказка",
+    value: "подсказка"
   },
   readOnly: {
     value: false,

@@ -5,7 +5,15 @@
     type: "hidden"
   },
   path:{
-    title:"Путь до элемента формы"
+    title:"Привязка (path)",
+    type: "selectRemote",
+    data: {
+      ajax: {
+        url: "/path.json",
+        dataType: 'json',
+        quietMillis: 100
+      }
+    }
   },
   width: {
     title:"Ширина переключателя, задается в пикселях",
@@ -40,10 +48,11 @@
   },
   help:{
     title:"Строка помощи",
-    value:""
+    value:"строка помощи"
   },
   title:{
-    title:"Подсказка"
+    title:"Подсказка",
+    value: "подсказка"
   },
   class:{
     title:"Cтилевой класс"

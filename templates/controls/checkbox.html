@@ -5,7 +5,15 @@
     type: "hidden"
   },
   path:{
-    title: "Путь до элемента формы"
+    title: "Привязка (path)",
+    type: "selectRemote",
+    data: {
+      ajax: {
+        url: "/path.json",
+        dataType: 'json',
+        quietMillis: 100
+      }
+    }
   },
   inputType:{
     value:"checkbox",
@@ -28,10 +36,12 @@
     value: "Переключатель"
   },
   help:{
-    title: "Строка помощи"
+    title: "Строка помощи",
+    value: "строка помощи"
   },
   title:{
-    title: "Подсказка"
+    title: "Подсказка",
+    value: "подсказка"
   },
   readOnly:{
     title: "Только для чтения",
