@@ -48,7 +48,7 @@ require [
     "view/ToolItemView": level: CHECK
     "view/NotVisual": level: CHECK
     "common/CustomView": level: CHECK
-    "common/Service": level: ALL
+    "common/Service": level: CHECK
     "collection/FormItemCollection": level: CHECK
     "collection/FieldsetCollection": level: CHECK
 
@@ -119,9 +119,10 @@ require [
       service:service
       collection:collection
 
-    _.each service.getItems(), (data,type)=>
+    toolItems = _.map service.getItems(), (data,type)=>
       toolItem = new ToolItemView {type,service,data}
       toolItem.render()
+      toolItem
 
     $("[data-js-global-form-save]").click ->
       $("body").addClass("ui_printform")
@@ -132,5 +133,23 @@ require [
           data = data.replace "data:image/png;base64,",""
           collection.updateAll img:data
           $("body").removeClass("ui_printform")
+
+
+    $("[data-js-global-changepos]").toggle (->
+      $(this).removeClass "icon-double-angle-right"
+      $(this).addClass "icon-double-angle-down"
+      $("body").addClass "horizontal-mode"
+      $(".navbar-fixed-top:first").css("width","200px")
+      $(".navbar-fixed-top:first").css("height","100%")
+      $("[data-html-tool-container]").removeClass("container")
+    ),(->
+      $(this).addClass "icon-double-angle-right"
+      $(this).removeClass "icon-double-angle-down"
+      $("body").removeClass "horizontal-mode"
+      $(".navbar-fixed-top:first").css("width","")
+      $(".navbar-fixed-top:first").css("height","")
+      $("[data-html-tool-container]").addClass("container")
+    )
+
 
     collection.fetch()
