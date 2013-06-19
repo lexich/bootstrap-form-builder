@@ -87,9 +87,10 @@ define [
       ).sortBy(
         (view,cid)-> view.model.get("row")
       )
-      if @model.get("extention") is "multitypeinput"
+      filter = @model.get("filter")
+      if @model.get("extention") is "multitypeinput" and (filter? and filter!="")
         chain = chain.filter(
-          (view)=> view.model.get("filter") is @model.get("filter")
+          (view)=> view.model.get("filter") is filter
         )
       chain.value()
 
