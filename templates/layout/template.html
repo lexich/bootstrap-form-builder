@@ -6,10 +6,31 @@
 
 {# FieldsetViewTemplate tagName="fieldset" #}
 <script type="text/template" id="FieldsetViewTemplate">
-    <legend contenteditable data-bind="title" class="ui_fieldset__legend" ><%= title %></legend>
+    <legend data-bind="title" class="ui_fieldset__legend" ><%= title %></legend>
+
     <div data-html-fieldset-loader class="ui_fieldset__loader"></div>
     <div data-drop-accept-placeholder="fieldset" class="ui_global_placeholder row-fluid"></div>
-    <span class="icon-resize-vertical ui_fieldset__direction" data-js-fieldset-position></span>
+    <div class="ui_fieldset__tools">
+      <% if(extention == 'multiinput'){ %>
+        <a class="btn btn-success ui_fieldset__tools-multitinput" id="_multiinput" href="#" tabindex="-1">
+          <i class="icon-plus"></i> Добавить
+        </a>
+      <% } else if(extention == 'multitypeinput'){ %>
+        <div class="dropdown ui_fieldset__tools-multitypeinput">
+          <a class="btn btn-success dropdown-toggle" id="_multitypeinput" data-toggle="dropdown" href="#" tabindex="-1">
+             Добавить <i class="icon-caret-down"></i>
+          </a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+
+            <% _.each( extentiondata, function(item){ %>
+              <li><a href="#" data-js-fieldset-multitypeinput="<%= item.id %>" ><%= item.text %></a></li>
+            <% }); %>
+          </ul>
+        </div>
+      <% } %>
+      <span class="icon-th-large ui_fieldset__tools-options" data-js-fieldset-options></span>
+      <span class="icon-resize-vertical ui_fieldset__tools-direction" data-js-fieldset-position></span>
+    </div>
 </script>
 
 {# RowViewTemplate class="ui_row" #}

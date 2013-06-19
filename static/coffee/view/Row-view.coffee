@@ -25,7 +25,18 @@ define [
       directionMode:"[data-js-row-position]"
       ghostRow:"[data-ghost-row]"
 
-    childrenViewsOrdered:-> _.sortBy @childrenViews, (view,cid)-> view.model.get("position")
+    childrenViewsOrdered:->
+      chain = _.chain(
+        @childrenViews
+      ).sortBy(
+        (view,cid)-> view.model.get("position")
+      )
+      if @model.get("extention") is "multitypeinput"
+        chain = chain.filter(
+          (view)=> view.model.get("filter") is @model.get("filter")
+        )
+      chain.value()
+
 
     templateData:->
       _.extend @model.toJSON(),cid:@cid
@@ -99,6 +110,7 @@ define [
           data =
             fieldset:row.model.get('fieldset')
             row: row.model.get('row')
+            filter: @model.get("filter")
             position:0
           row.addChild view
           view.model.set data, {validate:true}
@@ -109,6 +121,7 @@ define [
           data =
             fieldset:@model.get('fieldset')
             row: @model.get('row')
+            filter: @model.get("filter")
             position:position
           if size < 3 then data.size = size
           @addChild view

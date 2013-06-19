@@ -7,6 +7,7 @@ define [
       row: 0
       fieldset:0
       direction:"horizontal"
+      filter:""
     validate:(attrs, options)->
       if attrs.row < 0
         "row must be >= 0"

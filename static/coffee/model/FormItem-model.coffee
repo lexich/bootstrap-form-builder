@@ -17,6 +17,7 @@ define [
       row:0,
       fieldset:0
       size:3
+      filter:""
 
     initialize:->
       log.info "initialize"

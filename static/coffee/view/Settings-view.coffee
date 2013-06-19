@@ -8,6 +8,53 @@ define [
 ],($,Backbone,_,Log)->
   log = Log.getLogger("view/SettingsView")
 
+  UI =
+    select2:($el,options)->
+      options = options ? {}
+      options.closeOnSelect = true
+
+      val = $el.data("value")
+      unless val? then $el.data "value", $el.val()
+      val = $el.data("value")
+
+      if $el[0].tagName.toLowerCase() is "select" and options.data?
+        bSelected = false
+        opts = _.map options.data or [],(item)->
+          if item.id is val
+            bSelected = true
+            selected = "selected"
+          else selected = ""
+          "<option #{selected} value='#{item.id}'>#{item.text}</option>"
+        unless bSelected then opts.splice(0,0,"<option></option>")
+        $el.html opts.join("")
+        delete options.data
+
+      if $el[0].tagName.toLowerCase() is "input"
+        options.initSelection = ($el, callback)->
+          value = $el.data("value")
+          opt = $el.data("ui-data")
+          $.ajax(
+            url: opt.ajax.url
+            data: {value}
+          ).done (data)->
+            callback data
+
+      if options.ajax?
+        _.extend options.ajax,
+          data:(term, page)->
+            q:"test"
+          results:(data,page)->
+            data
+
+      if $el.is("select")
+        delete options.multiple
+        delete options.data
+
+      $el.select2(options)
+      #if (val? and val != "") then $el.select2 "val", val
+
+      spinner:($el,options)-> $el.spinner(options ? {})
+
   SettingsView = Backbone.View.extend
     visibleMode:false
     activeView:null
@@ -51,72 +98,35 @@ define [
       return if @activeView? and @__find @activeView.$el, e.target
       @setVisibleMode(false)
 
-    ui:
-      select2:($el,options)->
-        options = options ? {}
-        options.closeOnSelect = true
-
-
-        if $el[0].tagName.toLowerCase() is "select" and options.data?
-          bSelected = false
-          opts = _.map options.data or [],(item)->
-            if item.id is val
-              bSelected = true
-              selected = "selected"
-            else selected = ""
-            "<option #{selected} value='#{item.id}'>#{item.text}</option>"
-          unless bSelected then opts.splice(0,0,"<option></option>")
-          $el.html opts.join("")
-          delete options.data
-
-        if $el[0].tagName.toLowerCase() is "input"
-          options.initSelection = ($el, callback)->
-            value = $el.data("value")
-            opt = $el.data("ui-data")
-            $.ajax(
-              url: opt.ajax.url
-              data: {value}
-            ).done (data)->
-              callback data
-
-        if options.ajax?
-          _.extend options.ajax,
-            data:(term, page)->
-              q:"test"
-            results:(data,page)->
-              data
-
-        if $el.is("select")
-          delete options.multiple
-          delete options.data
-
-        val = $el.data("value")
-        unless val? then $el.data "value", $el.val()
-        val = $el.data("value")
-
-        $el.select2(options)
-        #if (val? and val != "") then $el.select2 "val", val
-
-      spinner:($el,options)-> $el.spinner(options ? {})
-
     render:->
       log.info "render"
       return unless (model = @activeView?.model)
       $body = @getArea()
-      type = model.get("type")
       data = model.attributes
       $body.empty()
-      $body.append @renderForm(type, data)
+      if @activeView.viewname is "fieldset"
+        $frag = $("<div>")
+        config = model.get_template_config()
+        pieces = _.map model.attributes, (v,k)=>
+          item = config[k]
+          if item?
+            @renderModalItemTemplate item.type, title:item.title, value:v, name:k, data:item.data ? []
+
+        $frag.html pieces.join("")
+        $body.append $frag.children()
+      else
+        type = model.get("type")
+        $body.append @renderForm(type, data)
       _.each $body.find("[data-ui]"),(el)=>
         uicomponent = $(el).data("ui")
-        if @ui[uicomponent]?
+        if UI[uicomponent]?
           data = $(el).data("ui-data")
           data = {} unless _.isObject(data)
           if data?.inject?
             _.each data.inject,(v,k)=>
               data[k] = _.result(this,v)
             delete data.inject
-          @ui[uicomponent]($(el), data)
+          UI[uicomponent]($(el), data)
 
     loadIds:->
       result = _.map @collection.models, (model)-> id:model.get("id"), text:model.get("name") + "##{model.get("id")}"

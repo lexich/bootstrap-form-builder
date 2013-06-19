@@ -82,7 +82,16 @@ define [
       this
 
     childrenViewsOrdered:->
-      _.sortBy @childrenViews, (view,cid)-> view.model.get("row")
+      chain = _.chain(
+        @childrenViews
+      ).sortBy(
+        (view,cid)-> view.model.get("row")
+      )
+      if @model.get("extention") is "multitypeinput"
+        chain = chain.filter(
+          (view)=> view.model.get("filter") is @model.get("filter")
+        )
+      chain.value()
 
     reinitialize:->
       log.info "reinitialize #{@cid}"
@@ -120,7 +129,11 @@ define [
         else #Иначе создаем новый
           rowView = @createChild
             el: ui.helper
-            model: new RowModel {fieldset:@model.get("fieldset"), direction:@model.get("direction")}
+            model: new RowModel {
+              fieldset:@model.get("fieldset"),
+              direction:@model.get("direction")
+              filter: @model.get("filter")
+            }
             service: @options.service
 
   ###
@@ -140,6 +153,8 @@ define [
       "click [data-js-remove-fieldset]": "event_clickRemove"
       "input [contenteditable][data-bind]":"event_inputDataBind"
       "click [data-js-fieldset-position]":"event_clickDirection"
+      "click [data-js-fieldset-options]": "event_clickOptions"
+      "click [data-js-fieldset-multitypeinput]":"event_clickMultitypeInput"
 
     initialize:->
       log.info "initialize #{@cid}"
@@ -196,14 +211,15 @@ define [
     ###
     on_model_change:(model,options)->
       log.info "on_model_change #{@cid}"
-      changed = _.pick model.changed, _.keys(model.defaults)
+      changed = _.chain(model.changed).pick( _.keys(model.defaults)).omit("filter").value()
       if changed.direction?
         _.each @childrenViews,(view)=>
           view.model.set "direction", changed.direction,{validate:true}
           @checkModel log, view.model
-      _.each @childrenViews,(view,cid)->
+      _.each @childrenViews,(view,cid)=>
         #silent mode freeze changing beause render call
         view.model.set changed,{validate:true}
+        @checkModel log, view.model
       @render()
 
     ###
@@ -226,6 +242,18 @@ define [
     event to destroy view
     ###
     event_clickRemove:->
+      log.info "event_clickRemove #{@cid}"
       @remove()
+
+    event_clickOptions:->
+      log.info "event_clickOptions #{@cid}"
+      @options.service.setEditableView this
+
+    event_clickMultitypeInput:(e)->
+      log.info "event_clickMultitypeInput #{@cid}"
+      value = $(e.target).data("js-fieldset-multitypeinput") ? ""
+      @model.set "filter", value, {validate:true}
+      @checkModel log, @model
+
 
   FieldsetView
