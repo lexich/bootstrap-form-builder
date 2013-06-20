@@ -75,6 +75,7 @@ define [
         view.model.set
           fieldset:@model.get("fieldset")
           row:row,
+          filter:@model.get("filter")
           {validate:true}
       else
         view = @getOrAddRowView row
@@ -186,7 +187,10 @@ define [
         view = filterRowView[0]
       else
         model = @collection.getOrAddRowModel row, @model.get("fieldset")
-        model.set "direction", @model.get("direction"), {validation:true}
+        model.set {
+          direction: @model.get("direction")
+          filter: @model.get("filter")
+        }, {validation:true}
         view = @createChild
           collection:@collection
           model:model
@@ -213,6 +217,16 @@ define [
     on_model_change:(model,options)->
       log.info "on_model_change #{@cid}"
       changed = _.chain(model.changed).pick( _.keys(model.defaults)).omit("filter").value()
+      if model.filter?
+        previous = model.previous("filter")
+        options = {validate:true}
+        if changed.length > 0 then options["silent"] = true
+
+        _.each @childrenViews,(view)=>
+          return unless view.model.get("filter") is previous
+          view.model.set "filter",changed.filter,options
+          @checkModel log, view.model
+
       if changed.direction?
         _.each @childrenViews,(view)=>
           view.model.set "direction", changed.direction,{validate:true}

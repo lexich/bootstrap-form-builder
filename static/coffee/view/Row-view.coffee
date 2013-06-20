@@ -32,7 +32,7 @@ define [
         (view,cid)-> view.model.get("position")
       )
       filter = @model.get("filter")
-      if @model.get("extention") is "multitypeinput" and (filter? and filter!="")
+      if filter? and filter!=""
         chain = chain.filter(
           (view)=> view.model.get("filter") is filter
         )
@@ -295,6 +295,7 @@ define [
       data = _.extend data or {}, {
         row:@model.get("row")
         fieldset:@model.get("fieldset")
+        filter: @model.get("filter")
       }
       model = new FormItemModel data
       if model.get("size") > freesize

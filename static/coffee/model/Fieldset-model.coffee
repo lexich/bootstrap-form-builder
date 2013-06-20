@@ -8,7 +8,10 @@ define [
       title:"Название"
       direction:"horizontal"
       extention:""
-      extentiondata:[{id:"one",text:"Один"}]
+      extentiondata:[
+        {id:"one",text:"Один"}
+        {id:"two",text:"Два"}
+      ]
       filter:""
     validate:(attrs, options)->
       if attrs.fieldset < 0
@@ -21,9 +24,6 @@ define [
         "extention doesn't valid"
       else if not _.isArray(attrs.extentiondata)
         "extentiondata must be array"
-
-    set:->
-      Backbone.Model.set.apply this, arguments
 
     get_template_config:->
       title:
