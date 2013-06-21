@@ -39,6 +39,11 @@ define [
           ]
           allowClear: true
           placeholder:"Выберите тип"
+        actions:
+          change:
+            value:"multitypeinput"
+            action:"visible"
+            target:"filter"
       direction:
         type:"select"
         title:"Направление"

@@ -63,6 +63,8 @@ define [
       "click [data-html-settings-item] [data-js-save]":   "event_itemSave"
       "click [data-html-settings-item] [data-js-remove]": "event_itemRemove"
       "click [data-html-settings-item] [data-js-hide]":   "event_itemHide"
+      "change [data-html-settings-loader] [data-js-itemaction*='change']":"event_itemAction"
+      "click [data-html-settings-loader] [data-js-itemaction*='click']":"event_itemAction"
 
     initialize:->
       log.info "initialize"
@@ -109,8 +111,13 @@ define [
         config = model.get_template_config()
         pieces = _.map model.attributes, (v,k)=>
           item = config[k]
-          if item?
-            @renderModalItemTemplate item.type, title:item.title, value:v, name:k, data:item.data ? []
+          if item? then @renderModalItemTemplate( item.type,
+            title:item.title
+            value:v
+            name:k
+            data:item.data
+            actions:item.actions
+          ) ? []
 
         $frag.html pieces.join("")
         $body.append $frag.children()
@@ -127,6 +134,9 @@ define [
               data[k] = _.result(this,v)
             delete data.inject
           UI[uicomponent]($(el), data)
+
+      _.each $("[data-js-itemaction]"), (el)=>
+        @update_itemactionState $(el)
 
     loadIds:->
       result = _.map @collection.models, (model)-> id:model.get("id"), text:model.get("name") + "##{model.get("id")}"
@@ -156,6 +166,7 @@ define [
             name: k
             value: v
             data: _.result(dataListRef, k)
+            actions:null
 
           if _.isObject(opts.data)
             if opts.data.inject?
@@ -168,15 +179,29 @@ define [
         $frag.html content.join("")
       $frag.children()
 
-    renderModalItemTemplate:(type,data)->
+    renderModalItemTemplate:(type,options)->
       log.info "renderModalItemTemplate"
       if type is null or type is ""
         type = "input"
       templateHtml = @modalTemplates[type]
-      if templateHtml? and templateHtml != ""
-        _.template templateHtml, data
-      else
-        ""
+      result = if templateHtml? and templateHtml != "" then _.template templateHtml, options else ""
+      if options.actions?
+        itemActions = _.keys(options.actions).join(" ")
+        itemActionData = JSON.stringify(options.actions ? {})
+        attrText = "data-js-itemaction='#{itemActions}' data-js-itemaction-data='#{itemActionData}'"
+        result = result.replace(/<(input|textarea|select)/,"<$1 #{attrText}")
+      "<div data-html-itemation>#{result}</div>"
+
+    update_itemactionState:($el)->
+      data = $el.data("js-itemaction-data")
+      _.each data ? {},(d,act)=>
+        bAction = d.value == ($el.val() ? $el.data("value") ? $el.is(":checked"))
+        bAction = !bAction if d.reverse
+        if d.action is "visible"
+          $target = @$el.find("[name='#{d.target}']")
+          if bAction then $target.parents("[data-html-itemation]:first").show() else $target.parents("[data-html-itemation]:first").hide()
+        else if d.action is "enabled"
+          if bAction then $el.removeAttr("disabled") else $el.attr("disabled",true)
 
     on_editableView_set:(view)->
       log.info "on_editableView_set"
@@ -184,6 +209,9 @@ define [
       if view?
         @render()
         @setVisibleMode(true)
+
+    event_itemAction:(e)->
+      @update_itemactionState $(e.target)
 
     event_itemSave:->
       log.info "event_itemSave"
