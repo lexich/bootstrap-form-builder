@@ -339,7 +339,16 @@ define [
     ###
     on_model_change:(model,options)->
       log.info "on_model_change #{@viewname}:#{@cid}"
-      changed = _.pick model.changed, _.keys(model.defaults)
+      changed = _.chain(model.changed).pick( _.keys(model.defaults)).omit("filter").value()
+
+      if model.changed.filter?
+        previous = model.previous("filter")
+        options = {validate:true}
+        if changed.length > 0 then options["silent"] = true
+        _.each @childrenViews,(view)=>
+          return unless view.model.get("filter") is previous
+          view.model.set "filter",changed.filter,options
+          @checkModel log, view.model
 
       _.each @childrenViews,(view,cid)=>
         #silent mode freeze changing beause render call

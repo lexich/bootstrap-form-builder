@@ -217,7 +217,7 @@ define [
     on_model_change:(model,options)->
       log.info "on_model_change #{@cid}"
       changed = _.chain(model.changed).pick( _.keys(model.defaults)).omit("filter").value()
-      if model.filter?
+      if model.changed.filter?
         previous = model.previous("filter")
         options = {validate:true}
         if changed.length > 0 then options["silent"] = true
