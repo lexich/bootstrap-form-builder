@@ -60,13 +60,6 @@ module.exports = (grunt) ->
         }]
 
     copy:
-      html5sortable: files:[
-        flattern: true
-        expand: true
-        src: "jquery.sortable.js"
-        cwd: "<%= components %>/html5sortable/"
-        dest: "<%= resource.js %>/html5sortable/"
-      ]
       html2canvas: files:[
         flattern: true
         expand: true
